@@ -50,13 +50,70 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .COB_IDUsedByTPDO = 0x40000180,
         .transmissionType = 0xFE,
         .inhibitTime = 0x0000,
-        .eventTimer = 0x0064,
+        .eventTimer = 0x03E8,
+        .SYNCStartValue = 0x00
+    },
+    .x1801_TPDOCommunicationParameter = {
+        .highestSub_indexSupported = 0x06,
+        .COB_IDUsedByTPDO = 0x40000280,
+        .transmissionType = 0xFE,
+        .inhibitTime = 0x0000,
+        .eventTimer = 0x03E8,
+        .SYNCStartValue = 0x00
+    },
+    .x1802_TPDOCommunicationParameter = {
+        .highestSub_indexSupported = 0x06,
+        .COB_IDUsedByTPDO = 0x40000380,
+        .transmissionType = 0xFE,
+        .inhibitTime = 0x0000,
+        .eventTimer = 0x03E8,
+        .SYNCStartValue = 0x00
+    },
+    .x1803_TPDOCommunicationParameter = {
+        .highestSub_indexSupported = 0x06,
+        .COB_IDUsedByTPDO = 0x40000480,
+        .transmissionType = 0xFE,
+        .inhibitTime = 0x0000,
+        .eventTimer = 0x03E8,
         .SYNCStartValue = 0x00
     },
     .x1A00_TPDOMappingParameter = {
         .numberOfMappedApplicationObjectsInPDO = 0x02,
-        .applicationObject1 = 0x20010010,
-        .applicationObject2 = 0x20020010,
+        .applicationObject1 = 0x60010010,
+        .applicationObject2 = 0x60020010,
+        .applicationObject3 = 0x00000000,
+        .applicationObject4 = 0x00000000,
+        .applicationObject5 = 0x00000000,
+        .applicationObject6 = 0x00000000,
+        .applicationObject7 = 0x00000000,
+        .applicationObject8 = 0x00000000
+    },
+    .x1A01_TPDOMappingParameter = {
+        .numberOfMappedApplicationObjectsInPDO = 0x04,
+        .applicationObject1 = 0x60540008,
+        .applicationObject2 = 0x60550008,
+        .applicationObject3 = 0x60560008,
+        .applicationObject4 = 0x60570008,
+        .applicationObject5 = 0x00000000,
+        .applicationObject6 = 0x00000000,
+        .applicationObject7 = 0x00000000,
+        .applicationObject8 = 0x00000000
+    },
+    .x1A02_TPDOMappingParameter = {
+        .numberOfMappedApplicationObjectsInPDO = 0x08,
+        .applicationObject1 = 0x60600008,
+        .applicationObject2 = 0x60610008,
+        .applicationObject3 = 0x60620008,
+        .applicationObject4 = 0x60630008,
+        .applicationObject5 = 0x60640008,
+        .applicationObject6 = 0x60650008,
+        .applicationObject7 = 0x60660008,
+        .applicationObject8 = 0x60670008
+    },
+    .x1A03_TPDOMappingParameter = {
+        .numberOfMappedApplicationObjectsInPDO = 0x02,
+        .applicationObject1 = 0x60140010,
+        .applicationObject2 = 0x60240010,
         .applicationObject3 = 0x00000000,
         .applicationObject4 = 0x00000000,
         .applicationObject5 = 0x00000000,
@@ -77,27 +134,49 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
         .COB_IDClientToServerRx = 0x00000600,
         .COB_IDServerToClientTx = 0x00000580
     },
-    .x2000_targetHeaterTemperature = 0x007D,
-    .x2001_currentHeaterTemperature = 0x0000,
-    .x2002_ADC_Temperature = 0x0000,
-    .x2003_disableHeater = 0x00,
-    .x2010_packageDispenserPulses = 0x0C80,
-    .x2011_packageDispenserRotateSteps = 0x0000,
-    .x2015_packageDispenserControl = 0x00,
-    .x2020_pillGatePulses = 0x0C80,
-    .x2021_pillGateRotateSteps = 0x0000,
-    .x2025_pillGateControl = 0x00,
-    .x2035_rollerControl = 0x00,
-    .x2045_packageLengthControl = 0x00000000,
-    .x2050_valve1Control = 0x00,
-    .x2051_valve2Control = 0x00,
-    .x2052_valve3Control = 0x00,
-    .x2053_valve4Control = 0x00,
-    .x2054_valve1Status = 0x00,
-    .x2055_valve2Status = 0x00,
-    .x2056_valve3Status = 0x00,
-    .x2057_valve4Status = 0x00,
-    .x6000_velocity = 0x00000000
+    .x6000_targetHeaterTemperature = 0x007D,
+    .x6001_currentHeaterTemperature = 0x0000,
+    .x6002_ADC_Temperature = 0x0000,
+    .x6003_disableHeater = 0x00,
+    .x6004_kp = 0x001E,
+    .x6005_ki = 0x003C,
+    .x6006_kd = 0x0008,
+    .x6010_packageDispenserPulsesPerRevolution = 0x0C80,
+    .x6011_packageDispenserRotatePulses = 0x0000,
+    .x6012_packageDispenserRotateDirection = 0x00,
+    .x6013_packageDispenserEnable = 0x00,
+    .x6014_packageDispenserCurrentPulse = 0x0000,
+    .x6018_packageDispenserStatus = 0x00,
+    .x6019_packageDispenserControl = 0x00,
+    .x6020_pillGatePulsesPerRevolution = 0x0C80,
+    .x6021_pillGateRotatePulses = 0x0000,
+    .x6022_pillGateRotateDirection = 0x00,
+    .x6023_pillGateEnable = 0x00,
+    .x6024_pillGateCurrentPulse = 0x0000,
+    .x6028_pillGateStatus = 0x00,
+    .x6029_pillGateControl = 0x00,
+    .x6030_rollerRotateSteps = 0x00,
+    .x6031_rollerRotationSpeed = 0x64,
+    .x6039_rollerControl = 0x00,
+    .x6040_packageLengthRotateSteps = 0x00,
+    .x6041_packageLengthRotationSpeed = 0x64,
+    .x6049_packageLengthControl = 0x00,
+    .x6050_valve1Control = 0x00,
+    .x6051_valve2Control = 0x00,
+    .x6052_valve3Control = 0x00,
+    .x6053_valve4Control = 0x00,
+    .x6054_valve1Status = 0x00,
+    .x6055_valve2Status = 0x00,
+    .x6056_valve3Status = 0x00,
+    .x6057_valve4Status = 0x00,
+    .x6060_reedSwitch1Status = 0x00,
+    .x6061_reedSwitch2Status = 0x00,
+    .x6062_reedSwitch3Status = 0x00,
+    .x6063_reedSwitch4Status = 0x00,
+    .x6064_reedSwitch5Status = 0x00,
+    .x6065_reedSwitch6Status = 0x00,
+    .x6066_reedSwitch7Status = 0x00,
+    .x6067_reedSwitch8Status = 0x00
 };
 
 
@@ -124,28 +203,56 @@ typedef struct {
     OD_obj_record_t o_1200_SDOServerParameter[3];
     OD_obj_record_t o_1280_SDOClientParameter[4];
     OD_obj_record_t o_1800_TPDOCommunicationParameter[6];
+    OD_obj_record_t o_1801_TPDOCommunicationParameter[6];
+    OD_obj_record_t o_1802_TPDOCommunicationParameter[6];
+    OD_obj_record_t o_1803_TPDOCommunicationParameter[6];
     OD_obj_record_t o_1A00_TPDOMappingParameter[9];
-    OD_obj_var_t o_2000_targetHeaterTemperature;
-    OD_obj_var_t o_2001_currentHeaterTemperature;
-    OD_obj_var_t o_2002_ADC_Temperature;
-    OD_obj_var_t o_2003_disableHeater;
-    OD_obj_var_t o_2010_packageDispenserPulses;
-    OD_obj_var_t o_2011_packageDispenserRotateSteps;
-    OD_obj_var_t o_2015_packageDispenserControl;
-    OD_obj_var_t o_2020_pillGatePulses;
-    OD_obj_var_t o_2021_pillGateRotateSteps;
-    OD_obj_var_t o_2025_pillGateControl;
-    OD_obj_var_t o_2035_rollerControl;
-    OD_obj_var_t o_2045_packageLengthControl;
-    OD_obj_var_t o_2050_valve1Control;
-    OD_obj_var_t o_2051_valve2Control;
-    OD_obj_var_t o_2052_valve3Control;
-    OD_obj_var_t o_2053_valve4Control;
-    OD_obj_var_t o_2054_valve1Status;
-    OD_obj_var_t o_2055_valve2Status;
-    OD_obj_var_t o_2056_valve3Status;
-    OD_obj_var_t o_2057_valve4Status;
-    OD_obj_var_t o_6000_velocity;
+    OD_obj_record_t o_1A01_TPDOMappingParameter[9];
+    OD_obj_record_t o_1A02_TPDOMappingParameter[9];
+    OD_obj_record_t o_1A03_TPDOMappingParameter[9];
+    OD_obj_var_t o_6000_targetHeaterTemperature;
+    OD_obj_var_t o_6001_currentHeaterTemperature;
+    OD_obj_var_t o_6002_ADC_Temperature;
+    OD_obj_var_t o_6003_disableHeater;
+    OD_obj_var_t o_6004_kp;
+    OD_obj_var_t o_6005_ki;
+    OD_obj_var_t o_6006_kd;
+    OD_obj_var_t o_6010_packageDispenserPulsesPerRevolution;
+    OD_obj_var_t o_6011_packageDispenserRotatePulses;
+    OD_obj_var_t o_6012_packageDispenserRotateDirection;
+    OD_obj_var_t o_6013_packageDispenserEnable;
+    OD_obj_var_t o_6014_packageDispenserCurrentPulse;
+    OD_obj_var_t o_6018_packageDispenserStatus;
+    OD_obj_var_t o_6019_packageDispenserControl;
+    OD_obj_var_t o_6020_pillGatePulsesPerRevolution;
+    OD_obj_var_t o_6021_pillGateRotatePulses;
+    OD_obj_var_t o_6022_pillGateRotateDirection;
+    OD_obj_var_t o_6023_pillGateEnable;
+    OD_obj_var_t o_6024_pillGateCurrentPulse;
+    OD_obj_var_t o_6028_pillGateStatus;
+    OD_obj_var_t o_6029_pillGateControl;
+    OD_obj_var_t o_6030_rollerRotateSteps;
+    OD_obj_var_t o_6031_rollerRotationSpeed;
+    OD_obj_var_t o_6039_rollerControl;
+    OD_obj_var_t o_6040_packageLengthRotateSteps;
+    OD_obj_var_t o_6041_packageLengthRotationSpeed;
+    OD_obj_var_t o_6049_packageLengthControl;
+    OD_obj_var_t o_6050_valve1Control;
+    OD_obj_var_t o_6051_valve2Control;
+    OD_obj_var_t o_6052_valve3Control;
+    OD_obj_var_t o_6053_valve4Control;
+    OD_obj_var_t o_6054_valve1Status;
+    OD_obj_var_t o_6055_valve2Status;
+    OD_obj_var_t o_6056_valve3Status;
+    OD_obj_var_t o_6057_valve4Status;
+    OD_obj_var_t o_6060_reedSwitch1Status;
+    OD_obj_var_t o_6061_reedSwitch2Status;
+    OD_obj_var_t o_6062_reedSwitch3Status;
+    OD_obj_var_t o_6063_reedSwitch4Status;
+    OD_obj_var_t o_6064_reedSwitch5Status;
+    OD_obj_var_t o_6065_reedSwitch6Status;
+    OD_obj_var_t o_6066_reedSwitch7Status;
+    OD_obj_var_t o_6067_reedSwitch8Status;
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -347,6 +454,120 @@ static CO_PROGMEM ODObjs_t ODObjs = {
             .dataLength = 1
         }
     },
+    .o_1801_TPDOCommunicationParameter = {
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1801_TPDOCommunicationParameter.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1801_TPDOCommunicationParameter.COB_IDUsedByTPDO,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1801_TPDOCommunicationParameter.transmissionType,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1801_TPDOCommunicationParameter.inhibitTime,
+            .subIndex = 3,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 2
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1801_TPDOCommunicationParameter.eventTimer,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 2
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1801_TPDOCommunicationParameter.SYNCStartValue,
+            .subIndex = 6,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        }
+    },
+    .o_1802_TPDOCommunicationParameter = {
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1802_TPDOCommunicationParameter.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1802_TPDOCommunicationParameter.COB_IDUsedByTPDO,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1802_TPDOCommunicationParameter.transmissionType,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1802_TPDOCommunicationParameter.inhibitTime,
+            .subIndex = 3,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 2
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1802_TPDOCommunicationParameter.eventTimer,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 2
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1802_TPDOCommunicationParameter.SYNCStartValue,
+            .subIndex = 6,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        }
+    },
+    .o_1803_TPDOCommunicationParameter = {
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1803_TPDOCommunicationParameter.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1803_TPDOCommunicationParameter.COB_IDUsedByTPDO,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1803_TPDOCommunicationParameter.transmissionType,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1803_TPDOCommunicationParameter.inhibitTime,
+            .subIndex = 3,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 2
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1803_TPDOCommunicationParameter.eventTimer,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 2
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1803_TPDOCommunicationParameter.SYNCStartValue,
+            .subIndex = 6,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        }
+    },
     .o_1A00_TPDOMappingParameter = {
         {
             .dataOrig = &OD_PERSIST_COMM.x1A00_TPDOMappingParameter.numberOfMappedApplicationObjectsInPDO,
@@ -403,110 +624,388 @@ static CO_PROGMEM ODObjs_t ODObjs = {
             .dataLength = 4
         }
     },
-    .o_2000_targetHeaterTemperature = {
-        .dataOrig = &OD_RAM.x2000_targetHeaterTemperature,
-        .attribute = ODA_SDO_RW | ODA_MB,
+    .o_1A01_TPDOMappingParameter = {
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.numberOfMappedApplicationObjectsInPDO,
+            .subIndex = 0,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject1,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject2,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject3,
+            .subIndex = 3,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject4,
+            .subIndex = 4,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject5,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject6,
+            .subIndex = 6,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject7,
+            .subIndex = 7,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A01_TPDOMappingParameter.applicationObject8,
+            .subIndex = 8,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        }
+    },
+    .o_1A02_TPDOMappingParameter = {
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.numberOfMappedApplicationObjectsInPDO,
+            .subIndex = 0,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject1,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject2,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject3,
+            .subIndex = 3,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject4,
+            .subIndex = 4,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject5,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject6,
+            .subIndex = 6,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject7,
+            .subIndex = 7,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A02_TPDOMappingParameter.applicationObject8,
+            .subIndex = 8,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        }
+    },
+    .o_1A03_TPDOMappingParameter = {
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.numberOfMappedApplicationObjectsInPDO,
+            .subIndex = 0,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject1,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject2,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject3,
+            .subIndex = 3,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject4,
+            .subIndex = 4,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject5,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject6,
+            .subIndex = 6,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject7,
+            .subIndex = 7,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_PERSIST_COMM.x1A03_TPDOMappingParameter.applicationObject8,
+            .subIndex = 8,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        }
+    },
+    .o_6000_targetHeaterTemperature = {
+        .dataOrig = &OD_RAM.x6000_targetHeaterTemperature,
+        .attribute = ODA_SDO_R | ODA_MB,
         .dataLength = 2
     },
-    .o_2001_currentHeaterTemperature = {
-        .dataOrig = &OD_RAM.x2001_currentHeaterTemperature,
+    .o_6001_currentHeaterTemperature = {
+        .dataOrig = &OD_RAM.x6001_currentHeaterTemperature,
         .attribute = ODA_SDO_RW | ODA_TPDO | ODA_MB,
         .dataLength = 2
     },
-    .o_2002_ADC_Temperature = {
-        .dataOrig = &OD_RAM.x2002_ADC_Temperature,
-        .attribute = ODA_SDO_RW | ODA_TPDO | ODA_MB,
+    .o_6002_ADC_Temperature = {
+        .dataOrig = &OD_RAM.x6002_ADC_Temperature,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 2
     },
-    .o_2003_disableHeater = {
-        .dataOrig = &OD_RAM.x2003_disableHeater,
-        .attribute = ODA_SDO_RW | ODA_RPDO,
+    .o_6003_disableHeater = {
+        .dataOrig = &OD_RAM.x6003_disableHeater,
+        .attribute = ODA_SDO_RW,
         .dataLength = 1
     },
-    .o_2010_packageDispenserPulses = {
-        .dataOrig = &OD_RAM.x2010_packageDispenserPulses,
+    .o_6004_kp = {
+        .dataOrig = &OD_RAM.x6004_kp,
         .attribute = ODA_SDO_RW | ODA_MB,
         .dataLength = 2
     },
-    .o_2011_packageDispenserRotateSteps = {
-        .dataOrig = &OD_RAM.x2011_packageDispenserRotateSteps,
-        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
-        .dataLength = 2
-    },
-    .o_2015_packageDispenserControl = {
-        .dataOrig = &OD_RAM.x2015_packageDispenserControl,
-        .attribute = ODA_SDO_RW | ODA_RPDO,
-        .dataLength = 1
-    },
-    .o_2020_pillGatePulses = {
-        .dataOrig = &OD_RAM.x2020_pillGatePulses,
+    .o_6005_ki = {
+        .dataOrig = &OD_RAM.x6005_ki,
         .attribute = ODA_SDO_RW | ODA_MB,
         .dataLength = 2
     },
-    .o_2021_pillGateRotateSteps = {
-        .dataOrig = &OD_RAM.x2021_pillGateRotateSteps,
+    .o_6006_kd = {
+        .dataOrig = &OD_RAM.x6006_kd,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 2
+    },
+    .o_6010_packageDispenserPulsesPerRevolution = {
+        .dataOrig = &OD_RAM.x6010_packageDispenserPulsesPerRevolution,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 2
+    },
+    .o_6011_packageDispenserRotatePulses = {
+        .dataOrig = &OD_RAM.x6011_packageDispenserRotatePulses,
         .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
         .dataLength = 2
     },
-    .o_2025_pillGateControl = {
-        .dataOrig = &OD_RAM.x2025_pillGateControl,
+    .o_6012_packageDispenserRotateDirection = {
+        .dataOrig = &OD_RAM.x6012_packageDispenserRotateDirection,
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_2035_rollerControl = {
-        .dataOrig = &OD_RAM.x2035_rollerControl,
+    .o_6013_packageDispenserEnable = {
+        .dataOrig = &OD_RAM.x6013_packageDispenserEnable,
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_2045_packageLengthControl = {
-        .dataOrig = &OD_RAM.x2045_packageLengthControl,
+    .o_6014_packageDispenserCurrentPulse = {
+        .dataOrig = &OD_RAM.x6014_packageDispenserCurrentPulse,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 2
+    },
+    .o_6018_packageDispenserStatus = {
+        .dataOrig = &OD_RAM.x6018_packageDispenserStatus,
+        .attribute = ODA_SDO_R | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6019_packageDispenserControl = {
+        .dataOrig = &OD_RAM.x6019_packageDispenserControl,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6020_pillGatePulsesPerRevolution = {
+        .dataOrig = &OD_RAM.x6020_pillGatePulsesPerRevolution,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 2
+    },
+    .o_6021_pillGateRotatePulses = {
+        .dataOrig = &OD_RAM.x6021_pillGateRotatePulses,
         .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
-        .dataLength = 4
+        .dataLength = 2
     },
-    .o_2050_valve1Control = {
-        .dataOrig = &OD_RAM.x2050_valve1Control,
+    .o_6022_pillGateRotateDirection = {
+        .dataOrig = &OD_RAM.x6022_pillGateRotateDirection,
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_2051_valve2Control = {
-        .dataOrig = &OD_RAM.x2051_valve2Control,
+    .o_6023_pillGateEnable = {
+        .dataOrig = &OD_RAM.x6023_pillGateEnable,
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_2052_valve3Control = {
-        .dataOrig = &OD_RAM.x2052_valve3Control,
+    .o_6024_pillGateCurrentPulse = {
+        .dataOrig = &OD_RAM.x6024_pillGateCurrentPulse,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 2
+    },
+    .o_6028_pillGateStatus = {
+        .dataOrig = &OD_RAM.x6028_pillGateStatus,
+        .attribute = ODA_SDO_R | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6029_pillGateControl = {
+        .dataOrig = &OD_RAM.x6029_pillGateControl,
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_2053_valve4Control = {
-        .dataOrig = &OD_RAM.x2053_valve4Control,
+    .o_6030_rollerRotateSteps = {
+        .dataOrig = &OD_RAM.x6030_rollerRotateSteps,
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_2054_valve1Status = {
-        .dataOrig = &OD_RAM.x2054_valve1Status,
+    .o_6031_rollerRotationSpeed = {
+        .dataOrig = &OD_RAM.x6031_rollerRotationSpeed,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6039_rollerControl = {
+        .dataOrig = &OD_RAM.x6039_rollerControl,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6040_packageLengthRotateSteps = {
+        .dataOrig = &OD_RAM.x6040_packageLengthRotateSteps,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6041_packageLengthRotationSpeed = {
+        .dataOrig = &OD_RAM.x6041_packageLengthRotationSpeed,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6049_packageLengthControl = {
+        .dataOrig = &OD_RAM.x6049_packageLengthControl,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6050_valve1Control = {
+        .dataOrig = &OD_RAM.x6050_valve1Control,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6051_valve2Control = {
+        .dataOrig = &OD_RAM.x6051_valve2Control,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6052_valve3Control = {
+        .dataOrig = &OD_RAM.x6052_valve3Control,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6053_valve4Control = {
+        .dataOrig = &OD_RAM.x6053_valve4Control,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6054_valve1Status = {
+        .dataOrig = &OD_RAM.x6054_valve1Status,
         .attribute = ODA_SDO_RW | ODA_TPDO,
         .dataLength = 1
     },
-    .o_2055_valve2Status = {
-        .dataOrig = &OD_RAM.x2055_valve2Status,
+    .o_6055_valve2Status = {
+        .dataOrig = &OD_RAM.x6055_valve2Status,
         .attribute = ODA_SDO_RW | ODA_TPDO,
         .dataLength = 1
     },
-    .o_2056_valve3Status = {
-        .dataOrig = &OD_RAM.x2056_valve3Status,
+    .o_6056_valve3Status = {
+        .dataOrig = &OD_RAM.x6056_valve3Status,
         .attribute = ODA_SDO_RW | ODA_TPDO,
         .dataLength = 1
     },
-    .o_2057_valve4Status = {
-        .dataOrig = &OD_RAM.x2057_valve4Status,
+    .o_6057_valve4Status = {
+        .dataOrig = &OD_RAM.x6057_valve4Status,
         .attribute = ODA_SDO_RW | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6000_velocity = {
-        .dataOrig = &OD_RAM.x6000_velocity,
-        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
-        .dataLength = 4
+    .o_6060_reedSwitch1Status = {
+        .dataOrig = &OD_RAM.x6060_reedSwitch1Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6061_reedSwitch2Status = {
+        .dataOrig = &OD_RAM.x6061_reedSwitch2Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6062_reedSwitch3Status = {
+        .dataOrig = &OD_RAM.x6062_reedSwitch3Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6063_reedSwitch4Status = {
+        .dataOrig = &OD_RAM.x6063_reedSwitch4Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6064_reedSwitch5Status = {
+        .dataOrig = &OD_RAM.x6064_reedSwitch5Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6065_reedSwitch6Status = {
+        .dataOrig = &OD_RAM.x6065_reedSwitch6Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6066_reedSwitch7Status = {
+        .dataOrig = &OD_RAM.x6066_reedSwitch7Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6067_reedSwitch8Status = {
+        .dataOrig = &OD_RAM.x6067_reedSwitch8Status,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
     }
 };
 
@@ -533,28 +1032,56 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1200, 0x03, ODT_REC, &ODObjs.o_1200_SDOServerParameter, NULL},
     {0x1280, 0x04, ODT_REC, &ODObjs.o_1280_SDOClientParameter, NULL},
     {0x1800, 0x06, ODT_REC, &ODObjs.o_1800_TPDOCommunicationParameter, NULL},
+    {0x1801, 0x06, ODT_REC, &ODObjs.o_1801_TPDOCommunicationParameter, NULL},
+    {0x1802, 0x06, ODT_REC, &ODObjs.o_1802_TPDOCommunicationParameter, NULL},
+    {0x1803, 0x06, ODT_REC, &ODObjs.o_1803_TPDOCommunicationParameter, NULL},
     {0x1A00, 0x09, ODT_REC, &ODObjs.o_1A00_TPDOMappingParameter, NULL},
-    {0x2000, 0x01, ODT_VAR, &ODObjs.o_2000_targetHeaterTemperature, NULL},
-    {0x2001, 0x01, ODT_VAR, &ODObjs.o_2001_currentHeaterTemperature, NULL},
-    {0x2002, 0x01, ODT_VAR, &ODObjs.o_2002_ADC_Temperature, NULL},
-    {0x2003, 0x01, ODT_VAR, &ODObjs.o_2003_disableHeater, NULL},
-    {0x2010, 0x01, ODT_VAR, &ODObjs.o_2010_packageDispenserPulses, NULL},
-    {0x2011, 0x01, ODT_VAR, &ODObjs.o_2011_packageDispenserRotateSteps, NULL},
-    {0x2015, 0x01, ODT_VAR, &ODObjs.o_2015_packageDispenserControl, NULL},
-    {0x2020, 0x01, ODT_VAR, &ODObjs.o_2020_pillGatePulses, NULL},
-    {0x2021, 0x01, ODT_VAR, &ODObjs.o_2021_pillGateRotateSteps, NULL},
-    {0x2025, 0x01, ODT_VAR, &ODObjs.o_2025_pillGateControl, NULL},
-    {0x2035, 0x01, ODT_VAR, &ODObjs.o_2035_rollerControl, NULL},
-    {0x2045, 0x01, ODT_VAR, &ODObjs.o_2045_packageLengthControl, NULL},
-    {0x2050, 0x01, ODT_VAR, &ODObjs.o_2050_valve1Control, NULL},
-    {0x2051, 0x01, ODT_VAR, &ODObjs.o_2051_valve2Control, NULL},
-    {0x2052, 0x01, ODT_VAR, &ODObjs.o_2052_valve3Control, NULL},
-    {0x2053, 0x01, ODT_VAR, &ODObjs.o_2053_valve4Control, NULL},
-    {0x2054, 0x01, ODT_VAR, &ODObjs.o_2054_valve1Status, NULL},
-    {0x2055, 0x01, ODT_VAR, &ODObjs.o_2055_valve2Status, NULL},
-    {0x2056, 0x01, ODT_VAR, &ODObjs.o_2056_valve3Status, NULL},
-    {0x2057, 0x01, ODT_VAR, &ODObjs.o_2057_valve4Status, NULL},
-    {0x6000, 0x01, ODT_VAR, &ODObjs.o_6000_velocity, NULL},
+    {0x1A01, 0x09, ODT_REC, &ODObjs.o_1A01_TPDOMappingParameter, NULL},
+    {0x1A02, 0x09, ODT_REC, &ODObjs.o_1A02_TPDOMappingParameter, NULL},
+    {0x1A03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
+    {0x6000, 0x01, ODT_VAR, &ODObjs.o_6000_targetHeaterTemperature, NULL},
+    {0x6001, 0x01, ODT_VAR, &ODObjs.o_6001_currentHeaterTemperature, NULL},
+    {0x6002, 0x01, ODT_VAR, &ODObjs.o_6002_ADC_Temperature, NULL},
+    {0x6003, 0x01, ODT_VAR, &ODObjs.o_6003_disableHeater, NULL},
+    {0x6004, 0x01, ODT_VAR, &ODObjs.o_6004_kp, NULL},
+    {0x6005, 0x01, ODT_VAR, &ODObjs.o_6005_ki, NULL},
+    {0x6006, 0x01, ODT_VAR, &ODObjs.o_6006_kd, NULL},
+    {0x6010, 0x01, ODT_VAR, &ODObjs.o_6010_packageDispenserPulsesPerRevolution, NULL},
+    {0x6011, 0x01, ODT_VAR, &ODObjs.o_6011_packageDispenserRotatePulses, NULL},
+    {0x6012, 0x01, ODT_VAR, &ODObjs.o_6012_packageDispenserRotateDirection, NULL},
+    {0x6013, 0x01, ODT_VAR, &ODObjs.o_6013_packageDispenserEnable, NULL},
+    {0x6014, 0x01, ODT_VAR, &ODObjs.o_6014_packageDispenserCurrentPulse, NULL},
+    {0x6018, 0x01, ODT_VAR, &ODObjs.o_6018_packageDispenserStatus, NULL},
+    {0x6019, 0x01, ODT_VAR, &ODObjs.o_6019_packageDispenserControl, NULL},
+    {0x6020, 0x01, ODT_VAR, &ODObjs.o_6020_pillGatePulsesPerRevolution, NULL},
+    {0x6021, 0x01, ODT_VAR, &ODObjs.o_6021_pillGateRotatePulses, NULL},
+    {0x6022, 0x01, ODT_VAR, &ODObjs.o_6022_pillGateRotateDirection, NULL},
+    {0x6023, 0x01, ODT_VAR, &ODObjs.o_6023_pillGateEnable, NULL},
+    {0x6024, 0x01, ODT_VAR, &ODObjs.o_6024_pillGateCurrentPulse, NULL},
+    {0x6028, 0x01, ODT_VAR, &ODObjs.o_6028_pillGateStatus, NULL},
+    {0x6029, 0x01, ODT_VAR, &ODObjs.o_6029_pillGateControl, NULL},
+    {0x6030, 0x01, ODT_VAR, &ODObjs.o_6030_rollerRotateSteps, NULL},
+    {0x6031, 0x01, ODT_VAR, &ODObjs.o_6031_rollerRotationSpeed, NULL},
+    {0x6039, 0x01, ODT_VAR, &ODObjs.o_6039_rollerControl, NULL},
+    {0x6040, 0x01, ODT_VAR, &ODObjs.o_6040_packageLengthRotateSteps, NULL},
+    {0x6041, 0x01, ODT_VAR, &ODObjs.o_6041_packageLengthRotationSpeed, NULL},
+    {0x6049, 0x01, ODT_VAR, &ODObjs.o_6049_packageLengthControl, NULL},
+    {0x6050, 0x01, ODT_VAR, &ODObjs.o_6050_valve1Control, NULL},
+    {0x6051, 0x01, ODT_VAR, &ODObjs.o_6051_valve2Control, NULL},
+    {0x6052, 0x01, ODT_VAR, &ODObjs.o_6052_valve3Control, NULL},
+    {0x6053, 0x01, ODT_VAR, &ODObjs.o_6053_valve4Control, NULL},
+    {0x6054, 0x01, ODT_VAR, &ODObjs.o_6054_valve1Status, NULL},
+    {0x6055, 0x01, ODT_VAR, &ODObjs.o_6055_valve2Status, NULL},
+    {0x6056, 0x01, ODT_VAR, &ODObjs.o_6056_valve3Status, NULL},
+    {0x6057, 0x01, ODT_VAR, &ODObjs.o_6057_valve4Status, NULL},
+    {0x6060, 0x01, ODT_VAR, &ODObjs.o_6060_reedSwitch1Status, NULL},
+    {0x6061, 0x01, ODT_VAR, &ODObjs.o_6061_reedSwitch2Status, NULL},
+    {0x6062, 0x01, ODT_VAR, &ODObjs.o_6062_reedSwitch3Status, NULL},
+    {0x6063, 0x01, ODT_VAR, &ODObjs.o_6063_reedSwitch4Status, NULL},
+    {0x6064, 0x01, ODT_VAR, &ODObjs.o_6064_reedSwitch5Status, NULL},
+    {0x6065, 0x01, ODT_VAR, &ODObjs.o_6065_reedSwitch6Status, NULL},
+    {0x6066, 0x01, ODT_VAR, &ODObjs.o_6066_reedSwitch7Status, NULL},
+    {0x6067, 0x01, ODT_VAR, &ODObjs.o_6067_reedSwitch8Status, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

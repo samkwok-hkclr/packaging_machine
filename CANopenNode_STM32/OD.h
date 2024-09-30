@@ -16,16 +16,16 @@
 
         Created:      2024-09-17 15:00:00
         Created By:   Sam Kwok
-        Modified:     2024-09-23 17:08:19
+        Modified:     2024-09-30 17:27:48
         Modified By:  Sam Kwok
 
     Device Info:
         Vendor Name:  HKCLR
         Vendor ID:    1234
         Product Name: Packaging Machine
-        Product ID:   1234
+        Product ID:   0001
 
-        Description:  
+        Description:  The Object Dictionary of Packaging Machine
 *******************************************************************************/
 
 #ifndef OD_H
@@ -44,7 +44,7 @@
 #define OD_CNT_HB_PROD 1
 #define OD_CNT_SDO_SRV 1
 #define OD_CNT_SDO_CLI 1
-#define OD_CNT_TPDO 1
+#define OD_CNT_TPDO 4
 
 
 /*******************************************************************************
@@ -93,6 +93,30 @@ typedef struct {
         uint8_t SYNCStartValue;
     } x1800_TPDOCommunicationParameter;
     struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t COB_IDUsedByTPDO;
+        uint8_t transmissionType;
+        uint16_t inhibitTime;
+        uint16_t eventTimer;
+        uint8_t SYNCStartValue;
+    } x1801_TPDOCommunicationParameter;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t COB_IDUsedByTPDO;
+        uint8_t transmissionType;
+        uint16_t inhibitTime;
+        uint16_t eventTimer;
+        uint8_t SYNCStartValue;
+    } x1802_TPDOCommunicationParameter;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t COB_IDUsedByTPDO;
+        uint8_t transmissionType;
+        uint16_t inhibitTime;
+        uint16_t eventTimer;
+        uint8_t SYNCStartValue;
+    } x1803_TPDOCommunicationParameter;
+    struct {
         uint8_t numberOfMappedApplicationObjectsInPDO;
         uint32_t applicationObject1;
         uint32_t applicationObject2;
@@ -103,6 +127,39 @@ typedef struct {
         uint32_t applicationObject7;
         uint32_t applicationObject8;
     } x1A00_TPDOMappingParameter;
+    struct {
+        uint8_t numberOfMappedApplicationObjectsInPDO;
+        uint32_t applicationObject1;
+        uint32_t applicationObject2;
+        uint32_t applicationObject3;
+        uint32_t applicationObject4;
+        uint32_t applicationObject5;
+        uint32_t applicationObject6;
+        uint32_t applicationObject7;
+        uint32_t applicationObject8;
+    } x1A01_TPDOMappingParameter;
+    struct {
+        uint8_t numberOfMappedApplicationObjectsInPDO;
+        uint32_t applicationObject1;
+        uint32_t applicationObject2;
+        uint32_t applicationObject3;
+        uint32_t applicationObject4;
+        uint32_t applicationObject5;
+        uint32_t applicationObject6;
+        uint32_t applicationObject7;
+        uint32_t applicationObject8;
+    } x1A02_TPDOMappingParameter;
+    struct {
+        uint8_t numberOfMappedApplicationObjectsInPDO;
+        uint32_t applicationObject1;
+        uint32_t applicationObject2;
+        uint32_t applicationObject3;
+        uint32_t applicationObject4;
+        uint32_t applicationObject5;
+        uint32_t applicationObject6;
+        uint32_t applicationObject7;
+        uint32_t applicationObject8;
+    } x1A03_TPDOMappingParameter;
 } OD_PERSIST_COMM_t;
 
 typedef struct {
@@ -116,27 +173,49 @@ typedef struct {
         uint32_t COB_IDClientToServerRx;
         uint32_t COB_IDServerToClientTx;
     } x1200_SDOServerParameter;
-    uint16_t x2000_targetHeaterTemperature;
-    uint16_t x2001_currentHeaterTemperature;
-    uint16_t x2002_ADC_Temperature;
-    uint8_t x2003_disableHeater;
-    uint16_t x2010_packageDispenserPulses;
-    uint16_t x2011_packageDispenserRotateSteps;
-    uint8_t x2015_packageDispenserControl;
-    uint16_t x2020_pillGatePulses;
-    uint16_t x2021_pillGateRotateSteps;
-    uint8_t x2025_pillGateControl;
-    uint8_t x2035_rollerControl;
-    uint32_t x2045_packageLengthControl;
-    uint8_t x2050_valve1Control;
-    uint8_t x2051_valve2Control;
-    uint8_t x2052_valve3Control;
-    uint8_t x2053_valve4Control;
-    uint8_t x2054_valve1Status;
-    uint8_t x2055_valve2Status;
-    uint8_t x2056_valve3Status;
-    uint8_t x2057_valve4Status;
-    uint32_t x6000_velocity;
+    uint16_t x6000_targetHeaterTemperature;
+    uint16_t x6001_currentHeaterTemperature;
+    uint16_t x6002_ADC_Temperature;
+    uint8_t x6003_disableHeater;
+    uint16_t x6004_kp;
+    uint16_t x6005_ki;
+    uint16_t x6006_kd;
+    uint16_t x6010_packageDispenserPulsesPerRevolution;
+    uint16_t x6011_packageDispenserRotatePulses;
+    uint8_t x6012_packageDispenserRotateDirection;
+    uint8_t x6013_packageDispenserEnable;
+    uint16_t x6014_packageDispenserCurrentPulse;
+    uint8_t x6018_packageDispenserStatus;
+    uint8_t x6019_packageDispenserControl;
+    uint16_t x6020_pillGatePulsesPerRevolution;
+    uint16_t x6021_pillGateRotatePulses;
+    uint8_t x6022_pillGateRotateDirection;
+    uint8_t x6023_pillGateEnable;
+    uint16_t x6024_pillGateCurrentPulse;
+    uint8_t x6028_pillGateStatus;
+    uint8_t x6029_pillGateControl;
+    uint8_t x6030_rollerRotateSteps;
+    uint8_t x6031_rollerRotationSpeed;
+    uint8_t x6039_rollerControl;
+    uint8_t x6040_packageLengthRotateSteps;
+    uint8_t x6041_packageLengthRotationSpeed;
+    uint8_t x6049_packageLengthControl;
+    uint8_t x6050_valve1Control;
+    uint8_t x6051_valve2Control;
+    uint8_t x6052_valve3Control;
+    uint8_t x6053_valve4Control;
+    uint8_t x6054_valve1Status;
+    uint8_t x6055_valve2Status;
+    uint8_t x6056_valve3Status;
+    uint8_t x6057_valve4Status;
+    uint8_t x6060_reedSwitch1Status;
+    uint8_t x6061_reedSwitch2Status;
+    uint8_t x6062_reedSwitch3Status;
+    uint8_t x6063_reedSwitch4Status;
+    uint8_t x6064_reedSwitch5Status;
+    uint8_t x6065_reedSwitch6Status;
+    uint8_t x6066_reedSwitch7Status;
+    uint8_t x6067_reedSwitch8Status;
 } OD_RAM_t;
 
 #ifndef OD_ATTR_PERSIST_COMM
@@ -176,28 +255,56 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H1200 &OD->list[15]
 #define OD_ENTRY_H1280 &OD->list[16]
 #define OD_ENTRY_H1800 &OD->list[17]
-#define OD_ENTRY_H1A00 &OD->list[18]
-#define OD_ENTRY_H2000 &OD->list[19]
-#define OD_ENTRY_H2001 &OD->list[20]
-#define OD_ENTRY_H2002 &OD->list[21]
-#define OD_ENTRY_H2003 &OD->list[22]
-#define OD_ENTRY_H2010 &OD->list[23]
-#define OD_ENTRY_H2011 &OD->list[24]
-#define OD_ENTRY_H2015 &OD->list[25]
-#define OD_ENTRY_H2020 &OD->list[26]
-#define OD_ENTRY_H2021 &OD->list[27]
-#define OD_ENTRY_H2025 &OD->list[28]
-#define OD_ENTRY_H2035 &OD->list[29]
-#define OD_ENTRY_H2045 &OD->list[30]
-#define OD_ENTRY_H2050 &OD->list[31]
-#define OD_ENTRY_H2051 &OD->list[32]
-#define OD_ENTRY_H2052 &OD->list[33]
-#define OD_ENTRY_H2053 &OD->list[34]
-#define OD_ENTRY_H2054 &OD->list[35]
-#define OD_ENTRY_H2055 &OD->list[36]
-#define OD_ENTRY_H2056 &OD->list[37]
-#define OD_ENTRY_H2057 &OD->list[38]
-#define OD_ENTRY_H6000 &OD->list[39]
+#define OD_ENTRY_H1801 &OD->list[18]
+#define OD_ENTRY_H1802 &OD->list[19]
+#define OD_ENTRY_H1803 &OD->list[20]
+#define OD_ENTRY_H1A00 &OD->list[21]
+#define OD_ENTRY_H1A01 &OD->list[22]
+#define OD_ENTRY_H1A02 &OD->list[23]
+#define OD_ENTRY_H1A03 &OD->list[24]
+#define OD_ENTRY_H6000 &OD->list[25]
+#define OD_ENTRY_H6001 &OD->list[26]
+#define OD_ENTRY_H6002 &OD->list[27]
+#define OD_ENTRY_H6003 &OD->list[28]
+#define OD_ENTRY_H6004 &OD->list[29]
+#define OD_ENTRY_H6005 &OD->list[30]
+#define OD_ENTRY_H6006 &OD->list[31]
+#define OD_ENTRY_H6010 &OD->list[32]
+#define OD_ENTRY_H6011 &OD->list[33]
+#define OD_ENTRY_H6012 &OD->list[34]
+#define OD_ENTRY_H6013 &OD->list[35]
+#define OD_ENTRY_H6014 &OD->list[36]
+#define OD_ENTRY_H6018 &OD->list[37]
+#define OD_ENTRY_H6019 &OD->list[38]
+#define OD_ENTRY_H6020 &OD->list[39]
+#define OD_ENTRY_H6021 &OD->list[40]
+#define OD_ENTRY_H6022 &OD->list[41]
+#define OD_ENTRY_H6023 &OD->list[42]
+#define OD_ENTRY_H6024 &OD->list[43]
+#define OD_ENTRY_H6028 &OD->list[44]
+#define OD_ENTRY_H6029 &OD->list[45]
+#define OD_ENTRY_H6030 &OD->list[46]
+#define OD_ENTRY_H6031 &OD->list[47]
+#define OD_ENTRY_H6039 &OD->list[48]
+#define OD_ENTRY_H6040 &OD->list[49]
+#define OD_ENTRY_H6041 &OD->list[50]
+#define OD_ENTRY_H6049 &OD->list[51]
+#define OD_ENTRY_H6050 &OD->list[52]
+#define OD_ENTRY_H6051 &OD->list[53]
+#define OD_ENTRY_H6052 &OD->list[54]
+#define OD_ENTRY_H6053 &OD->list[55]
+#define OD_ENTRY_H6054 &OD->list[56]
+#define OD_ENTRY_H6055 &OD->list[57]
+#define OD_ENTRY_H6056 &OD->list[58]
+#define OD_ENTRY_H6057 &OD->list[59]
+#define OD_ENTRY_H6060 &OD->list[60]
+#define OD_ENTRY_H6061 &OD->list[61]
+#define OD_ENTRY_H6062 &OD->list[62]
+#define OD_ENTRY_H6063 &OD->list[63]
+#define OD_ENTRY_H6064 &OD->list[64]
+#define OD_ENTRY_H6065 &OD->list[65]
+#define OD_ENTRY_H6066 &OD->list[66]
+#define OD_ENTRY_H6067 &OD->list[67]
 
 
 /*******************************************************************************
@@ -221,28 +328,56 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H1200_SDOServerParameter &OD->list[15]
 #define OD_ENTRY_H1280_SDOClientParameter &OD->list[16]
 #define OD_ENTRY_H1800_TPDOCommunicationParameter &OD->list[17]
-#define OD_ENTRY_H1A00_TPDOMappingParameter &OD->list[18]
-#define OD_ENTRY_H2000_targetHeaterTemperature &OD->list[19]
-#define OD_ENTRY_H2001_currentHeaterTemperature &OD->list[20]
-#define OD_ENTRY_H2002_ADC_Temperature &OD->list[21]
-#define OD_ENTRY_H2003_disableHeater &OD->list[22]
-#define OD_ENTRY_H2010_packageDispenserPulses &OD->list[23]
-#define OD_ENTRY_H2011_packageDispenserRotateSteps &OD->list[24]
-#define OD_ENTRY_H2015_packageDispenserControl &OD->list[25]
-#define OD_ENTRY_H2020_pillGatePulses &OD->list[26]
-#define OD_ENTRY_H2021_pillGateRotateSteps &OD->list[27]
-#define OD_ENTRY_H2025_pillGateControl &OD->list[28]
-#define OD_ENTRY_H2035_rollerControl &OD->list[29]
-#define OD_ENTRY_H2045_packageLengthControl &OD->list[30]
-#define OD_ENTRY_H2050_valve1Control &OD->list[31]
-#define OD_ENTRY_H2051_valve2Control &OD->list[32]
-#define OD_ENTRY_H2052_valve3Control &OD->list[33]
-#define OD_ENTRY_H2053_valve4Control &OD->list[34]
-#define OD_ENTRY_H2054_valve1Status &OD->list[35]
-#define OD_ENTRY_H2055_valve2Status &OD->list[36]
-#define OD_ENTRY_H2056_valve3Status &OD->list[37]
-#define OD_ENTRY_H2057_valve4Status &OD->list[38]
-#define OD_ENTRY_H6000_velocity &OD->list[39]
+#define OD_ENTRY_H1801_TPDOCommunicationParameter &OD->list[18]
+#define OD_ENTRY_H1802_TPDOCommunicationParameter &OD->list[19]
+#define OD_ENTRY_H1803_TPDOCommunicationParameter &OD->list[20]
+#define OD_ENTRY_H1A00_TPDOMappingParameter &OD->list[21]
+#define OD_ENTRY_H1A01_TPDOMappingParameter &OD->list[22]
+#define OD_ENTRY_H1A02_TPDOMappingParameter &OD->list[23]
+#define OD_ENTRY_H1A03_TPDOMappingParameter &OD->list[24]
+#define OD_ENTRY_H6000_targetHeaterTemperature &OD->list[25]
+#define OD_ENTRY_H6001_currentHeaterTemperature &OD->list[26]
+#define OD_ENTRY_H6002_ADC_Temperature &OD->list[27]
+#define OD_ENTRY_H6003_disableHeater &OD->list[28]
+#define OD_ENTRY_H6004_kp &OD->list[29]
+#define OD_ENTRY_H6005_ki &OD->list[30]
+#define OD_ENTRY_H6006_kd &OD->list[31]
+#define OD_ENTRY_H6010_packageDispenserPulsesPerRevolution &OD->list[32]
+#define OD_ENTRY_H6011_packageDispenserRotatePulses &OD->list[33]
+#define OD_ENTRY_H6012_packageDispenserRotateDirection &OD->list[34]
+#define OD_ENTRY_H6013_packageDispenserEnable &OD->list[35]
+#define OD_ENTRY_H6014_packageDispenserCurrentPulse &OD->list[36]
+#define OD_ENTRY_H6018_packageDispenserStatus &OD->list[37]
+#define OD_ENTRY_H6019_packageDispenserControl &OD->list[38]
+#define OD_ENTRY_H6020_pillGatePulsesPerRevolution &OD->list[39]
+#define OD_ENTRY_H6021_pillGateRotatePulses &OD->list[40]
+#define OD_ENTRY_H6022_pillGateRotateDirection &OD->list[41]
+#define OD_ENTRY_H6023_pillGateEnable &OD->list[42]
+#define OD_ENTRY_H6024_pillGateCurrentPulse &OD->list[43]
+#define OD_ENTRY_H6028_pillGateStatus &OD->list[44]
+#define OD_ENTRY_H6029_pillGateControl &OD->list[45]
+#define OD_ENTRY_H6030_rollerRotateSteps &OD->list[46]
+#define OD_ENTRY_H6031_rollerRotationSpeed &OD->list[47]
+#define OD_ENTRY_H6039_rollerControl &OD->list[48]
+#define OD_ENTRY_H6040_packageLengthRotateSteps &OD->list[49]
+#define OD_ENTRY_H6041_packageLengthRotationSpeed &OD->list[50]
+#define OD_ENTRY_H6049_packageLengthControl &OD->list[51]
+#define OD_ENTRY_H6050_valve1Control &OD->list[52]
+#define OD_ENTRY_H6051_valve2Control &OD->list[53]
+#define OD_ENTRY_H6052_valve3Control &OD->list[54]
+#define OD_ENTRY_H6053_valve4Control &OD->list[55]
+#define OD_ENTRY_H6054_valve1Status &OD->list[56]
+#define OD_ENTRY_H6055_valve2Status &OD->list[57]
+#define OD_ENTRY_H6056_valve3Status &OD->list[58]
+#define OD_ENTRY_H6057_valve4Status &OD->list[59]
+#define OD_ENTRY_H6060_reedSwitch1Status &OD->list[60]
+#define OD_ENTRY_H6061_reedSwitch2Status &OD->list[61]
+#define OD_ENTRY_H6062_reedSwitch3Status &OD->list[62]
+#define OD_ENTRY_H6063_reedSwitch4Status &OD->list[63]
+#define OD_ENTRY_H6064_reedSwitch5Status &OD->list[64]
+#define OD_ENTRY_H6065_reedSwitch6Status &OD->list[65]
+#define OD_ENTRY_H6066_reedSwitch7Status &OD->list[66]
+#define OD_ENTRY_H6067_reedSwitch8Status &OD->list[67]
 
 
 /*******************************************************************************

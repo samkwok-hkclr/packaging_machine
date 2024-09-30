@@ -33,7 +33,11 @@
 #include "CO_app_STM32.h"
 #include "OD.h"
 
+#include "pkg_len_func.h"
+#include "pill_gate_func.h"
+
 #include "pid.h"
+#include "kalman_filter.h"
 
 /* USER CODE END Includes */
 
@@ -59,14 +63,12 @@
 uint16_t temperature_adc = 0;
 
 PID_TypeDef TPID;
-double Temp, PIDOut;
-double TempSetpoint = 125.0;
-const double Temp_K_p = 20.0;
-const double Temp_K_i = 50.0;
-const double Temp_K_d = 8.0;
+float Temp = 0.0;
+float PIDOut = 0.0;
+float TempSetpoint = 0.0; // config by OD
 const int32_t SAMPLE_TIME = 100;
-const double LOW_LIMIT = 100.0;
-const double HIGH_LIMIT = 2000.0;
+const float LOW_LIMIT = 200.0;
+const float HIGH_LIMIT = 2000.0;
 
 uint32_t running = 0;
 uint16_t count = 0;
@@ -139,14 +141,9 @@ int main(void)
   canOpenNodeSTM32.baudrate = 500;
   canopen_app_init(&canOpenNodeSTM32);
 
-  HAL_TIM_Base_Start_IT(&htim4);	// start to refresh the watchdog
-
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &temperature_adc, 1);
 
-  PID(&TPID, &Temp, &PIDOut, &TempSetpoint, Temp_K_p, Temp_K_i, Temp_K_d, _PID_P_ON_E, _PID_CD_DIRECT);
-  PID_SetMode(&TPID, _PID_MODE_AUTOMATIC);
-  PID_SetSampleTime(&TPID, SAMPLE_TIME);
-  PID_SetOutputLimits(&TPID, LOW_LIMIT, HIGH_LIMIT);
+  set_pid_config();
 
   HAL_TIM_Base_Start_IT(&htim2);	// valve control
   HAL_TIM_Base_Start_IT(&htim5);	// temperature control
@@ -173,6 +170,8 @@ int main(void)
   HAL_TIM_PWM_Start(&htim14, TIM_CHANNEL_1);
   __HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
 
+  HAL_TIM_Base_Start_IT(&htim4);	// start to refresh the watchdog
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -183,7 +182,7 @@ int main(void)
 	  HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, !canOpenNodeSTM32.outStatusLEDRed);
 	  canopen_app_process();
 
-	  HAL_Delay(1);
+	  HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -245,17 +244,17 @@ void SystemClock_Config(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	// TODO: control the specific motor
+	// TODO: control the specific action
 	if (htim == canopenNodeSTM32->timerHandle)
 	{
 		canopen_app_interrupt();
 	}
 	else if (htim == (&htim2))
 	{
-	    control_valve(0x2050, 0x2054, SV_X1_GPIO_Port, SV_X1_Pin);
-	    control_valve(0x2051, 0x2055, SV_X2_GPIO_Port, SV_X2_Pin);
-	    control_valve(0x2052, 0x2056, SV_X3_GPIO_Port, SV_X3_Pin);
-	    control_valve(0x2053, 0x2057, SV_X4_GPIO_Port, SV_X4_Pin);
+	    control_valve(0x6050, 0x6054, SV_X1_GPIO_Port, SV_X1_Pin);
+	    control_valve(0x6051, 0x6055, SV_X2_GPIO_Port, SV_X2_Pin);
+	    control_valve(0x6052, 0x6056, SV_X3_GPIO_Port, SV_X3_Pin);
+	    control_valve(0x6053, 0x6057, SV_X4_GPIO_Port, SV_X4_Pin);
 	}
 	else if (htim == (&htim4))
 	{
@@ -266,20 +265,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	else if (htim == (&htim5))
 	{
 		uint16_t adc_sample = temperature_adc;
-		float temperature_curr = get_temperature(kalman_filter(adc_sample));
+		Temp = get_temperature(kalman_filter(adc_sample));
 
-		if (OD_set_u16(OD_find(OD, 0x2001), 0x00, (uint16_t) temperature_curr, false) != ODR_OK)
+		if (OD_set_u16(OD_find(OD, 0x6001), 0x00, (uint16_t) Temp, false) != ODR_OK)
 			show_err_LED();
-		if (OD_set_u16(OD_find(OD, 0x2002), 0x00, adc_sample, false) != ODR_OK)
+		if (OD_set_u16(OD_find(OD, 0x6002), 0x00, adc_sample, false) != ODR_OK)
 			show_err_LED();
 
-		Temp = temperature_curr;
 		PID_Compute(&TPID);
-		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
-		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
+//		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
+//		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
 
 		uint8_t disable_heater = 0;
-		if (OD_get_u8(OD_find(OD, 0x2003), 0x00, &disable_heater, false) != ODR_OK)
+		if (OD_get_u8(OD_find(OD, 0x6003), 0x00, &disable_heater, false) != ODR_OK)
 			show_err_LED();
 
 		HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, disable_heater);
@@ -290,11 +288,97 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim == (&htim10))
 	{
+		uint8_t status = get_od_pkg_dis_status();
+		switch (status)
+		{
+		case M_IDLE:
+		{
+			uint8_t ctrl = get_od_pkg_dis_ctrl();
+			uint16_t rotate_pulses = get_od_pkg_dis_rotate_pulses();
+			if (ctrl != 0 && rotate_pulses > 0)
+			{
+				set_od_pkg_dis_status(M_RUNNING);
+				uint8_t dir = get_od_pkg_dis_rotate_dir();
+				HAL_GPIO_WritePin(Pkg_Dis_Dir_GPIO_Port, Pkg_Dis_Dir_Pin, dir);
+				__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 50);
+			}
+			break;
+		}
+		case M_RUNNING:
+		{
+			uint16_t curr_pulses_temp = get_od_pkg_dis_curr_pulses();
+			set_od_pkg_dis_curr_pulses(++curr_pulses_temp);
 
+			uint16_t rotate_pulses = get_od_pkg_dis_rotate_pulses();
+
+			if (curr_pulses_temp >= rotate_pulses)
+			{
+				set_od_pkg_dis_status(M_STOP);
+			}
+			break;
+		}
+		case M_STOP:
+		{
+			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
+			set_od_pkg_dis_status(M_RESET);
+			break;
+		}
+		case M_RESET:
+		{
+			set_od_pkg_dis_curr_pulses(0);
+			set_od_pkg_dis_rotate_dir(0);
+			set_od_pkg_dis_ctrl(0);
+			set_od_pkg_dis_status(M_IDLE);
+			break;
+		}
+		}
 	}
 	else if (htim == (&htim11))
 	{
+		uint8_t status = get_od_pill_gate_status();
+		switch (status)
+		{
+		case M_IDLE:
+		{
+			uint8_t ctrl = get_od_pill_gate_ctrl();
+			uint16_t rotate_pulses = get_od_pill_gate_rotate_pulses();
+			if (ctrl != 0 && rotate_pulses > 0)
+			{
+				set_od_pill_gate_status(M_RUNNING);
+				uint8_t dir = get_od_pill_gate_rotate_dir();
+				HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, dir);
+				__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
+			}
+			break;
+		}
+		case M_RUNNING:
+		{
+			uint16_t curr_pulses_temp = get_od_pill_gate_curr_pulses();
+			set_od_pill_gate_curr_pulses(++curr_pulses_temp);
 
+			uint16_t rotate_pulses = get_od_pill_gate_rotate_pulses();
+
+			if (curr_pulses_temp >= rotate_pulses)
+			{
+				set_od_pill_gate_status(M_STOP);
+			}
+			break;
+		}
+		case M_STOP:
+		{
+			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
+			set_od_pill_gate_status(M_RESET);
+			break;
+		}
+		case M_RESET:
+		{
+			set_od_pill_gate_curr_pulses(0);
+			set_od_pill_gate_rotate_dir(0);
+			set_od_pill_gate_ctrl(0);
+			set_od_pill_gate_status(M_IDLE);
+			break;
+		}
+		}
 	}
 	else if (htim == (&htim12))
 	{
@@ -312,7 +396,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	// TODO: stop the specific motor
+	// TODO: stop the specific action
 	if (GPIO_Pin == PH_X1_Pin)
 	{
 
@@ -377,40 +461,25 @@ void show_err_LED()
 	HAL_GPIO_WritePin(LED_4_GPIO_Port, LED_4_Pin, GPIO_PIN_RESET);
 }
 
-uint16_t kalman_filter(uint16_t adc_value)
+void set_pid_config()
 {
-	// https://blog.embeddedexpert.io/?p=791
+	uint16_t target_temp, K_p, K_i, K_d;
 
-    float x_k1_k1, x_k_k1;
-    static float adc_old_value;
-    float Z_k;
-    static float P_k1_k1;
+	if (OD_get_u16(OD_find(OD, 0x6000), 0x00, &target_temp, false) != ODR_OK)
+		show_err_LED();
+	if (OD_get_u16(OD_find(OD, 0x6004), 0x00, &K_p, false) != ODR_OK)
+		show_err_LED();
+	if (OD_get_u16(OD_find(OD, 0x6005), 0x00, &K_i, false) != ODR_OK)
+		show_err_LED();
+	if (OD_get_u16(OD_find(OD, 0x6006), 0x00, &K_d, false) != ODR_OK)
+		show_err_LED();
 
-    // Q: Regulation noise, Q increases, dynamic response becomes faster, and convergence stability becomes worse
-    // R: Test noise, R increases, dynamic response becomes slower, convergence stability becomes better
-    static float Q = 0.001; // 0.0001;
-    static float R = 0.005; // 0.005;
-    static float Kg = 0;
-    static float P_k_k1 = 1;
+	TempSetpoint = (float) target_temp;
 
-    float kalman_adc;
-    static float kalman_adc_old = 0;
-    Z_k = adc_value;
-    x_k1_k1 = kalman_adc_old;
-
-    x_k_k1 = x_k1_k1;
-    P_k_k1 = P_k1_k1 + Q;
-
-    Kg = P_k_k1 / (P_k_k1 + R);
-
-    kalman_adc = x_k_k1 + Kg * (Z_k - kalman_adc_old);
-    P_k1_k1 = (1 - Kg) * P_k_k1;
-    P_k_k1 = P_k1_k1;
-
-    adc_old_value = adc_value;
-    kalman_adc_old = kalman_adc;
-
-    return kalman_adc;
+	PID(&TPID, &Temp, &PIDOut, &TempSetpoint, (float) K_p, (float) K_i, (float) K_d, _PID_P_ON_E, _PID_CD_DIRECT);
+	PID_SetMode(&TPID, _PID_MODE_AUTOMATIC);
+	PID_SetSampleTime(&TPID, SAMPLE_TIME);
+	PID_SetOutputLimits(&TPID, LOW_LIMIT, HIGH_LIMIT);
 }
 
 /* USER CODE END 4 */
