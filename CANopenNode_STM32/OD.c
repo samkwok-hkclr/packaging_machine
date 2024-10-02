@@ -89,13 +89,13 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .applicationObject8 = 0x00000000
     },
     .x1A01_TPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x04,
+        .numberOfMappedApplicationObjectsInPDO = 0x06,
         .applicationObject1 = 0x60540008,
         .applicationObject2 = 0x60550008,
         .applicationObject3 = 0x60560008,
         .applicationObject4 = 0x60570008,
-        .applicationObject5 = 0x00000000,
-        .applicationObject6 = 0x00000000,
+        .applicationObject5 = 0x60180008,
+        .applicationObject6 = 0x60280008,
         .applicationObject7 = 0x00000000,
         .applicationObject8 = 0x00000000
     },

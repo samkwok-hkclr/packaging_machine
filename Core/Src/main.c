@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 #include "adc.h"
 #include "can.h"
@@ -33,11 +34,11 @@
 #include "CO_app_STM32.h"
 #include "OD.h"
 
-#include "pkg_len_func.h"
-#include "pill_gate_func.h"
-
 #include "pid.h"
 #include "kalman_filter.h"
+
+#include "pill_gate_motor.h"
+#include "pkg_len_motor.h"
 
 /* USER CODE END Includes */
 
@@ -71,7 +72,8 @@ const float LOW_LIMIT = 200.0;
 const float HIGH_LIMIT = 2000.0;
 
 uint32_t running = 0;
-uint16_t count = 0;
+
+uint16_t pulse_ = 0;
 
 /* USER CODE END PV */
 
@@ -171,7 +173,7 @@ int main(void)
   __HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
 
   HAL_TIM_Base_Start_IT(&htim4);	// start to refresh the watchdog
-
+  pulse_ = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -182,7 +184,7 @@ int main(void)
 	  HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, !canOpenNodeSTM32.outStatusLEDRed);
 	  canopen_app_process();
 
-	  HAL_Delay(10);
+	  HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -288,17 +290,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim == (&htim10))
 	{
-		uint8_t status = get_od_pkg_dis_status();
+		uint8_t status = get_od_pkg_dis_status(OD, 0);
 		switch (status)
 		{
 		case M_IDLE:
 		{
-			uint8_t ctrl = get_od_pkg_dis_ctrl();
-			uint16_t rotate_pulses = get_od_pkg_dis_rotate_pulses();
+			uint8_t ctrl = get_od_pkg_dis_ctrl(OD, 0);
+			uint16_t rotate_pulses = get_od_pkg_dis_rotate_pulses(OD, 0);
 			if (ctrl != 0 && rotate_pulses > 0)
 			{
-				set_od_pkg_dis_status(M_RUNNING);
-				uint8_t dir = get_od_pkg_dis_rotate_dir();
+				set_od_pkg_dis_status(OD, 0, M_RUNNING);
+				uint8_t dir = get_od_pkg_dis_rotate_dir(OD, 0);
+
 				HAL_GPIO_WritePin(Pkg_Dis_Dir_GPIO_Port, Pkg_Dis_Dir_Pin, dir);
 				__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 50);
 			}
@@ -306,46 +309,50 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		}
 		case M_RUNNING:
 		{
-			uint16_t curr_pulses_temp = get_od_pkg_dis_curr_pulses();
-			set_od_pkg_dis_curr_pulses(++curr_pulses_temp);
+			uint16_t curr_pulses_temp = get_od_pkg_dis_curr_pulses(OD, 0);
+			set_od_pkg_dis_curr_pulses(OD, 0, ++curr_pulses_temp);
 
-			uint16_t rotate_pulses = get_od_pkg_dis_rotate_pulses();
+			uint16_t rotate_pulses = get_od_pkg_dis_rotate_pulses(OD, 0);
 
 			if (curr_pulses_temp >= rotate_pulses)
-			{
-				set_od_pkg_dis_status(M_STOP);
-			}
+				set_od_pkg_dis_status(OD, 0, M_STOP);
+
 			break;
 		}
 		case M_STOP:
 		{
 			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
-			set_od_pkg_dis_status(M_RESET);
+			set_od_pkg_dis_status(OD, 0, M_RESET);
 			break;
 		}
 		case M_RESET:
 		{
-			set_od_pkg_dis_curr_pulses(0);
-			set_od_pkg_dis_rotate_dir(0);
-			set_od_pkg_dis_ctrl(0);
-			set_od_pkg_dis_status(M_IDLE);
+			set_od_pkg_dis_rotate_pulses(OD, 0, 0);
+			set_od_pkg_dis_curr_pulses(OD, 0, 0);
+			set_od_pkg_dis_rotate_dir(OD, 0, 0);
+			set_od_pkg_dis_ctrl(OD, 0, 0);
+			set_od_pkg_dis_status(OD, 0, M_IDLE);
 			break;
 		}
+		case M_ERROR:
+			show_err_LED();
+			break;
 		}
 	}
 	else if (htim == (&htim11))
 	{
-		uint8_t status = get_od_pill_gate_status();
+		uint8_t status = get_od_pill_gate_status(OD, 0);
 		switch (status)
 		{
 		case M_IDLE:
 		{
-			uint8_t ctrl = get_od_pill_gate_ctrl();
-			uint16_t rotate_pulses = get_od_pill_gate_rotate_pulses();
+			uint8_t ctrl = get_od_pill_gate_ctrl(OD, 0);
+			uint16_t rotate_pulses = get_od_pill_gate_rotate_pulses(OD, 0);
 			if (ctrl != 0 && rotate_pulses > 0)
 			{
-				set_od_pill_gate_status(M_RUNNING);
-				uint8_t dir = get_od_pill_gate_rotate_dir();
+				set_od_pill_gate_status(OD, 0, M_RUNNING);
+				uint8_t dir = get_od_pill_gate_rotate_dir(OD, 0);
+
 				HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, dir);
 				__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
 			}
@@ -353,31 +360,34 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		}
 		case M_RUNNING:
 		{
-			uint16_t curr_pulses_temp = get_od_pill_gate_curr_pulses();
-			set_od_pill_gate_curr_pulses(++curr_pulses_temp);
+			uint16_t curr_pulses_temp = get_od_pill_gate_curr_pulses(OD, 0);
+			set_od_pill_gate_curr_pulses(OD, 0, ++curr_pulses_temp);
 
-			uint16_t rotate_pulses = get_od_pill_gate_rotate_pulses();
+			uint16_t rotate_pulses = get_od_pill_gate_rotate_pulses(OD, 0);
 
 			if (curr_pulses_temp >= rotate_pulses)
-			{
-				set_od_pill_gate_status(M_STOP);
-			}
+				set_od_pill_gate_status(OD, 0, M_STOP);
+
 			break;
 		}
 		case M_STOP:
 		{
 			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
-			set_od_pill_gate_status(M_RESET);
+			set_od_pill_gate_status(OD, 0, M_RESET);
 			break;
 		}
 		case M_RESET:
 		{
-			set_od_pill_gate_curr_pulses(0);
-			set_od_pill_gate_rotate_dir(0);
-			set_od_pill_gate_ctrl(0);
-			set_od_pill_gate_status(M_IDLE);
+			set_od_pill_gate_rotate_pulses(OD, 0, 0);
+			set_od_pill_gate_curr_pulses(OD, 0, 0);
+			set_od_pill_gate_rotate_dir(OD, 0, 0);
+			set_od_pill_gate_ctrl(OD, 0, 0);
+			set_od_pill_gate_status(OD, 0, M_IDLE);
 			break;
 		}
+		case M_ERROR:
+			show_err_LED();
+			break;
 		}
 	}
 	else if (htim == (&htim12))
@@ -399,7 +409,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	// TODO: stop the specific action
 	if (GPIO_Pin == PH_X1_Pin)
 	{
-
+		pulse_++;
 	}
 	else if (GPIO_Pin == PH_X2_Pin)
 	{
