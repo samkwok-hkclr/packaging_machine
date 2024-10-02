@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-02" fileModificationTime="17:33:45.6356376+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-02" fileModificationTime="17:42:20.6698018+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>HKCLR</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -1060,7 +1060,7 @@
           <q1:parameter uniqueID="UID_SUB_180105" access="readWrite">
             <label lang="en">Event timer</label>
             <UINT />
-            <q1:defaultValue value="100" />
+            <q1:defaultValue value="1000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_180106" access="readWrite">
             <label lang="en">SYNC start value</label>
@@ -1096,7 +1096,7 @@
           <q1:parameter uniqueID="UID_SUB_180205" access="readWrite">
             <label lang="en">Event timer</label>
             <UINT />
-            <q1:defaultValue value="100" />
+            <q1:defaultValue value="1000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_180206" access="readWrite">
             <label lang="en">SYNC start value</label>
@@ -1132,7 +1132,7 @@
           <q1:parameter uniqueID="UID_SUB_180305" access="readWrite">
             <label lang="en">Event timer</label>
             <UINT />
-            <q1:defaultValue value="100" />
+            <q1:defaultValue value="1000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_180306" access="readWrite">
             <label lang="en">SYNC start value</label>
@@ -1972,7 +1972,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-02" fileModificationTime="17:33:45.6356376+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-02" fileModificationTime="17:42:20.6698018+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />

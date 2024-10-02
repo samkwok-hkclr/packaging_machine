@@ -58,7 +58,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .COB_IDUsedByTPDO = 0x40000280,
         .transmissionType = 0xFE,
         .inhibitTime = 0x0000,
-        .eventTimer = 0x0064,
+        .eventTimer = 0x03E8,
         .SYNCStartValue = 0x00
     },
     .x1802_TPDOCommunicationParameter = {
@@ -66,7 +66,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .COB_IDUsedByTPDO = 0x40000380,
         .transmissionType = 0xFE,
         .inhibitTime = 0x0000,
-        .eventTimer = 0x0064,
+        .eventTimer = 0x03E8,
         .SYNCStartValue = 0x00
     },
     .x1803_TPDOCommunicationParameter = {
@@ -74,7 +74,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .COB_IDUsedByTPDO = 0x40000480,
         .transmissionType = 0xFE,
         .inhibitTime = 0x0000,
-        .eventTimer = 0x0064,
+        .eventTimer = 0x03E8,
         .SYNCStartValue = 0x00
     },
     .x1A00_TPDOMappingParameter = {
