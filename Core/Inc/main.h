@@ -39,15 +39,6 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
-enum MOTOR_STATUS
-{
-	M_IDLE=0,
-	M_RUNNING,
-	M_RESET,
-	M_STOP,
-	M_ERROR
-};
-
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

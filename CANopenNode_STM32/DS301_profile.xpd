@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-02" fileModificationTime="09:16:48.9965671+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-02" fileModificationTime="17:33:45.6356376+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>HKCLR</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -1060,7 +1060,7 @@
           <q1:parameter uniqueID="UID_SUB_180105" access="readWrite">
             <label lang="en">Event timer</label>
             <UINT />
-            <q1:defaultValue value="1000" />
+            <q1:defaultValue value="100" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_180106" access="readWrite">
             <label lang="en">SYNC start value</label>
@@ -1096,7 +1096,7 @@
           <q1:parameter uniqueID="UID_SUB_180205" access="readWrite">
             <label lang="en">Event timer</label>
             <UINT />
-            <q1:defaultValue value="1000" />
+            <q1:defaultValue value="100" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_180206" access="readWrite">
             <label lang="en">SYNC start value</label>
@@ -1132,7 +1132,7 @@
           <q1:parameter uniqueID="UID_SUB_180305" access="readWrite">
             <label lang="en">Event timer</label>
             <UINT />
-            <q1:defaultValue value="1000" />
+            <q1:defaultValue value="100" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_180306" access="readWrite">
             <label lang="en">SYNC start value</label>
@@ -1511,7 +1511,7 @@
             <q1:allowedValues>
               <q1:range>
                 <minValue value="0" />
-                <maxValue value="12800" />
+                <maxValue value="64000" />
               </q1:range>
             </q1:allowedValues>
           </q1:parameter>
@@ -1545,6 +1545,17 @@
               <q1:range>
                 <minValue value="0" />
                 <maxValue value="12800" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6027" access="readWriteOutput">
+            <label lang="en">Pill Gate Mode</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="1" />
               </q1:range>
             </q1:allowedValues>
           </q1:parameter>
@@ -1592,6 +1603,72 @@
               </q1:range>
             </q1:allowedValues>
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6032" access="readWriteOutput">
+            <label lang="en">Roller Rotate Direction</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6033">
+            <label lang="en">Roller Current Step</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6034">
+            <label lang="en">Roller Target Braker</label>
+            <USINT />
+            <q1:defaultValue value="50" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="30" />
+                <maxValue value="100" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6035">
+            <label lang="en">Roller Current Braker</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="100" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6037" access="readWriteOutput">
+            <label lang="en">Roller Mode</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="1" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6038">
+            <label lang="en">Roller Status</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_6039" access="readWriteOutput">
             <label lang="en">Roller Control</label>
             <USINT />
@@ -1622,6 +1699,72 @@
               <q1:range>
                 <minValue value="0" />
                 <maxValue value="100" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6042" access="readWriteOutput">
+            <label lang="en">Package Length Rotate Direction</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6043">
+            <label lang="en">Package Length Current Step</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6044">
+            <label lang="en">Package Length Target Braker</label>
+            <USINT />
+            <q1:defaultValue value="50" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="30" />
+                <maxValue value="100" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6045">
+            <label lang="en">Package Length Current Braker</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="100" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6047" access="readWriteOutput">
+            <label lang="en">Package Length Mode</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="2" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6048">
+            <label lang="en">Package Length Status</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
               </q1:range>
             </q1:allowedValues>
           </q1:parameter>
@@ -1829,7 +1972,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-02" fileModificationTime="09:16:48.9965671+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-02" fileModificationTime="17:33:45.6356376+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />
@@ -2056,13 +2199,26 @@
           <CANopenObject index="6022" name="Pill Gate Rotate Direction" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6022" />
           <CANopenObject index="6023" name="Pill Gate Enable" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6023" />
           <CANopenObject index="6024" name="Pill Gate Current Pulse" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_6024" />
+          <CANopenObject index="6027" name="Pill Gate Mode" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6027" />
           <CANopenObject index="6028" name="Pill Gate Status" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_6028" />
           <CANopenObject index="6029" name="Pill Gate Control" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6029" />
           <CANopenObject index="6030" name="Roller Rotate Steps" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6030" />
           <CANopenObject index="6031" name="Roller Rotation Speed" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6031" />
+          <CANopenObject index="6032" name="Roller Rotate Direction" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6032" />
+          <CANopenObject index="6033" name="Roller Current Step" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_6033" />
+          <CANopenObject index="6034" name="Roller Target Braker" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6034" />
+          <CANopenObject index="6035" name="Roller Current Braker" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6035" />
+          <CANopenObject index="6037" name="Roller Mode" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6037" />
+          <CANopenObject index="6038" name="Roller Status" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_6038" />
           <CANopenObject index="6039" name="Roller Control" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6039" />
           <CANopenObject index="6040" name="Package Length Rotate Steps" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6040" />
           <CANopenObject index="6041" name="Package Length Rotation Speed" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6041" />
+          <CANopenObject index="6042" name="Package Length Rotate Direction" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6042" />
+          <CANopenObject index="6043" name="Package Length Current Step" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_6043" />
+          <CANopenObject index="6044" name="Package Length Target Braker" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6044" />
+          <CANopenObject index="6045" name="Package Length Current Braker" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6045" />
+          <CANopenObject index="6047" name="Package Length Mode" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6047" />
+          <CANopenObject index="6048" name="Package Length Status" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_6048" />
           <CANopenObject index="6049" name="Package Length Control" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6049" />
           <CANopenObject index="6050" name="Valve 1 Control" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6050" />
           <CANopenObject index="6051" name="Valve 2 Control" objectType="7" PDOmapping="RPDO" uniqueIDRef="UID_OBJ_6051" />

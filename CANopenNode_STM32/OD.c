@@ -58,7 +58,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .COB_IDUsedByTPDO = 0x40000280,
         .transmissionType = 0xFE,
         .inhibitTime = 0x0000,
-        .eventTimer = 0x03E8,
+        .eventTimer = 0x0064,
         .SYNCStartValue = 0x00
     },
     .x1802_TPDOCommunicationParameter = {
@@ -66,7 +66,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .COB_IDUsedByTPDO = 0x40000380,
         .transmissionType = 0xFE,
         .inhibitTime = 0x0000,
-        .eventTimer = 0x03E8,
+        .eventTimer = 0x0064,
         .SYNCStartValue = 0x00
     },
     .x1803_TPDOCommunicationParameter = {
@@ -74,7 +74,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .COB_IDUsedByTPDO = 0x40000480,
         .transmissionType = 0xFE,
         .inhibitTime = 0x0000,
-        .eventTimer = 0x03E8,
+        .eventTimer = 0x0064,
         .SYNCStartValue = 0x00
     },
     .x1A00_TPDOMappingParameter = {
@@ -153,13 +153,26 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6022_pillGateRotateDirection = 0x00,
     .x6023_pillGateEnable = 0x00,
     .x6024_pillGateCurrentPulse = 0x0000,
+    .x6027_pillGateMode = 0x00,
     .x6028_pillGateStatus = 0x00,
     .x6029_pillGateControl = 0x00,
     .x6030_rollerRotateSteps = 0x00,
     .x6031_rollerRotationSpeed = 0x64,
+    .x6032_rollerRotateDirection = 0x00,
+    .x6033_rollerCurrentStep = 0x00,
+    .x6034_rollerTargetBraker = 0x32,
+    .x6035_rollerCurrentBraker = 0x00,
+    .x6037_rollerMode = 0x00,
+    .x6038_rollerStatus = 0x00,
     .x6039_rollerControl = 0x00,
     .x6040_packageLengthRotateSteps = 0x00,
     .x6041_packageLengthRotationSpeed = 0x64,
+    .x6042_packageLengthRotateDirection = 0x00,
+    .x6043_packageLengthCurrentStep = 0x00,
+    .x6044_packageLengthTargetBraker = 0x32,
+    .x6045_packageLengthCurrentBraker = 0x00,
+    .x6047_packageLengthMode = 0x00,
+    .x6048_packageLengthStatus = 0x00,
     .x6049_packageLengthControl = 0x00,
     .x6050_valve1Control = 0x00,
     .x6051_valve2Control = 0x00,
@@ -229,13 +242,26 @@ typedef struct {
     OD_obj_var_t o_6022_pillGateRotateDirection;
     OD_obj_var_t o_6023_pillGateEnable;
     OD_obj_var_t o_6024_pillGateCurrentPulse;
+    OD_obj_var_t o_6027_pillGateMode;
     OD_obj_var_t o_6028_pillGateStatus;
     OD_obj_var_t o_6029_pillGateControl;
     OD_obj_var_t o_6030_rollerRotateSteps;
     OD_obj_var_t o_6031_rollerRotationSpeed;
+    OD_obj_var_t o_6032_rollerRotateDirection;
+    OD_obj_var_t o_6033_rollerCurrentStep;
+    OD_obj_var_t o_6034_rollerTargetBraker;
+    OD_obj_var_t o_6035_rollerCurrentBraker;
+    OD_obj_var_t o_6037_rollerMode;
+    OD_obj_var_t o_6038_rollerStatus;
     OD_obj_var_t o_6039_rollerControl;
     OD_obj_var_t o_6040_packageLengthRotateSteps;
     OD_obj_var_t o_6041_packageLengthRotationSpeed;
+    OD_obj_var_t o_6042_packageLengthRotateDirection;
+    OD_obj_var_t o_6043_packageLengthCurrentStep;
+    OD_obj_var_t o_6044_packageLengthTargetBraker;
+    OD_obj_var_t o_6045_packageLengthCurrentBraker;
+    OD_obj_var_t o_6047_packageLengthMode;
+    OD_obj_var_t o_6048_packageLengthStatus;
     OD_obj_var_t o_6049_packageLengthControl;
     OD_obj_var_t o_6050_valve1Control;
     OD_obj_var_t o_6051_valve2Control;
@@ -887,6 +913,11 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 2
     },
+    .o_6027_pillGateMode = {
+        .dataOrig = &OD_RAM.x6027_pillGateMode,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
     .o_6028_pillGateStatus = {
         .dataOrig = &OD_RAM.x6028_pillGateStatus,
         .attribute = ODA_SDO_R | ODA_TPDO,
@@ -907,6 +938,36 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
+    .o_6032_rollerRotateDirection = {
+        .dataOrig = &OD_RAM.x6032_rollerRotateDirection,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6033_rollerCurrentStep = {
+        .dataOrig = &OD_RAM.x6033_rollerCurrentStep,
+        .attribute = ODA_SDO_R | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6034_rollerTargetBraker = {
+        .dataOrig = &OD_RAM.x6034_rollerTargetBraker,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
+    .o_6035_rollerCurrentBraker = {
+        .dataOrig = &OD_RAM.x6035_rollerCurrentBraker,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
+    .o_6037_rollerMode = {
+        .dataOrig = &OD_RAM.x6037_rollerMode,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6038_rollerStatus = {
+        .dataOrig = &OD_RAM.x6038_rollerStatus,
+        .attribute = ODA_SDO_R | ODA_TPDO,
+        .dataLength = 1
+    },
     .o_6039_rollerControl = {
         .dataOrig = &OD_RAM.x6039_rollerControl,
         .attribute = ODA_SDO_RW | ODA_RPDO,
@@ -920,6 +981,36 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .o_6041_packageLengthRotationSpeed = {
         .dataOrig = &OD_RAM.x6041_packageLengthRotationSpeed,
         .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6042_packageLengthRotateDirection = {
+        .dataOrig = &OD_RAM.x6042_packageLengthRotateDirection,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6043_packageLengthCurrentStep = {
+        .dataOrig = &OD_RAM.x6043_packageLengthCurrentStep,
+        .attribute = ODA_SDO_R | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6044_packageLengthTargetBraker = {
+        .dataOrig = &OD_RAM.x6044_packageLengthTargetBraker,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
+    .o_6045_packageLengthCurrentBraker = {
+        .dataOrig = &OD_RAM.x6045_packageLengthCurrentBraker,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
+    .o_6047_packageLengthMode = {
+        .dataOrig = &OD_RAM.x6047_packageLengthMode,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
+        .dataLength = 1
+    },
+    .o_6048_packageLengthStatus = {
+        .dataOrig = &OD_RAM.x6048_packageLengthStatus,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
     .o_6049_packageLengthControl = {
@@ -1058,13 +1149,26 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6022, 0x01, ODT_VAR, &ODObjs.o_6022_pillGateRotateDirection, NULL},
     {0x6023, 0x01, ODT_VAR, &ODObjs.o_6023_pillGateEnable, NULL},
     {0x6024, 0x01, ODT_VAR, &ODObjs.o_6024_pillGateCurrentPulse, NULL},
+    {0x6027, 0x01, ODT_VAR, &ODObjs.o_6027_pillGateMode, NULL},
     {0x6028, 0x01, ODT_VAR, &ODObjs.o_6028_pillGateStatus, NULL},
     {0x6029, 0x01, ODT_VAR, &ODObjs.o_6029_pillGateControl, NULL},
     {0x6030, 0x01, ODT_VAR, &ODObjs.o_6030_rollerRotateSteps, NULL},
     {0x6031, 0x01, ODT_VAR, &ODObjs.o_6031_rollerRotationSpeed, NULL},
+    {0x6032, 0x01, ODT_VAR, &ODObjs.o_6032_rollerRotateDirection, NULL},
+    {0x6033, 0x01, ODT_VAR, &ODObjs.o_6033_rollerCurrentStep, NULL},
+    {0x6034, 0x01, ODT_VAR, &ODObjs.o_6034_rollerTargetBraker, NULL},
+    {0x6035, 0x01, ODT_VAR, &ODObjs.o_6035_rollerCurrentBraker, NULL},
+    {0x6037, 0x01, ODT_VAR, &ODObjs.o_6037_rollerMode, NULL},
+    {0x6038, 0x01, ODT_VAR, &ODObjs.o_6038_rollerStatus, NULL},
     {0x6039, 0x01, ODT_VAR, &ODObjs.o_6039_rollerControl, NULL},
     {0x6040, 0x01, ODT_VAR, &ODObjs.o_6040_packageLengthRotateSteps, NULL},
     {0x6041, 0x01, ODT_VAR, &ODObjs.o_6041_packageLengthRotationSpeed, NULL},
+    {0x6042, 0x01, ODT_VAR, &ODObjs.o_6042_packageLengthRotateDirection, NULL},
+    {0x6043, 0x01, ODT_VAR, &ODObjs.o_6043_packageLengthCurrentStep, NULL},
+    {0x6044, 0x01, ODT_VAR, &ODObjs.o_6044_packageLengthTargetBraker, NULL},
+    {0x6045, 0x01, ODT_VAR, &ODObjs.o_6045_packageLengthCurrentBraker, NULL},
+    {0x6047, 0x01, ODT_VAR, &ODObjs.o_6047_packageLengthMode, NULL},
+    {0x6048, 0x01, ODT_VAR, &ODObjs.o_6048_packageLengthStatus, NULL},
     {0x6049, 0x01, ODT_VAR, &ODObjs.o_6049_packageLengthControl, NULL},
     {0x6050, 0x01, ODT_VAR, &ODObjs.o_6050_valve1Control, NULL},
     {0x6051, 0x01, ODT_VAR, &ODObjs.o_6051_valve2Control, NULL},
