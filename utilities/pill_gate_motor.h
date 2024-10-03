@@ -10,10 +10,8 @@
 
 #include "od_utilities.h"
 
-typedef enum
-{
-	NORMAL = 0,
-	PILL_GATE_HOMING,
+typedef enum {
+	NORMAL = 0, PILL_GATE_HOMING,
 } pill_gate_mode_t;
 
 uint16_t get_od_pill_gate_rotate_pulses(OD_t *od, uint8_t sub_index);

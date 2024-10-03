@@ -18,5 +18,4 @@ uint16_t _get_od_u16(OD_t *od, uint8_t sub_index, uint16_t index);
 void _set_od_u8(OD_t *od, uint8_t sub_index, uint16_t index, uint8_t val);
 void _set_od_u16(OD_t *od, uint8_t sub_index, uint16_t index, uint16_t val);
 
-
 #endif /* OD_UTILITIES_H_ */

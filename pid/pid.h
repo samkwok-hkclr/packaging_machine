@@ -1,22 +1,22 @@
- /*
-------------------------------------------------------------------------------
-~ File   : pid.h
-~ Author : Majid Derhambakhsh
-~ Version: V1.0.0
-~ Created: 02/11/2021 03:43:00 AM
-~ Brief  :
-~ Support:
-		   E-Mail : Majid.do16@gmail.com (subject : Embedded Library Support)
+/*
+ ------------------------------------------------------------------------------
+ ~ File   : pid.h
+ ~ Author : Majid Derhambakhsh
+ ~ Version: V1.0.0
+ ~ Created: 02/11/2021 03:43:00 AM
+ ~ Brief  :
+ ~ Support:
+ E-Mail : Majid.do16@gmail.com (subject : Embedded Library Support)
 
-		   Github : https://github.com/Majid-Derhambakhsh
-------------------------------------------------------------------------------
-~ Description:
+ Github : https://github.com/Majid-Derhambakhsh
+ ------------------------------------------------------------------------------
+ ~ Description:
 
-~ Attention  :
+ ~ Attention  :
 
-~ Changes    :
-------------------------------------------------------------------------------
-*/
+ ~ Changes    :
+ ------------------------------------------------------------------------------
+ */
 
 #ifndef __PID_H_
 #define __PID_H_
@@ -41,11 +41,11 @@
 
 #elif defined(USE_HAL_DRIVER)  /* Check driver */
 
-	#include "main.h"
+#include "main.h"
 
-	/* --------------- Check Mainstream series --------------- */
+/* --------------- Check Mainstream series --------------- */
 
-	#ifdef STM32F0
+#ifdef STM32F0
 		#include "stm32f0xx_hal.h"       /* Import HAL library */
 	#elif defined(STM32F1)
 		#include "stm32f1xx_hal.h"       /* Import HAL library */
@@ -54,8 +54,8 @@
 	#elif defined(STM32F3)
 		#include "stm32f3xx_hal.h"       /* Import HAL library */
 	#elif defined(STM32F4)
-		#include "stm32f4xx_hal.h"       /* Import HAL library */
-	#elif defined(STM32F7)
+#include "stm32f4xx_hal.h"       /* Import HAL library */
+#elif defined(STM32F7)
 		#include "stm32f7xx_hal.h"       /* Import HAL library */
 	#elif defined(STM32G0)
 		#include "stm32g0xx_hal.h"       /* Import HAL library */
@@ -82,17 +82,17 @@
 	#else
 	#endif /* STM32F1 */
 
-	/* ------------------------------------------------------- */
+/* ------------------------------------------------------- */
 
-	#if defined ( __ICCARM__ ) /* ICCARM Compiler */
+#if defined ( __ICCARM__ ) /* ICCARM Compiler */
 
 	#pragma diag_suppress=Pe177   /* Disable 'unused function' warning */
 
 	#elif defined   (  __GNUC__  ) /* GNU Compiler */
 
-	#pragma diag_suppress 177     /* Disable 'unused function' warning */
+#pragma diag_suppress 177     /* Disable 'unused function' warning */
 
-	#endif /* __ICCARM__ */
+#endif /* __ICCARM__ */
 
 /* ------------------------------------------------------------------ */
 
@@ -114,22 +114,22 @@
 
 #ifndef _FALSE
 
-	#define _FALSE 0
+#define _FALSE 0
 
 #endif
 
 #ifndef _TRUE
 
-	#define _TRUE 1
+#define _TRUE 1
 
 #endif
 
 /* ---------------------- By compiler ---------------------- */
 #ifndef GetTime
 
-	/* ---------------------- By compiler ---------------------- */
+/* ---------------------- By compiler ---------------------- */
 
-	#ifdef __CODEVISIONAVR__  /* Check compiler */
+#ifdef __CODEVISIONAVR__  /* Check compiler */
 
 		#define GetTime()   0
 
@@ -143,13 +143,13 @@
 
 	#elif defined(USE_HAL_DRIVER)  /* Check driver */
 
-		#define GetTime()   HAL_GetTick()
+#define GetTime()   HAL_GetTick()
 
-	/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
 
-	#else
+#else
 	#endif /* __CODEVISIONAVR__ */
-	/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
 
 #endif
 
@@ -157,64 +157,58 @@
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* PID Mode */
-typedef enum
-{
+typedef enum {
 
-	_PID_MODE_MANUAL    = 0,
-	_PID_MODE_AUTOMATIC = 1
+	_PID_MODE_MANUAL = 0, _PID_MODE_AUTOMATIC = 1
 
-}PIDMode_TypeDef;
+} PIDMode_TypeDef;
 
 /* PID P On x */
-typedef enum
-{
+typedef enum {
 
 	_PID_P_ON_M = 0, /* Proportional on Measurement */
 	_PID_P_ON_E = 1
 
-}PIDPON_TypeDef;
+} PIDPON_TypeDef;
 
 /* PID Control direction */
-typedef enum
-{
+typedef enum {
 
-	_PID_CD_DIRECT  = 0,
-	_PID_CD_REVERSE = 1
+	_PID_CD_DIRECT = 0, _PID_CD_REVERSE = 1
 
-}PIDCD_TypeDef;
+} PIDCD_TypeDef;
 
 /* PID Structure */
-typedef struct
-{
+typedef struct {
 
-	PIDPON_TypeDef  POnE;
+	PIDPON_TypeDef POnE;
 	PIDMode_TypeDef InAuto;
 
-	PIDPON_TypeDef  POn;
-	PIDCD_TypeDef   ControllerDirection;
+	PIDPON_TypeDef POn;
+	PIDCD_TypeDef ControllerDirection;
 
-	uint32_t        LastTime;
-	uint32_t        SampleTime;
+	uint32_t LastTime;
+	uint32_t SampleTime;
 
-	float          DispKp;
-	float          DispKi;
-	float          DispKd;
+	float DispKp;
+	float DispKi;
+	float DispKd;
 
-	float          Kp;
-	float          Ki;
-	float          Kd;
+	float Kp;
+	float Ki;
+	float Kd;
 
-	float          *MyInput;
-	float          *MyOutput;
-	float          *MySetpoint;
+	float *MyInput;
+	float *MyOutput;
+	float *MySetpoint;
 
-	float          OutputSum;
-	float          LastInput;
+	float OutputSum;
+	float LastInput;
 
-	float          OutMin;
-	float          OutMax;
+	float OutMin;
+	float OutMax;
 
-}PID_TypeDef;
+} PID_TypeDef;
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Enum ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -231,7 +225,7 @@ void PID2(PID_TypeDef *uPID, float *Input, float *Output, float *Setpoint, float
 uint8_t PID_Compute(PID_TypeDef *uPID);
 
 /* ::::::::::: PID Mode :::::::::::: */
-void            PID_SetMode(PID_TypeDef *uPID, PIDMode_TypeDef Mode);
+void PID_SetMode(PID_TypeDef *uPID, PIDMode_TypeDef Mode);
 PIDMode_TypeDef PID_GetMode(PID_TypeDef *uPID);
 
 /* :::::::::: PID Limits ::::::::::: */
@@ -242,7 +236,7 @@ void PID_SetTunings(PID_TypeDef *uPID, float Kp, float Ki, float Kd);
 void PID_SetTunings2(PID_TypeDef *uPID, float Kp, float Ki, float Kd, PIDPON_TypeDef POn);
 
 /* ::::::::: PID Direction ::::::::: */
-void          PID_SetControllerDirection(PID_TypeDef *uPID, PIDCD_TypeDef Direction);
+void PID_SetControllerDirection(PID_TypeDef *uPID, PIDCD_TypeDef Direction);
 PIDCD_TypeDef PID_GetDirection(PID_TypeDef *uPID);
 
 /* ::::::::: PID Sampling :::::::::: */

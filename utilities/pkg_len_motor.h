@@ -10,11 +10,8 @@
 
 #include "od_utilities.h"
 
-typedef enum
-{
-	LENGTH_A = 0,
-	LENGTH_B,
-	LENGTH_C,
+typedef enum {
+	LENGTH_A = 0, LENGTH_B, LENGTH_C,
 } pkg_len_mode_t;
 
 uint8_t get_od_pkg_len_rotate_steps(OD_t *od, uint8_t sub_index);
