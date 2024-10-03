@@ -251,7 +251,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		HAL_IWDG_Refresh(&hiwdg);
 		running++;
 	} else if (htim == (&htim5)) {
-		uint16_t adc_sample = temperature_adc;
+		uint16_t adc_sample, disable_heater;
+
+		adc_sample = temperature_adc;
 		Temp = get_temperature(kalman_filter(adc_sample));
 
 		if (OD_set_u16(OD_find(OD, 0x6001), 0x00, (uint16_t) Temp, false) != ODR_OK)
@@ -263,7 +265,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
 //		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
 
-		uint8_t disable_heater = 0;
+		disable_heater = 0;
 		if (OD_get_u8(OD_find(OD, 0x6003), 0x00, &disable_heater, false) != ODR_OK)
 			show_err_LED();
 

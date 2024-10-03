@@ -13,8 +13,10 @@ void dc_motor_controller(const dc_motor_t type, OD_t *od, motor_state_t *state, 
 	*state = get_od_dc_status(type, od, 0);
 	switch (*state) {
 	case M_IDLE: {
-		uint8_t ctrl = get_od_dc_ctrl(type, od, 0);
-		uint8_t steps = get_od_dc_rotate_steps(type, od, 0);
+		uint8_t ctrl, steps;
+
+		ctrl = get_od_dc_ctrl(type, od, 0);
+		steps = get_od_dc_rotate_steps(type, od, 0);
 
 		*start_flag = ctrl > 0 && steps > 0;
 		if (*start_flag) {
@@ -24,17 +26,21 @@ void dc_motor_controller(const dc_motor_t type, OD_t *od, motor_state_t *state, 
 		break;
 	}
 	case M_RUNNING: {
-		uint8_t curr_step = get_od_dc_curr_step(type, od, 0);
-		uint8_t rotate_steps = get_od_dc_rotate_steps(type, od, 0);
+		uint8_t curr_step, rotate_steps;
+
+		curr_step = get_od_dc_curr_step(type, od, 0);
+		rotate_steps = get_od_dc_rotate_steps(type, od, 0);
 
 		if (curr_step >= rotate_steps)
 			set_od_dc_status(type, od, 0, M_BRAKE);
-
 		break;
 	}
 	case M_BRAKE: {
-		uint8_t target_braker = get_od_dc_target_braker(type, od, 0);
-		uint8_t curr_braker = get_od_dc_curr_braker(type, od, 0);
+		uint8_t target_braker, curr_braker;
+
+		target_braker = get_od_dc_target_braker(type, od, 0);
+		curr_braker = get_od_dc_curr_braker(type, od, 0);
+
 		if (curr_braker > target_braker) {
 			set_od_dc_status(type, od, 0, M_STOP);
 			set_od_dc_curr_braker(type, od, 0, 0);

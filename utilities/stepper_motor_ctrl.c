@@ -11,10 +11,13 @@ void stepper_motor_controller(const stepper_motor_t type, OD_t *od, motor_state_
 	*state = get_od_stepper_status(type, od, 0);
 	switch (*state) {
 	case M_IDLE: {
-		uint8_t ctrl = get_od_stepper_ctrl(type, od, 0);
-		uint16_t rotate_pulses = get_od_stepper_rotate_pulses(type, od, 0);
+		uint8_t ctrl, rotate_pulses;
+
+		ctrl = get_od_stepper_ctrl(type, od, 0);
+		rotate_pulses = get_od_stepper_rotate_pulses(type, od, 0);
 
 		*start_flag = ctrl > 0 && rotate_pulses > 0;
+
 		if (*start_flag) {
 			set_od_stepper_status(type, od, 0, M_RUNNING);
 			*dir_ctrl = get_od_stepper_rotate_dir(type, od, 0);
@@ -22,10 +25,12 @@ void stepper_motor_controller(const stepper_motor_t type, OD_t *od, motor_state_
 		break;
 	}
 	case M_RUNNING: {
-		uint16_t curr_pulses = get_od_stepper_curr_pulses(type, od, 0);
+		uint16_t curr_pulses, rotate_pulses;
+
+		curr_pulses = get_od_stepper_curr_pulses(type, od, 0);
 		set_od_stepper_curr_pulses(type, od, 0, ++curr_pulses);
 
-		uint16_t rotate_pulses = get_od_stepper_rotate_pulses(type, od, 0);
+		rotate_pulses = get_od_stepper_rotate_pulses(type, od, 0);
 
 		if (curr_pulses >= rotate_pulses)
 			set_od_stepper_status(type, od, 0, M_STOP);
