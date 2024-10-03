@@ -181,7 +181,7 @@ int main(void) {
 		HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, !canOpenNodeSTM32.outStatusLEDRed);
 		canopen_app_process();
 
-		HAL_Delay(10);
+		HAL_Delay(1);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
