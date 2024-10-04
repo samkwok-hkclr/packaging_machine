@@ -70,12 +70,12 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .eventTimer = 0x0000
     },
     .x1600_RPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x04,
+        .numberOfMappedApplicationObjectsInPDO = 0x05,
         .applicationObject1 = 0x60110010,
         .applicationObject2 = 0x60120008,
         .applicationObject3 = 0x60130008,
         .applicationObject4 = 0x60190008,
-        .applicationObject5 = 0x00000000,
+        .applicationObject5 = 0x60030008,
         .applicationObject6 = 0x00000000,
         .applicationObject7 = 0x00000000,
         .applicationObject8 = 0x00000000
@@ -1239,7 +1239,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     },
     .o_6003_disableHeater = {
         .dataOrig = &OD_RAM.x6003_disableHeater,
-        .attribute = ODA_SDO_RW,
+        .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
     .o_6004_kp = {

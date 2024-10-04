@@ -251,7 +251,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		HAL_IWDG_Refresh(&hiwdg);
 		running++;
 	} else if (htim == (&htim5)) {
-		uint16_t adc_sample, disable_heater;
+		uint16_t adc_sample;
+		uint8_t disable_heater;
 
 		adc_sample = temperature_adc;
 		Temp = get_temperature(kalman_filter(adc_sample));
@@ -261,15 +262,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if (OD_set_u16(OD_find(OD, 0x6002), 0x00, adc_sample, false) != ODR_OK)
 			show_err_LED();
 
-		PID_Compute(&TPID);
-//		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
-//		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
-
 		disable_heater = 0;
 		if (OD_get_u8(OD_find(OD, 0x6003), 0x00, &disable_heater, false) != ODR_OK)
 			show_err_LED();
 
 		HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, disable_heater);
+
+		PID_Compute(&TPID);
+		if (disable_heater) {
+			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
+			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
+		}
+
 	} else if (htim == (&htim9)) {
 		// Heater
 	} else if (htim == (&htim10)) {
@@ -435,8 +439,8 @@ void control_valve(uint16_t ctrl_index, uint16_t status_index, GPIO_TypeDef *por
 	}
 	HAL_GPIO_WritePin(port, pin, !valve_control);
 
-	uint8_t status = !HAL_GPIO_ReadPin(port, pin); // Read the pin and negate the value
-	if (OD_set_u8(OD_find(OD, status_index), 0x00, status, false) != ODR_OK) {
+	uint8_t status = !HAL_GPIO_ReadPin(port, pin);
+	if (OD_set_u8(OD_find(OD, status_index), 0x00, status ? 1 : 0, false) != ODR_OK) {
 		show_err_LED();
 	}
 }
