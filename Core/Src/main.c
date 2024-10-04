@@ -268,8 +268,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, disable_heater);
 
-		PID_Compute(&TPID);
 		if (disable_heater) {
+			PID_Compute(&TPID);
 			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
 			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
 		}
