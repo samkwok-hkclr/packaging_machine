@@ -181,7 +181,7 @@ int main(void) {
 		HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, !canOpenNodeSTM32.outStatusLEDRed);
 		canopen_app_process();
 
-		HAL_Delay(1);
+//		HAL_Delay(1);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -440,7 +440,7 @@ void control_valve(uint16_t ctrl_index, uint16_t status_index, GPIO_TypeDef *por
 	HAL_GPIO_WritePin(port, pin, !valve_control);
 
 	uint8_t status = !HAL_GPIO_ReadPin(port, pin);
-	if (OD_set_u8(OD_find(OD, status_index), 0x00, status ? 1 : 0, false) != ODR_OK) {
+	if (OD_set_u8(OD_find(OD, status_index), 0x00, status, false) != ODR_OK) {
 		show_err_LED();
 	}
 }
