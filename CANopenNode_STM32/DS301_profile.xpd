@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-10" fileModificationTime="11:10:33.7533987+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-10" fileModificationTime="17:14:13.6829579+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>HKCLR</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -1132,7 +1132,7 @@
           <q1:parameter uniqueID="UID_SUB_160000" access="readWrite">
             <label lang="en">Number of mapped application objects in PDO</label>
             <USINT />
-            <q1:defaultValue value="5" />
+            <q1:defaultValue value="3" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160001" access="readWrite">
             <label lang="en">Application object 1</label>
@@ -1152,12 +1152,12 @@
           <q1:parameter uniqueID="UID_SUB_160004" access="readWrite">
             <label lang="en">Application object 4</label>
             <UDINT />
-            <q1:defaultValue value="0x60190008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160005" access="readWrite">
             <label lang="en">Application object 5</label>
             <UDINT />
-            <q1:defaultValue value="0x60030008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160006" access="readWrite">
             <label lang="en">Application object 6</label>
@@ -1182,7 +1182,7 @@
           <q1:parameter uniqueID="UID_SUB_160100" access="readWrite">
             <label lang="en">Number of mapped application objects in PDO</label>
             <USINT />
-            <q1:defaultValue value="5" />
+            <q1:defaultValue value="4" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160101" access="readWrite">
             <label lang="en">Application object 1</label>
@@ -1207,7 +1207,7 @@
           <q1:parameter uniqueID="UID_SUB_160105" access="readWrite">
             <label lang="en">Application object 5</label>
             <UDINT />
-            <q1:defaultValue value="0x60290008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160106" access="readWrite">
             <label lang="en">Application object 6</label>
@@ -1232,7 +1232,7 @@
           <q1:parameter uniqueID="UID_SUB_160200" access="readWrite">
             <label lang="en">Number of mapped application objects in PDO</label>
             <USINT />
-            <q1:defaultValue value="7" />
+            <q1:defaultValue value="4" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160201" access="readWrite">
             <label lang="en">Application object 1</label>
@@ -1257,17 +1257,17 @@
           <q1:parameter uniqueID="UID_SUB_160205" access="readWrite">
             <label lang="en">Application object 5</label>
             <UDINT />
-            <q1:defaultValue value="0x60390008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160206" access="readWrite">
             <label lang="en">Application object 6</label>
             <UDINT />
-            <q1:defaultValue value="0x60500008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160207" access="readWrite">
             <label lang="en">Application object 7</label>
             <UDINT />
-            <q1:defaultValue value="0x60510008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160208" access="readWrite">
             <label lang="en">Application object 8</label>
@@ -1282,7 +1282,7 @@
           <q1:parameter uniqueID="UID_SUB_160300" access="readWrite">
             <label lang="en">Number of mapped application objects in PDO</label>
             <USINT />
-            <q1:defaultValue value="7" />
+            <q1:defaultValue value="4" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160301" access="readWrite">
             <label lang="en">Application object 1</label>
@@ -1307,17 +1307,17 @@
           <q1:parameter uniqueID="UID_SUB_160305" access="readWrite">
             <label lang="en">Application object 5</label>
             <UDINT />
-            <q1:defaultValue value="0x60490008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160306" access="readWrite">
             <label lang="en">Application object 6</label>
             <UDINT />
-            <q1:defaultValue value="0x60520008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160307" access="readWrite">
             <label lang="en">Application object 7</label>
             <UDINT />
-            <q1:defaultValue value="0x60530008" />
+            <q1:defaultValue value="0x00000000" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_160308" access="readWrite">
             <label lang="en">Application object 8</label>
@@ -2043,7 +2043,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-10" fileModificationTime="11:10:33.7533987+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-10" fileModificationTime="17:14:13.6829579+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />
