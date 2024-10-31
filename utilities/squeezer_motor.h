@@ -18,14 +18,14 @@ uint16_t get_od_sq_speed(OD_t *od, uint8_t sub_index);
 uint8_t get_od_sq_wait_time(OD_t *od, uint8_t sub_index);
 uint8_t get_od_sq_dir(OD_t *od, uint8_t sub_index);
 uint8_t get_od_sq_mode(OD_t *od, uint8_t sub_index);
-uint8_t get_od_sq_status(OD_t *od, uint8_t sub_index);
+uint8_t get_od_sq_state(OD_t *od, uint8_t sub_index);
 uint8_t get_od_sq_ctrl(OD_t *od, uint8_t sub_index);
 
 void set_od_sq_speed(OD_t *od, uint8_t sub_index, uint16_t val);
 void set_od_sq_wait_time(OD_t *od, uint8_t sub_index, uint8_t val);
 void set_od_sq_dir(OD_t *od, uint8_t sub_index, uint8_t val);
 void set_od_sq_mode(OD_t *od, uint8_t sub_index, uint8_t val);
-void set_od_sq_status(OD_t *od, uint8_t sub_index, uint8_t val);
+void set_od_sq_state(OD_t *od, uint8_t sub_index, uint8_t val);
 void set_od_sq_ctrl(OD_t *od, uint8_t sub_index, uint8_t val);
 
 #endif /* SQUEEZER_MOTOR_H_ */

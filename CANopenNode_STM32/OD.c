@@ -206,7 +206,13 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6072_squeezerDirection = 0x00,
     .x6073_squeezerMode = 0x00,
     .x6078_squeezerState = 0x00,
-    .x6079_squeezerControl = 0x00
+    .x6079_squeezerControl = 0x00,
+    .x6080_conveyorSpeed = 0x03E8,
+    .x6081_conveyorStopByPhotoelectric = 0x00,
+    .x6082_conveyorDirection = 0x00,
+    .x6083_conveyorMode = 0x00,
+    .x6088_conveyorState = 0x00,
+    .x6089_conveyorControl = 0x00
 };
 
 
@@ -304,6 +310,12 @@ typedef struct {
     OD_obj_var_t o_6073_squeezerMode;
     OD_obj_var_t o_6078_squeezerState;
     OD_obj_var_t o_6079_squeezerControl;
+    OD_obj_var_t o_6080_conveyorSpeed;
+    OD_obj_var_t o_6081_conveyorStopByPhotoelectric;
+    OD_obj_var_t o_6082_conveyorDirection;
+    OD_obj_var_t o_6083_conveyorMode;
+    OD_obj_var_t o_6088_conveyorState;
+    OD_obj_var_t o_6089_conveyorControl;
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -1198,6 +1210,36 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataOrig = &OD_RAM.x6079_squeezerControl,
         .attribute = ODA_SDO_RW,
         .dataLength = 1
+    },
+    .o_6080_conveyorSpeed = {
+        .dataOrig = &OD_RAM.x6080_conveyorSpeed,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 2
+    },
+    .o_6081_conveyorStopByPhotoelectric = {
+        .dataOrig = &OD_RAM.x6081_conveyorStopByPhotoelectric,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6082_conveyorDirection = {
+        .dataOrig = &OD_RAM.x6082_conveyorDirection,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6083_conveyorMode = {
+        .dataOrig = &OD_RAM.x6083_conveyorMode,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6088_conveyorState = {
+        .dataOrig = &OD_RAM.x6088_conveyorState,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6089_conveyorControl = {
+        .dataOrig = &OD_RAM.x6089_conveyorControl,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
     }
 };
 
@@ -1295,6 +1337,12 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6073, 0x01, ODT_VAR, &ODObjs.o_6073_squeezerMode, NULL},
     {0x6078, 0x01, ODT_VAR, &ODObjs.o_6078_squeezerState, NULL},
     {0x6079, 0x01, ODT_VAR, &ODObjs.o_6079_squeezerControl, NULL},
+    {0x6080, 0x01, ODT_VAR, &ODObjs.o_6080_conveyorSpeed, NULL},
+    {0x6081, 0x01, ODT_VAR, &ODObjs.o_6081_conveyorStopByPhotoelectric, NULL},
+    {0x6082, 0x01, ODT_VAR, &ODObjs.o_6082_conveyorDirection, NULL},
+    {0x6083, 0x01, ODT_VAR, &ODObjs.o_6083_conveyorMode, NULL},
+    {0x6088, 0x01, ODT_VAR, &ODObjs.o_6088_conveyorState, NULL},
+    {0x6089, 0x01, ODT_VAR, &ODObjs.o_6089_conveyorControl, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

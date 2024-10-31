@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-30" fileModificationTime="17:08:14.3203068+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-10-31" fileModificationTime="11:03:15.9374583+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>HKCLR</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -2092,6 +2092,72 @@
               </q1:range>
             </q1:allowedValues>
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6080" access="readWrite">
+            <label lang="en">Conveyor Speed</label>
+            <UINT />
+            <q1:defaultValue value="1000" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="3000" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6081" access="readWrite">
+            <label lang="en">Conveyor Stop by Photoelectric </label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="1" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6082" access="readWrite">
+            <label lang="en">Conveyor Direction</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="1" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6083" access="readWrite">
+            <label lang="en">Conveyor Mode</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="1" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6088" access="readWrite">
+            <label lang="en">Conveyor State</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6089" access="readWrite">
+            <label lang="en">Conveyor Control</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="255" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
         </q1:parameterList>
       </q1:ApplicationProcess>
     </ProfileBody>
@@ -2109,7 +2175,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-30" fileModificationTime="17:08:14.3203068+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-10-31" fileModificationTime="11:03:15.9374583+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />
@@ -2390,6 +2456,12 @@
           <CANopenObject index="6073" name="Squeezer Mode" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6073" />
           <CANopenObject index="6078" name="Squeezer State" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6078" />
           <CANopenObject index="6079" name="Squeezer Control" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6079" />
+          <CANopenObject index="6080" name="Conveyor Speed" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6080" />
+          <CANopenObject index="6081" name="Conveyor Stop by Photoelectric " objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6081" />
+          <CANopenObject index="6082" name="Conveyor Direction" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6082" />
+          <CANopenObject index="6083" name="Conveyor Mode" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6083" />
+          <CANopenObject index="6088" name="Conveyor State" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6088" />
+          <CANopenObject index="6089" name="Conveyor Control" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6089" />
         </q2:CANopenObjectList>
         <dummyUsage>
           <dummy entry="Dummy0001=0" />

@@ -16,7 +16,7 @@
 
         Created:      2024-09-17 15:00:00
         Created By:   Sam Kwok
-        Modified:     2024-10-30 17:08:14
+        Modified:     2024-10-31 11:03:15
         Modified By:  Sam Kwok
 
     Device Info:
@@ -247,6 +247,12 @@ typedef struct {
     uint8_t x6073_squeezerMode;
     uint8_t x6078_squeezerState;
     uint8_t x6079_squeezerControl;
+    uint16_t x6080_conveyorSpeed;
+    uint8_t x6081_conveyorStopByPhotoelectric;
+    uint8_t x6082_conveyorDirection;
+    uint8_t x6083_conveyorMode;
+    uint8_t x6088_conveyorState;
+    uint8_t x6089_conveyorControl;
 } OD_RAM_t;
 
 #ifndef OD_ATTR_PERSIST_COMM
@@ -357,6 +363,12 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6073 &OD->list[86]
 #define OD_ENTRY_H6078 &OD->list[87]
 #define OD_ENTRY_H6079 &OD->list[88]
+#define OD_ENTRY_H6080 &OD->list[89]
+#define OD_ENTRY_H6081 &OD->list[90]
+#define OD_ENTRY_H6082 &OD->list[91]
+#define OD_ENTRY_H6083 &OD->list[92]
+#define OD_ENTRY_H6088 &OD->list[93]
+#define OD_ENTRY_H6089 &OD->list[94]
 
 
 /*******************************************************************************
@@ -451,6 +463,12 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6073_squeezerMode &OD->list[86]
 #define OD_ENTRY_H6078_squeezerState &OD->list[87]
 #define OD_ENTRY_H6079_squeezerControl &OD->list[88]
+#define OD_ENTRY_H6080_conveyorSpeed &OD->list[89]
+#define OD_ENTRY_H6081_conveyorStopByPhotoelectric &OD->list[90]
+#define OD_ENTRY_H6082_conveyorDirection &OD->list[91]
+#define OD_ENTRY_H6083_conveyorMode &OD->list[92]
+#define OD_ENTRY_H6088_conveyorState &OD->list[93]
+#define OD_ENTRY_H6089_conveyorControl &OD->list[94]
 
 
 /*******************************************************************************

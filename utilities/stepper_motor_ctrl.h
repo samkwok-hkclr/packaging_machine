@@ -18,13 +18,13 @@ void stepper_motor_controller(const stepper_motor_t type, OD_t *od, motor_state_
 uint16_t get_od_stepper_rotate_pulses(const stepper_motor_t type, OD_t *od, uint8_t sub_index);
 uint8_t get_od_stepper_rotate_dir(const stepper_motor_t type, OD_t *od, uint8_t sub_index);
 uint16_t get_od_stepper_curr_pulses(const stepper_motor_t type, OD_t *od, uint8_t sub_index);
-uint8_t get_od_stepper_status(const stepper_motor_t type, OD_t *od, uint8_t sub_index);
+uint8_t get_od_stepper_state(const stepper_motor_t type, OD_t *od, uint8_t sub_index);
 uint8_t get_od_stepper_ctrl(const stepper_motor_t type, OD_t *od, uint8_t sub_index);
 
 void set_od_stepper_rotate_pulses(const stepper_motor_t type, OD_t *od, uint8_t sub_index, uint16_t val);
 void set_od_stepper_rotate_dir(const stepper_motor_t type, OD_t *od, uint8_t sub_index, uint8_t val);
 void set_od_stepper_curr_pulses(const stepper_motor_t type, OD_t *od, uint8_t sub_index, uint16_t val);
-void set_od_stepper_status(const stepper_motor_t type, OD_t *od, uint8_t sub_index, uint8_t val);
+void set_od_stepper_state(const stepper_motor_t type, OD_t *od, uint8_t sub_index, uint8_t val);
 void set_od_stepper_ctrl(const stepper_motor_t type, OD_t *od, uint8_t sub_index, uint8_t val);
 
 #endif /* STEPPER_MOTOR_CTRL_H_ */

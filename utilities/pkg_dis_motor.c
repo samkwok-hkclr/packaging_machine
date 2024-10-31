@@ -19,7 +19,7 @@ inline uint16_t get_od_pkg_dis_curr_pulses(OD_t *od, uint8_t sub_index) {
 	return _get_od_u16(od, sub_index, 0x6014);
 }
 
-inline uint8_t get_od_pkg_dis_status(OD_t *od, uint8_t sub_index) {
+inline uint8_t get_od_pkg_dis_state(OD_t *od, uint8_t sub_index) {
 	return _get_od_u8(od, sub_index, 0x6018);
 }
 
@@ -41,7 +41,7 @@ inline void set_od_pkg_dis_curr_pulses(OD_t *od, uint8_t sub_index, uint16_t val
 	_set_od_u16(od, sub_index, 0x6014, val);
 }
 
-inline void set_od_pkg_dis_status(OD_t *od, uint8_t sub_index, uint8_t val) {
+inline void set_od_pkg_dis_state(OD_t *od, uint8_t sub_index, uint8_t val) {
 	_set_od_u8(od, sub_index, 0x6018, val);
 }
 

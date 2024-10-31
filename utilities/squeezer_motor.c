@@ -27,7 +27,7 @@ inline uint8_t get_od_sq_mode(OD_t *od, uint8_t sub_index)
 	return _get_od_u8(od, sub_index, 0x6073);
 }
 
-inline uint8_t get_od_sq_status(OD_t *od, uint8_t sub_index)
+inline uint8_t get_od_sq_state(OD_t *od, uint8_t sub_index)
 {
 	return _get_od_u8(od, sub_index, 0x6078);
 }
@@ -59,7 +59,7 @@ inline void set_od_sq_mode(OD_t *od, uint8_t sub_index, uint8_t val)
 	_set_od_u8(od, sub_index, 0x6073, val);
 }
 
-inline void set_od_sq_status(OD_t *od, uint8_t sub_index, uint8_t val)
+inline void set_od_sq_state(OD_t *od, uint8_t sub_index, uint8_t val)
 {
 	_set_od_u8(od, sub_index, 0x6078, val);
 }

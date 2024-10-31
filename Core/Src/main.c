@@ -40,6 +40,7 @@
 #include "stepper_motor_ctrl.h"
 #include "dc_motor_ctrl.h"
 #include "squeezer_motor.h"
+#include "conveyor_motor.h"
 
 /* USER CODE END Includes */
 
@@ -65,7 +66,7 @@ CANopenNodeSTM32 canOpenNodeSTM32;
 
 const uint8_t main_node_id = 32;
 const uint8_t sq_node_id = 60;
-const uint8_t roller_node_id = 61;
+const uint8_t con_node_id = 61;
 
 uint16_t temperature_adc = 0;
 
@@ -81,8 +82,9 @@ const uint16_t squeezer_fwd = 1;
 const uint16_t squeezer_rev = 2;
 const uint16_t squeezer_stop = 5;
 
-uint16_t tmp = 0;
-size_t amount_read = 0;
+const uint16_t con_fwd = 1;
+const uint16_t con_rev = 2;
+const uint16_t con_stop = 5;
 
 uint32_t running = 0;
 
@@ -96,6 +98,13 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void delay_ms(uint32_t ms) {
+    volatile uint32_t count = 0;
+    for (count = 0; count < ms * 1000; count++) {
+        __asm("NOP"); // No operation, just waste time
+    }
+}
 
 CO_SDO_abortCode_t
 read_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subIndex, uint8_t* buf, size_t bufSize,
@@ -125,7 +134,7 @@ read_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subIndex
         }
 
 //        sleep_us(timeDifference_us);
-//        HAL_Delay(1);
+        delay_ms(timeDifference_us/1000);
     } while (SDO_ret > 0);
 
     // copy data to the user buffer (for long data function must be called several times inside the loop)
@@ -169,7 +178,7 @@ write_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subInde
         }
 
 //        sleep_us(timeDifference_us);
-//        HAL_Delay(1);
+        delay_ms(timeDifference_us/1000);
     } while (SDO_ret > 0);
 
     return CO_SDO_AB_NONE;
@@ -223,6 +232,7 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM2_Init();
   MX_TIM8_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
 
 //	CANopenNodeSTM32 canOpenNodeSTM32;
@@ -239,6 +249,8 @@ int main(void)
 
 	HAL_TIM_Base_Start_IT(&htim2);	// valve control
 	HAL_TIM_Base_Start_IT(&htim5);	// temperature control
+
+	HAL_TIM_Base_Start_IT(&htim7);  // conveyor motor
 
 	HAL_TIM_Base_Start_IT(&htim8);  // squeezer motor
 
@@ -372,13 +384,72 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
 		}
 
+	} else if (htim == (&htim7)) {
+		motor_state_t _state = M_ERROR;
+		uint8_t _dir, _ctrl;
+		uint16_t _speed;
+		bool_t _start_flag = 0;
+
+		_state = get_od_con_state(OD, 0);
+
+		switch (_state) {
+		case M_IDLE:
+			_ctrl = get_od_con_ctrl(OD, 0);
+			_speed = get_od_con_speed(OD, 0);
+			_start_flag = _ctrl > 0 && _speed > 0;
+
+			if (_start_flag) {
+				set_od_con_state(OD, 0, M_RUNNING);
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
+
+				_dir = get_od_con_dir(OD, 0);
+				if (_dir == 0)
+				{
+					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_fwd, 2);
+				}
+				else
+				{
+					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_rev, 2);
+				}
+			}
+			break;
+		case M_RUNNING:
+			_ctrl = get_od_con_ctrl(OD, 0);
+
+			if (_ctrl == 0)
+			{
+				set_od_con_state(OD, 0, M_STOP);
+			}
+			break;
+		case M_STOP:
+			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_stop, 2);
+			set_od_con_state(OD, 0, M_RESET);
+			break;
+		case M_RESET:
+			set_od_con_mode(OD, 0, 0);
+			set_od_con_dir(OD, 0, 0);
+			set_od_con_ctrl(OD, 0, 0);
+			set_od_con_state(OD, 0, M_IDLE);
+			break;
+		case M_ERROR:
+			_ctrl = get_od_con_ctrl(OD, 0);
+
+			if (_ctrl == 0)
+			{
+				set_od_con_state(OD, 0, M_STOP);
+			}
+			show_err_LED();
+			break;
+		default:
+			break;
+		}
 	} else if (htim == (&htim8)) {
 		motor_state_t _state = M_ERROR;
 		uint8_t _dir, _ctrl;
 		uint16_t _speed;
 		bool_t _start_flag = 0;
 
-		_state = get_od_sq_status(OD, 0);
+		_state = get_od_sq_state(OD, 0);
 
 		switch (_state) {
 		case M_IDLE:
@@ -387,7 +458,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			_start_flag = _ctrl > 0 && _speed > 0;
 
 			if (_start_flag) {
-				set_od_sq_status(OD, 0, M_RUNNING);
+				set_od_sq_state(OD, 0, M_RUNNING);
 				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
 
 				_dir = get_od_sq_dir(OD, 0);
@@ -401,18 +472,31 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				}
 			}
 			break;
+		case M_RUNNING:
+			_ctrl = get_od_sq_ctrl(OD, 0);
+
+			if (_ctrl == 0)
+			{
+				set_od_sq_state(OD, 0, M_STOP);
+			}
+			break;
 		case M_STOP:
 			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_stop, 2);
-			set_od_sq_status(OD, 0, M_RESET);
+			set_od_sq_state(OD, 0, M_RESET);
 			break;
 		case M_RESET:
-//			set_od_sq_speed(OD, 0, 500);
 			set_od_sq_mode(OD, 0, 0);
 			set_od_sq_dir(OD, 0, 0);
 			set_od_sq_ctrl(OD, 0, 0);
-			set_od_sq_status(OD, 0, M_IDLE);
+			set_od_sq_state(OD, 0, M_IDLE);
 			break;
 		case M_ERROR:
+			_ctrl = get_od_sq_ctrl(OD, 0);
+
+			if (_ctrl == 0)
+			{
+				set_od_sq_state(OD, 0, M_STOP);
+			}
 			show_err_LED();
 			break;
 		default:
@@ -538,45 +622,48 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
 	// TODO: stop the specific action
 	if (GPIO_Pin == PH_X1_Pin) {
-
+		if (get_od_con_state(OD, 0) == M_RUNNING && get_od_con_stop_by_ph(OD, 0) == 1) {
+			set_od_con_state(OD, 0, M_STOP);
+		}
 	} else if (GPIO_Pin == PH_X2_Pin) {
-		if (get_od_sq_status(OD, 0) == M_RUNNING && get_od_sq_mode(OD, 0) == SQUEEZE) {
-			set_od_sq_status(OD, 0, M_STOP);
+		if (get_od_sq_state(OD, 0) == M_RUNNING && get_od_sq_mode(OD, 0) == SQUEEZE) {
+			set_od_sq_state(OD, 0, M_STOP);
 		}
 	} else if (GPIO_Pin == PH_X3_Pin) {
-		if (get_od_sq_status(OD, 0) == M_RUNNING && get_od_sq_mode(OD, 0) == HOME) {
-			set_od_sq_status(OD, 0, M_STOP);
+		if (get_od_sq_state(OD, 0) == M_RUNNING && get_od_sq_mode(OD, 0) == HOME) {
+			set_od_sq_state(OD, 0, M_STOP);
 		}
 	} else if (GPIO_Pin == PH_X4_Pin) {
-		if (get_od_roller_status(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == TRAY) {
+		if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == TRAY) {
 			uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
 			set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
 		}
 	} else if (GPIO_Pin == PH_X5_Pin) {
-		if (get_od_roller_status(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == ROLLER_HOMING) {
+		if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == ROLLER_HOMING) {
 			uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
 			set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
 		}
 	} else if (GPIO_Pin == PH_X6_Pin) {
-		if (get_od_pill_gate_status(OD, 0) == M_RUNNING && get_od_pill_gate_mode(OD, 0) == PILL_GATE_HOMING) {
-			set_od_pill_gate_status(OD, 0, M_STOP);
+		if (get_od_pill_gate_state(OD, 0) == M_RUNNING && get_od_pill_gate_mode(OD, 0) == PILL_GATE_HOMING) {
+			set_od_pill_gate_state(OD, 0, M_STOP);
 		}
 	} else if (GPIO_Pin == PH_X7_Pin) {
-		if (get_od_pkg_len_status(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_A) {
+		if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_A) {
 			uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
 			set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
 		}
 	} else if (GPIO_Pin == PH_X8_Pin) {
-		if (get_od_pkg_len_status(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_B) {
+		if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_B) {
 			uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
 			set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
 		}
 	}
 }
 
-void control_valve(uint16_t ctrl_index, uint16_t status_index, GPIO_TypeDef *port, uint16_t pin) {
+void control_valve(uint16_t ctrl_index, uint16_t state_index, GPIO_TypeDef *port, uint16_t pin) {
 	uint8_t valve_control = 0;
 
 	if (OD_get_u8(OD_find(OD, ctrl_index), 0x00, &valve_control, false) != ODR_OK) {
@@ -584,8 +671,8 @@ void control_valve(uint16_t ctrl_index, uint16_t status_index, GPIO_TypeDef *por
 	}
 	HAL_GPIO_WritePin(port, pin, !valve_control);
 
-	uint8_t status = !HAL_GPIO_ReadPin(port, pin);
-	if (OD_set_u8(OD_find(OD, status_index), 0x00, status, false) != ODR_OK) {
+	uint8_t state = !HAL_GPIO_ReadPin(port, pin);
+	if (OD_set_u8(OD_find(OD, state_index), 0x00, state, false) != ODR_OK) {
 		show_err_LED();
 	}
 }

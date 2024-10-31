@@ -23,7 +23,7 @@ inline uint8_t get_od_pill_gate_mode(OD_t *od, uint8_t sub_index) {
 	return _get_od_u8(od, sub_index, 0x6027);
 }
 
-inline uint8_t get_od_pill_gate_status(OD_t *od, uint8_t sub_index) {
+inline uint8_t get_od_pill_gate_state(OD_t *od, uint8_t sub_index) {
 	return _get_od_u8(od, sub_index, 0x6028);
 }
 
@@ -49,7 +49,7 @@ inline void set_od_pill_gate_mode(OD_t *od, uint8_t sub_index, uint8_t val) {
 	_set_od_u8(od, sub_index, 0x6027, val);
 }
 
-inline void set_od_pill_gate_status(OD_t *od, uint8_t sub_index, uint8_t val) {
+inline void set_od_pill_gate_state(OD_t *od, uint8_t sub_index, uint8_t val) {
 	_set_od_u8(od, sub_index, 0x6028, val);
 }
 

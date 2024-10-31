@@ -4,28 +4,28 @@ FileVersion=1
 FileRevision=1
 LastEDS=
 EDSVersion=4.0
-Description=The Object Dictionary of Packaging Machine
-CreationTime=3:00PM
-CreationDate=09-17-2024
-CreatedBy=Sam Kwok
-ModificationTime=2:27PM
-ModificationDate=10-07-2024
-ModifiedBy=Sam Kwok
+Description=
+CreationTime=1:00PM
+CreationDate=11-23-2020
+CreatedBy=
+ModificationTime=6:39PM
+ModificationDate=08-09-2021
+ModifiedBy=
 
 [DeviceInfo]
-VendorName=HKCLR
-VendorNumber=1234
-ProductName=Packaging Machine
-ProductNumber=1234
+VendorName=
+VendorNumber=
+ProductName=New Product
+ProductNumber=
 RevisionNumber=0
-BaudRate_10=0
-BaudRate_20=0
-BaudRate_50=0
-BaudRate_125=0
-BaudRate_250=0
+BaudRate_10=1
+BaudRate_20=1
+BaudRate_50=1
+BaudRate_125=1
+BaudRate_250=1
 BaudRate_500=1
-BaudRate_800=0
-BaudRate_1000=0
+BaudRate_800=1
+BaudRate_1000=1
 SimpleBootUpMaster=0
 SimpleBootUpSlave=0
 Granularity=8
@@ -35,7 +35,6 @@ GroupMessaging=0
 NrOfRXPDO=4
 NrOfTXPDO=4
 LSS_Supported=1
-NG_Slave=0
 
 [DummyUsage]
 Dummy0001=0
@@ -61,7 +60,7 @@ ObjectType=0x7
 ;StorageLocation=PERSIST_COMM
 DataType=0x0007
 AccessType=ro
-DefaultValue=0x12345678
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1001]
@@ -125,7 +124,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=86
+SupportedObjects=30
 1=0x1003
 2=0x1005
 3=0x1006
@@ -156,62 +155,6 @@ SupportedObjects=86
 28=0x1A01
 29=0x1A02
 30=0x1A03
-31=0x6000
-32=0x6001
-33=0x6002
-34=0x6003
-35=0x6004
-36=0x6005
-37=0x6006
-38=0x6010
-39=0x6011
-40=0x6012
-41=0x6013
-42=0x6014
-43=0x6018
-44=0x6019
-45=0x6020
-46=0x6021
-47=0x6022
-48=0x6023
-49=0x6024
-50=0x6027
-51=0x6028
-52=0x6029
-53=0x6030
-54=0x6031
-55=0x6032
-56=0x6033
-57=0x6034
-58=0x6035
-59=0x6037
-60=0x6038
-61=0x6039
-62=0x6040
-63=0x6041
-64=0x6042
-65=0x6043
-66=0x6044
-67=0x6045
-68=0x6047
-69=0x6048
-70=0x6049
-71=0x6050
-72=0x6051
-73=0x6052
-74=0x6053
-75=0x6054
-76=0x6055
-77=0x6056
-78=0x6057
-79=0x6060
-80=0x6061
-81=0x6062
-82=0x6063
-83=0x6064
-84=0x6065
-85=0x6066
-86=0x6067
 
 [1003]
 ParameterName=Pre-defined error field
@@ -621,7 +564,7 @@ ObjectType=0x7
 ;StorageLocation=PERSIST_COMM
 DataType=0x0006
 AccessType=rw
-DefaultValue=1000
+DefaultValue=0
 PDOMapping=0
 
 [1019]
@@ -729,7 +672,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x200
+DefaultValue=0x80000200+$NODEID
 PDOMapping=0
 
 [1400sub2]
@@ -771,7 +714,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x300
+DefaultValue=0x80000300+$NODEID
 PDOMapping=0
 
 [1401sub2]
@@ -813,7 +756,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x400
+DefaultValue=0x80000400+$NODEID
 PDOMapping=0
 
 [1402sub2]
@@ -855,7 +798,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x500
+DefaultValue=0x80000500+$NODEID
 PDOMapping=0
 
 [1403sub2]
@@ -888,7 +831,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1600sub1]
@@ -897,7 +840,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1600sub2]
@@ -975,7 +918,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1601sub1]
@@ -984,7 +927,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1601sub2]
@@ -1062,7 +1005,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1602sub1]
@@ -1071,7 +1014,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1602sub2]
@@ -1149,7 +1092,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1603sub1]
@@ -1158,7 +1101,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1603sub2]
@@ -1245,7 +1188,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x40000180
+DefaultValue=0xC0000180+$NODEID
 PDOMapping=0
 
 [1800sub2]
@@ -1272,7 +1215,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
-DefaultValue=1000
+DefaultValue=0
 PDOMapping=0
 
 [1800sub6]
@@ -1305,7 +1248,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x40000280
+DefaultValue=0xC0000280+$NODEID
 PDOMapping=0
 
 [1801sub2]
@@ -1332,7 +1275,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
-DefaultValue=1000
+DefaultValue=0
 PDOMapping=0
 
 [1801sub6]
@@ -1365,7 +1308,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x40000380
+DefaultValue=0xC0000380+$NODEID
 PDOMapping=0
 
 [1802sub2]
@@ -1392,7 +1335,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
-DefaultValue=1000
+DefaultValue=0
 PDOMapping=0
 
 [1802sub6]
@@ -1425,7 +1368,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x40000480
+DefaultValue=0xC0000480+$NODEID
 PDOMapping=0
 
 [1803sub2]
@@ -1452,7 +1395,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
-DefaultValue=1000
+DefaultValue=0
 PDOMapping=0
 
 [1803sub6]
@@ -1476,7 +1419,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1A00sub1]
@@ -1485,7 +1428,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1A00sub2]
@@ -1563,7 +1506,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1A01sub1]
@@ -1572,7 +1515,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub2]
@@ -1650,7 +1593,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1A02sub1]
@@ -1659,7 +1602,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1A02sub2]
@@ -1737,7 +1680,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1A03sub1]
@@ -1746,7 +1689,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00020008
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03sub2]
@@ -1811,622 +1754,6 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=0x00000000
 PDOMapping=0
-
-[6000]
-ParameterName=Target Heater Temperature
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=ro
-HighLimit=150
-LowLimit=0
-DefaultValue=125
-PDOMapping=0
-
-[6001]
-ParameterName=Current Heater Temperature
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rwr
-HighLimit=500
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6002]
-ParameterName=ADC Temperature
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=ro
-HighLimit=4096
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6003]
-ParameterName=Disable Heater
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=1
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6004]
-ParameterName=Kp
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rw
-HighLimit=1000
-LowLimit=0
-DefaultValue=30
-PDOMapping=0
-
-[6005]
-ParameterName=Ki
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rw
-HighLimit=1000
-LowLimit=0
-DefaultValue=60
-PDOMapping=0
-
-[6006]
-ParameterName=Kd
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rw
-HighLimit=1000
-LowLimit=0
-DefaultValue=8
-PDOMapping=0
-
-[6010]
-ParameterName=Package Dispenser Pulses Per Revolution
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rw
-HighLimit=6400
-LowLimit=0
-DefaultValue=3200
-PDOMapping=0
-
-[6011]
-ParameterName=Package Dispenser Rotate Pulses
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rww
-HighLimit=12800
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6012]
-ParameterName=Package Dispenser Rotate Direction
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6013]
-ParameterName=Package Dispenser Enable
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6014]
-ParameterName=Package Dispenser Current Pulse
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=ro
-HighLimit=12800
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6018]
-ParameterName=Package Dispenser Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6019]
-ParameterName=Package Dispenser Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6020]
-ParameterName=Pill Gate Pulses Per Revolution
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rw
-HighLimit=6400
-LowLimit=0
-DefaultValue=3200
-PDOMapping=0
-
-[6021]
-ParameterName=Pill Gate Rotate Pulses
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=rww
-HighLimit=64000
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6022]
-ParameterName=Pill Gate Rotate Direction
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6023]
-ParameterName=Pill Gate Enable
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6024]
-ParameterName=Pill Gate Current Pulse
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0006
-AccessType=ro
-HighLimit=12800
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6027]
-ParameterName=Pill Gate Mode
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=1
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6028]
-ParameterName=Pill Gate Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6029]
-ParameterName=Pill Gate Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6030]
-ParameterName=Roller Rotate Steps
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6031]
-ParameterName=Roller Rotation Speed
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=100
-LowLimit=0
-DefaultValue=100
-PDOMapping=1
-
-[6032]
-ParameterName=Roller Rotate Direction
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6033]
-ParameterName=Roller Current Step
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6034]
-ParameterName=Roller Target Braker
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=100
-LowLimit=30
-DefaultValue=50
-PDOMapping=0
-
-[6035]
-ParameterName=Roller Current Braker
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=100
-LowLimit=0
-DefaultValue=0
-PDOMapping=0
-
-[6037]
-ParameterName=Roller Mode
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=1
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6038]
-ParameterName=Roller Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6039]
-ParameterName=Roller Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6040]
-ParameterName=Package Length Rotate Steps
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6041]
-ParameterName=Package Length Rotation Speed
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=100
-LowLimit=0
-DefaultValue=100
-PDOMapping=1
-
-[6042]
-ParameterName=Package Length Rotate Direction
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6043]
-ParameterName=Package Length Current Step
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6044]
-ParameterName=Package Length Target Braker
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=100
-LowLimit=30
-DefaultValue=50
-PDOMapping=0
-
-[6045]
-ParameterName=Package Length Current Braker
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=100
-LowLimit=0
-DefaultValue=0
-PDOMapping=0
-
-[6047]
-ParameterName=Package Length Mode
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=2
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6048]
-ParameterName=Package Length Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=ro
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6049]
-ParameterName=Package Length Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6050]
-ParameterName=Valve 1 Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6051]
-ParameterName=Valve 2 Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6052]
-ParameterName=Valve 3 Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6053]
-ParameterName=Valve 4 Control
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rww
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6054]
-ParameterName=Valve 1 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6055]
-ParameterName=Valve 2 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6056]
-ParameterName=Valve 3 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6057]
-ParameterName=Valve 4 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6060]
-ParameterName=Reed Switch 1 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6061]
-ParameterName=Reed Switch 2 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6062]
-ParameterName=Reed Switch 3 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6063]
-ParameterName=Reed Switch 4 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6064]
-ParameterName=Reed Switch 5 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6065]
-ParameterName=Reed Switch 6 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6066]
-ParameterName=Reed Switch 7 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
-
-[6067]
-ParameterName=Reed Switch 8 Status
-ObjectType=0x7
-;StorageLocation=RAM
-DataType=0x0005
-AccessType=rwr
-HighLimit=255
-LowLimit=0
-DefaultValue=0
-PDOMapping=1
 
 [ManufacturerObjects]
 SupportedObjects=0
