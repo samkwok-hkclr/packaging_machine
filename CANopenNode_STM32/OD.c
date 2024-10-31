@@ -122,10 +122,10 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .SYNCStartValue = 0x00
     },
     .x1A00_TPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x01,
+        .numberOfMappedApplicationObjectsInPDO = 0x03,
         .applicationObject1 = 0x60010010,
-        .applicationObject2 = 0x00000000,
-        .applicationObject3 = 0x00000000,
+        .applicationObject2 = 0x60680008,
+        .applicationObject3 = 0x60580008,
         .applicationObject4 = 0x00000000,
         .applicationObject5 = 0x00000000,
         .applicationObject6 = 0x00000000,
@@ -193,6 +193,7 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6055_valve2State = 0x00,
     .x6056_valve3State = 0x00,
     .x6057_valve4State = 0x00,
+    .x6058_valveState = 0x00,
     .x6060_reedSwitch1State = 0x00,
     .x6061_reedSwitch2State = 0x00,
     .x6062_reedSwitch3State = 0x00,
@@ -201,6 +202,7 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6065_reedSwitch6State = 0x00,
     .x6066_reedSwitch7State = 0x00,
     .x6067_reedSwitch8State = 0x00,
+    .x6068_reedSwitchState = 0x00,
     .x6070_squeezerSpeed = 0x01F4,
     .x6071_squeezerWaitTime = 0x05,
     .x6072_squeezerDirection = 0x00,
@@ -296,6 +298,7 @@ typedef struct {
     OD_obj_var_t o_6055_valve2State;
     OD_obj_var_t o_6056_valve3State;
     OD_obj_var_t o_6057_valve4State;
+    OD_obj_var_t o_6058_valveState;
     OD_obj_var_t o_6060_reedSwitch1State;
     OD_obj_var_t o_6061_reedSwitch2State;
     OD_obj_var_t o_6062_reedSwitch3State;
@@ -304,6 +307,7 @@ typedef struct {
     OD_obj_var_t o_6065_reedSwitch6State;
     OD_obj_var_t o_6066_reedSwitch7State;
     OD_obj_var_t o_6067_reedSwitch8State;
+    OD_obj_var_t o_6068_reedSwitchState;
     OD_obj_var_t o_6070_squeezerSpeed;
     OD_obj_var_t o_6071_squeezerWaitTime;
     OD_obj_var_t o_6072_squeezerDirection;
@@ -1141,6 +1145,11 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
+    .o_6058_valveState = {
+        .dataOrig = &OD_RAM.x6058_valveState,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .dataLength = 1
+    },
     .o_6060_reedSwitch1State = {
         .dataOrig = &OD_RAM.x6060_reedSwitch1State,
         .attribute = ODA_SDO_R | ODA_TPDO,
@@ -1179,6 +1188,11 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .o_6067_reedSwitch8State = {
         .dataOrig = &OD_RAM.x6067_reedSwitch8State,
         .attribute = ODA_SDO_R | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6068_reedSwitchState = {
+        .dataOrig = &OD_RAM.x6068_reedSwitchState,
+        .attribute = ODA_SDO_RW | ODA_TPDO,
         .dataLength = 1
     },
     .o_6070_squeezerSpeed = {
@@ -1323,6 +1337,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6055, 0x01, ODT_VAR, &ODObjs.o_6055_valve2State, NULL},
     {0x6056, 0x01, ODT_VAR, &ODObjs.o_6056_valve3State, NULL},
     {0x6057, 0x01, ODT_VAR, &ODObjs.o_6057_valve4State, NULL},
+    {0x6058, 0x01, ODT_VAR, &ODObjs.o_6058_valveState, NULL},
     {0x6060, 0x01, ODT_VAR, &ODObjs.o_6060_reedSwitch1State, NULL},
     {0x6061, 0x01, ODT_VAR, &ODObjs.o_6061_reedSwitch2State, NULL},
     {0x6062, 0x01, ODT_VAR, &ODObjs.o_6062_reedSwitch3State, NULL},
@@ -1331,6 +1346,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6065, 0x01, ODT_VAR, &ODObjs.o_6065_reedSwitch6State, NULL},
     {0x6066, 0x01, ODT_VAR, &ODObjs.o_6066_reedSwitch7State, NULL},
     {0x6067, 0x01, ODT_VAR, &ODObjs.o_6067_reedSwitch8State, NULL},
+    {0x6068, 0x01, ODT_VAR, &ODObjs.o_6068_reedSwitchState, NULL},
     {0x6070, 0x01, ODT_VAR, &ODObjs.o_6070_squeezerSpeed, NULL},
     {0x6071, 0x01, ODT_VAR, &ODObjs.o_6071_squeezerWaitTime, NULL},
     {0x6072, 0x01, ODT_VAR, &ODObjs.o_6072_squeezerDirection, NULL},

@@ -16,7 +16,7 @@
 
         Created:      2024-09-17 15:00:00
         Created By:   Sam Kwok
-        Modified:     2024-10-31 11:03:15
+        Modified:     2024-10-31 18:45:36
         Modified By:  Sam Kwok
 
     Device Info:
@@ -233,6 +233,7 @@ typedef struct {
     uint8_t x6055_valve2State;
     uint8_t x6056_valve3State;
     uint8_t x6057_valve4State;
+    uint8_t x6058_valveState;
     uint8_t x6060_reedSwitch1State;
     uint8_t x6061_reedSwitch2State;
     uint8_t x6062_reedSwitch3State;
@@ -241,6 +242,7 @@ typedef struct {
     uint8_t x6065_reedSwitch6State;
     uint8_t x6066_reedSwitch7State;
     uint8_t x6067_reedSwitch8State;
+    uint8_t x6068_reedSwitchState;
     uint16_t x6070_squeezerSpeed;
     uint8_t x6071_squeezerWaitTime;
     uint8_t x6072_squeezerDirection;
@@ -349,26 +351,28 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6055 &OD->list[72]
 #define OD_ENTRY_H6056 &OD->list[73]
 #define OD_ENTRY_H6057 &OD->list[74]
-#define OD_ENTRY_H6060 &OD->list[75]
-#define OD_ENTRY_H6061 &OD->list[76]
-#define OD_ENTRY_H6062 &OD->list[77]
-#define OD_ENTRY_H6063 &OD->list[78]
-#define OD_ENTRY_H6064 &OD->list[79]
-#define OD_ENTRY_H6065 &OD->list[80]
-#define OD_ENTRY_H6066 &OD->list[81]
-#define OD_ENTRY_H6067 &OD->list[82]
-#define OD_ENTRY_H6070 &OD->list[83]
-#define OD_ENTRY_H6071 &OD->list[84]
-#define OD_ENTRY_H6072 &OD->list[85]
-#define OD_ENTRY_H6073 &OD->list[86]
-#define OD_ENTRY_H6078 &OD->list[87]
-#define OD_ENTRY_H6079 &OD->list[88]
-#define OD_ENTRY_H6080 &OD->list[89]
-#define OD_ENTRY_H6081 &OD->list[90]
-#define OD_ENTRY_H6082 &OD->list[91]
-#define OD_ENTRY_H6083 &OD->list[92]
-#define OD_ENTRY_H6088 &OD->list[93]
-#define OD_ENTRY_H6089 &OD->list[94]
+#define OD_ENTRY_H6058 &OD->list[75]
+#define OD_ENTRY_H6060 &OD->list[76]
+#define OD_ENTRY_H6061 &OD->list[77]
+#define OD_ENTRY_H6062 &OD->list[78]
+#define OD_ENTRY_H6063 &OD->list[79]
+#define OD_ENTRY_H6064 &OD->list[80]
+#define OD_ENTRY_H6065 &OD->list[81]
+#define OD_ENTRY_H6066 &OD->list[82]
+#define OD_ENTRY_H6067 &OD->list[83]
+#define OD_ENTRY_H6068 &OD->list[84]
+#define OD_ENTRY_H6070 &OD->list[85]
+#define OD_ENTRY_H6071 &OD->list[86]
+#define OD_ENTRY_H6072 &OD->list[87]
+#define OD_ENTRY_H6073 &OD->list[88]
+#define OD_ENTRY_H6078 &OD->list[89]
+#define OD_ENTRY_H6079 &OD->list[90]
+#define OD_ENTRY_H6080 &OD->list[91]
+#define OD_ENTRY_H6081 &OD->list[92]
+#define OD_ENTRY_H6082 &OD->list[93]
+#define OD_ENTRY_H6083 &OD->list[94]
+#define OD_ENTRY_H6088 &OD->list[95]
+#define OD_ENTRY_H6089 &OD->list[96]
 
 
 /*******************************************************************************
@@ -449,26 +453,28 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6055_valve2State &OD->list[72]
 #define OD_ENTRY_H6056_valve3State &OD->list[73]
 #define OD_ENTRY_H6057_valve4State &OD->list[74]
-#define OD_ENTRY_H6060_reedSwitch1State &OD->list[75]
-#define OD_ENTRY_H6061_reedSwitch2State &OD->list[76]
-#define OD_ENTRY_H6062_reedSwitch3State &OD->list[77]
-#define OD_ENTRY_H6063_reedSwitch4State &OD->list[78]
-#define OD_ENTRY_H6064_reedSwitch5State &OD->list[79]
-#define OD_ENTRY_H6065_reedSwitch6State &OD->list[80]
-#define OD_ENTRY_H6066_reedSwitch7State &OD->list[81]
-#define OD_ENTRY_H6067_reedSwitch8State &OD->list[82]
-#define OD_ENTRY_H6070_squeezerSpeed &OD->list[83]
-#define OD_ENTRY_H6071_squeezerWaitTime &OD->list[84]
-#define OD_ENTRY_H6072_squeezerDirection &OD->list[85]
-#define OD_ENTRY_H6073_squeezerMode &OD->list[86]
-#define OD_ENTRY_H6078_squeezerState &OD->list[87]
-#define OD_ENTRY_H6079_squeezerControl &OD->list[88]
-#define OD_ENTRY_H6080_conveyorSpeed &OD->list[89]
-#define OD_ENTRY_H6081_conveyorStopByPhotoelectric &OD->list[90]
-#define OD_ENTRY_H6082_conveyorDirection &OD->list[91]
-#define OD_ENTRY_H6083_conveyorMode &OD->list[92]
-#define OD_ENTRY_H6088_conveyorState &OD->list[93]
-#define OD_ENTRY_H6089_conveyorControl &OD->list[94]
+#define OD_ENTRY_H6058_valveState &OD->list[75]
+#define OD_ENTRY_H6060_reedSwitch1State &OD->list[76]
+#define OD_ENTRY_H6061_reedSwitch2State &OD->list[77]
+#define OD_ENTRY_H6062_reedSwitch3State &OD->list[78]
+#define OD_ENTRY_H6063_reedSwitch4State &OD->list[79]
+#define OD_ENTRY_H6064_reedSwitch5State &OD->list[80]
+#define OD_ENTRY_H6065_reedSwitch6State &OD->list[81]
+#define OD_ENTRY_H6066_reedSwitch7State &OD->list[82]
+#define OD_ENTRY_H6067_reedSwitch8State &OD->list[83]
+#define OD_ENTRY_H6068_reedSwitchState &OD->list[84]
+#define OD_ENTRY_H6070_squeezerSpeed &OD->list[85]
+#define OD_ENTRY_H6071_squeezerWaitTime &OD->list[86]
+#define OD_ENTRY_H6072_squeezerDirection &OD->list[87]
+#define OD_ENTRY_H6073_squeezerMode &OD->list[88]
+#define OD_ENTRY_H6078_squeezerState &OD->list[89]
+#define OD_ENTRY_H6079_squeezerControl &OD->list[90]
+#define OD_ENTRY_H6080_conveyorSpeed &OD->list[91]
+#define OD_ENTRY_H6081_conveyorStopByPhotoelectric &OD->list[92]
+#define OD_ENTRY_H6082_conveyorDirection &OD->list[93]
+#define OD_ENTRY_H6083_conveyorMode &OD->list[94]
+#define OD_ENTRY_H6088_conveyorState &OD->list[95]
+#define OD_ENTRY_H6089_conveyorControl &OD->list[96]
 
 
 /*******************************************************************************

@@ -52,6 +52,11 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+typedef struct {
+    uint16_t pin;
+    GPIO_TypeDef *port;
+} PinConfig;
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -85,6 +90,24 @@ const uint16_t squeezer_stop = 5;
 const uint16_t con_fwd = 1;
 const uint16_t con_rev = 2;
 const uint16_t con_stop = 5;
+
+PinConfig RS_state_pins[] = {
+    {RS_X1_Pin, RS_X1_GPIO_Port},
+    {RS_X2_Pin, RS_X2_GPIO_Port},
+    {RS_X3_Pin, RS_X3_GPIO_Port},
+    {RS_X4_Pin, RS_X4_GPIO_Port},
+    {RS_X5_Pin, RS_X5_GPIO_Port},
+    {RS_X6_Pin, RS_X6_GPIO_Port},
+    {RS_X7_Pin, RS_X7_GPIO_Port},
+    {RS_X8_Pin, RS_X8_GPIO_Port}
+};
+
+PinConfig valve_state_pins[] = {
+    {SV_X1_Pin, SV_X1_GPIO_Port},
+    {SV_X2_Pin, SV_X2_GPIO_Port},
+    {SV_X3_Pin, SV_X3_GPIO_Port},
+    {SV_X4_Pin, SV_X4_GPIO_Port},
+};
 
 uint32_t running = 0;
 
@@ -287,7 +310,7 @@ int main(void)
 		HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, !canOpenNodeSTM32.outStatusLEDRed);
 		canopen_app_process();
 
-		HAL_Delay(1);
+		//HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -356,6 +379,31 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		control_valve(0x6051, 0x6055, SV_X2_GPIO_Port, SV_X2_Pin);
 		control_valve(0x6052, 0x6056, SV_X3_GPIO_Port, SV_X3_Pin);
 		control_valve(0x6053, 0x6057, SV_X4_GPIO_Port, SV_X4_Pin);
+
+		uint8_t valve_pin_states = 0;
+		uint16_t valve_start_index = 0x6054;
+
+		for (int i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
+			GPIO_PinState result = !HAL_GPIO_ReadPin(valve_state_pins[i].port, valve_state_pins[i].pin);
+			if (OD_set_u8(OD_find(OD, valve_start_index+i), 0x00, (uint8_t) result, false) != ODR_OK)
+				show_err_LED();
+			valve_pin_states |= (result << i);
+		}
+		if (OD_set_u8(OD_find(OD, 0x6058), 0x00, (uint8_t) valve_pin_states, false) != ODR_OK)
+			show_err_LED();
+
+		uint8_t RS_pin_states = 0;
+		uint16_t RS_start_index = 0x6060;
+
+		for (int i = 0; i < sizeof(RS_state_pins) / sizeof(RS_state_pins[0]); i++) {
+			GPIO_PinState result = !HAL_GPIO_ReadPin(RS_state_pins[i].port, RS_state_pins[i].pin);
+			if (OD_set_u8(OD_find(OD, RS_start_index+i), 0x00, (uint8_t) result, false) != ODR_OK)
+				show_err_LED();
+			RS_pin_states |= (result << i);
+		}
+
+		if (OD_set_u8(OD_find(OD, 0x6068), 0x00, (uint8_t) RS_pin_states, false) != ODR_OK)
+			show_err_LED();
 	} else if (htim == (&htim4)) {
 		HAL_GPIO_TogglePin(LED_Default_GPIO_Port, LED_Default_Pin);
 		HAL_IWDG_Refresh(&hiwdg);
@@ -671,10 +719,10 @@ void control_valve(uint16_t ctrl_index, uint16_t state_index, GPIO_TypeDef *port
 	}
 	HAL_GPIO_WritePin(port, pin, !valve_control);
 
-	uint8_t state = !HAL_GPIO_ReadPin(port, pin);
-	if (OD_set_u8(OD_find(OD, state_index), 0x00, state, false) != ODR_OK) {
-		show_err_LED();
-	}
+//	uint8_t state = !HAL_GPIO_ReadPin(port, pin);
+//	if (OD_set_u8(OD_find(OD, state_index), 0x00, state, false) != ODR_OK) {
+//		show_err_LED();
+//	}
 }
 
 float get_temperature(uint16_t adc_value) {
