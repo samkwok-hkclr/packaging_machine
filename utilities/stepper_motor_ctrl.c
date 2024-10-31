@@ -9,6 +9,7 @@
 
 void stepper_motor_controller(const stepper_motor_t type, OD_t *od, motor_state_t *state, uint8_t *dir_ctrl, bool_t *start_flag) {
 	*state = get_od_stepper_status(type, od, 0);
+
 	switch (*state) {
 	case M_IDLE: {
 		uint8_t ctrl, rotate_pulses;

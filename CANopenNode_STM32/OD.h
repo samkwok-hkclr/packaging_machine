@@ -11,12 +11,12 @@
 
     File info:
         File Names:   OD.h; OD.c
-        Project File: DS301_profile.xpd
+        Project File: packaging_machine.xpd
         File Version: 1
 
         Created:      2024-09-17 15:00:00
         Created By:   Sam Kwok
-        Modified:     2024-10-10 17:14:13
+        Modified:     2024-10-30 17:08:14
         Modified By:  Sam Kwok
 
     Device Info:
@@ -188,7 +188,7 @@ typedef struct {
     uint16_t x6000_targetHeaterTemperature;
     uint16_t x6001_currentHeaterTemperature;
     uint16_t x6002_ADC_Temperature;
-    uint8_t x6003_disableHeater;
+    uint8_t x6003_enableHeater;
     uint16_t x6004_kp;
     uint16_t x6005_ki;
     uint16_t x6006_kd;
@@ -196,51 +196,57 @@ typedef struct {
     uint16_t x6011_packageDispenserRotatePulses;
     uint8_t x6012_packageDispenserRotateDirection;
     uint8_t x6013_packageDispenserEnable;
-    uint16_t x6014_packageDispenserCurrentPulse;
-    uint8_t x6018_packageDispenserStatus;
+    uint16_t x6014_packageDispenserCurrentPulses;
+    uint8_t x6018_packageDispenserState;
     uint8_t x6019_packageDispenserControl;
     uint16_t x6020_pillGatePulsesPerRevolution;
     uint16_t x6021_pillGateRotatePulses;
     uint8_t x6022_pillGateRotateDirection;
     uint8_t x6023_pillGateEnable;
-    uint16_t x6024_pillGateCurrentPulse;
+    uint16_t x6024_pillGateCurrentPulses;
     uint8_t x6027_pillGateMode;
-    uint8_t x6028_pillGateStatus;
+    uint8_t x6028_pillGateState;
     uint8_t x6029_pillGateControl;
     uint8_t x6030_rollerRotateSteps;
     uint8_t x6031_rollerRotationSpeed;
     uint8_t x6032_rollerRotateDirection;
-    uint8_t x6033_rollerCurrentStep;
+    uint8_t x6033_rollerCurrentSteps;
     uint8_t x6034_rollerTargetBraker;
     uint8_t x6035_rollerCurrentBraker;
     uint8_t x6037_rollerMode;
-    uint8_t x6038_rollerStatus;
+    uint8_t x6038_rollerState;
     uint8_t x6039_rollerControl;
     uint8_t x6040_packageLengthRotateSteps;
     uint8_t x6041_packageLengthRotationSpeed;
     uint8_t x6042_packageLengthRotateDirection;
-    uint8_t x6043_packageLengthCurrentStep;
+    uint8_t x6043_packageLengthCurrentSteps;
     uint8_t x6044_packageLengthTargetBraker;
     uint8_t x6045_packageLengthCurrentBraker;
     uint8_t x6047_packageLengthMode;
-    uint8_t x6048_packageLengthStatus;
+    uint8_t x6048_packageLengthState;
     uint8_t x6049_packageLengthControl;
     uint8_t x6050_valve1Control;
     uint8_t x6051_valve2Control;
     uint8_t x6052_valve3Control;
     uint8_t x6053_valve4Control;
-    uint8_t x6054_valve1Status;
-    uint8_t x6055_valve2Status;
-    uint8_t x6056_valve3Status;
-    uint8_t x6057_valve4Status;
-    uint8_t x6060_reedSwitch1Status;
-    uint8_t x6061_reedSwitch2Status;
-    uint8_t x6062_reedSwitch3Status;
-    uint8_t x6063_reedSwitch4Status;
-    uint8_t x6064_reedSwitch5Status;
-    uint8_t x6065_reedSwitch6Status;
-    uint8_t x6066_reedSwitch7Status;
-    uint8_t x6067_reedSwitch8Status;
+    uint8_t x6054_valve1State;
+    uint8_t x6055_valve2State;
+    uint8_t x6056_valve3State;
+    uint8_t x6057_valve4State;
+    uint8_t x6060_reedSwitch1State;
+    uint8_t x6061_reedSwitch2State;
+    uint8_t x6062_reedSwitch3State;
+    uint8_t x6063_reedSwitch4State;
+    uint8_t x6064_reedSwitch5State;
+    uint8_t x6065_reedSwitch6State;
+    uint8_t x6066_reedSwitch7State;
+    uint8_t x6067_reedSwitch8State;
+    uint16_t x6070_squeezerSpeed;
+    uint8_t x6071_squeezerWaitTime;
+    uint8_t x6072_squeezerDirection;
+    uint8_t x6073_squeezerMode;
+    uint8_t x6078_squeezerState;
+    uint8_t x6079_squeezerControl;
 } OD_RAM_t;
 
 #ifndef OD_ATTR_PERSIST_COMM
@@ -345,6 +351,12 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6065 &OD->list[80]
 #define OD_ENTRY_H6066 &OD->list[81]
 #define OD_ENTRY_H6067 &OD->list[82]
+#define OD_ENTRY_H6070 &OD->list[83]
+#define OD_ENTRY_H6071 &OD->list[84]
+#define OD_ENTRY_H6072 &OD->list[85]
+#define OD_ENTRY_H6073 &OD->list[86]
+#define OD_ENTRY_H6078 &OD->list[87]
+#define OD_ENTRY_H6079 &OD->list[88]
 
 
 /*******************************************************************************
@@ -380,7 +392,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6000_targetHeaterTemperature &OD->list[27]
 #define OD_ENTRY_H6001_currentHeaterTemperature &OD->list[28]
 #define OD_ENTRY_H6002_ADC_Temperature &OD->list[29]
-#define OD_ENTRY_H6003_disableHeater &OD->list[30]
+#define OD_ENTRY_H6003_enableHeater &OD->list[30]
 #define OD_ENTRY_H6004_kp &OD->list[31]
 #define OD_ENTRY_H6005_ki &OD->list[32]
 #define OD_ENTRY_H6006_kd &OD->list[33]
@@ -388,51 +400,57 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6011_packageDispenserRotatePulses &OD->list[35]
 #define OD_ENTRY_H6012_packageDispenserRotateDirection &OD->list[36]
 #define OD_ENTRY_H6013_packageDispenserEnable &OD->list[37]
-#define OD_ENTRY_H6014_packageDispenserCurrentPulse &OD->list[38]
-#define OD_ENTRY_H6018_packageDispenserStatus &OD->list[39]
+#define OD_ENTRY_H6014_packageDispenserCurrentPulses &OD->list[38]
+#define OD_ENTRY_H6018_packageDispenserState &OD->list[39]
 #define OD_ENTRY_H6019_packageDispenserControl &OD->list[40]
 #define OD_ENTRY_H6020_pillGatePulsesPerRevolution &OD->list[41]
 #define OD_ENTRY_H6021_pillGateRotatePulses &OD->list[42]
 #define OD_ENTRY_H6022_pillGateRotateDirection &OD->list[43]
 #define OD_ENTRY_H6023_pillGateEnable &OD->list[44]
-#define OD_ENTRY_H6024_pillGateCurrentPulse &OD->list[45]
+#define OD_ENTRY_H6024_pillGateCurrentPulses &OD->list[45]
 #define OD_ENTRY_H6027_pillGateMode &OD->list[46]
-#define OD_ENTRY_H6028_pillGateStatus &OD->list[47]
+#define OD_ENTRY_H6028_pillGateState &OD->list[47]
 #define OD_ENTRY_H6029_pillGateControl &OD->list[48]
 #define OD_ENTRY_H6030_rollerRotateSteps &OD->list[49]
 #define OD_ENTRY_H6031_rollerRotationSpeed &OD->list[50]
 #define OD_ENTRY_H6032_rollerRotateDirection &OD->list[51]
-#define OD_ENTRY_H6033_rollerCurrentStep &OD->list[52]
+#define OD_ENTRY_H6033_rollerCurrentSteps &OD->list[52]
 #define OD_ENTRY_H6034_rollerTargetBraker &OD->list[53]
 #define OD_ENTRY_H6035_rollerCurrentBraker &OD->list[54]
 #define OD_ENTRY_H6037_rollerMode &OD->list[55]
-#define OD_ENTRY_H6038_rollerStatus &OD->list[56]
+#define OD_ENTRY_H6038_rollerState &OD->list[56]
 #define OD_ENTRY_H6039_rollerControl &OD->list[57]
 #define OD_ENTRY_H6040_packageLengthRotateSteps &OD->list[58]
 #define OD_ENTRY_H6041_packageLengthRotationSpeed &OD->list[59]
 #define OD_ENTRY_H6042_packageLengthRotateDirection &OD->list[60]
-#define OD_ENTRY_H6043_packageLengthCurrentStep &OD->list[61]
+#define OD_ENTRY_H6043_packageLengthCurrentSteps &OD->list[61]
 #define OD_ENTRY_H6044_packageLengthTargetBraker &OD->list[62]
 #define OD_ENTRY_H6045_packageLengthCurrentBraker &OD->list[63]
 #define OD_ENTRY_H6047_packageLengthMode &OD->list[64]
-#define OD_ENTRY_H6048_packageLengthStatus &OD->list[65]
+#define OD_ENTRY_H6048_packageLengthState &OD->list[65]
 #define OD_ENTRY_H6049_packageLengthControl &OD->list[66]
 #define OD_ENTRY_H6050_valve1Control &OD->list[67]
 #define OD_ENTRY_H6051_valve2Control &OD->list[68]
 #define OD_ENTRY_H6052_valve3Control &OD->list[69]
 #define OD_ENTRY_H6053_valve4Control &OD->list[70]
-#define OD_ENTRY_H6054_valve1Status &OD->list[71]
-#define OD_ENTRY_H6055_valve2Status &OD->list[72]
-#define OD_ENTRY_H6056_valve3Status &OD->list[73]
-#define OD_ENTRY_H6057_valve4Status &OD->list[74]
-#define OD_ENTRY_H6060_reedSwitch1Status &OD->list[75]
-#define OD_ENTRY_H6061_reedSwitch2Status &OD->list[76]
-#define OD_ENTRY_H6062_reedSwitch3Status &OD->list[77]
-#define OD_ENTRY_H6063_reedSwitch4Status &OD->list[78]
-#define OD_ENTRY_H6064_reedSwitch5Status &OD->list[79]
-#define OD_ENTRY_H6065_reedSwitch6Status &OD->list[80]
-#define OD_ENTRY_H6066_reedSwitch7Status &OD->list[81]
-#define OD_ENTRY_H6067_reedSwitch8Status &OD->list[82]
+#define OD_ENTRY_H6054_valve1State &OD->list[71]
+#define OD_ENTRY_H6055_valve2State &OD->list[72]
+#define OD_ENTRY_H6056_valve3State &OD->list[73]
+#define OD_ENTRY_H6057_valve4State &OD->list[74]
+#define OD_ENTRY_H6060_reedSwitch1State &OD->list[75]
+#define OD_ENTRY_H6061_reedSwitch2State &OD->list[76]
+#define OD_ENTRY_H6062_reedSwitch3State &OD->list[77]
+#define OD_ENTRY_H6063_reedSwitch4State &OD->list[78]
+#define OD_ENTRY_H6064_reedSwitch5State &OD->list[79]
+#define OD_ENTRY_H6065_reedSwitch6State &OD->list[80]
+#define OD_ENTRY_H6066_reedSwitch7State &OD->list[81]
+#define OD_ENTRY_H6067_reedSwitch8State &OD->list[82]
+#define OD_ENTRY_H6070_squeezerSpeed &OD->list[83]
+#define OD_ENTRY_H6071_squeezerWaitTime &OD->list[84]
+#define OD_ENTRY_H6072_squeezerDirection &OD->list[85]
+#define OD_ENTRY_H6073_squeezerMode &OD->list[86]
+#define OD_ENTRY_H6078_squeezerState &OD->list[87]
+#define OD_ENTRY_H6079_squeezerControl &OD->list[88]
 
 
 /*******************************************************************************

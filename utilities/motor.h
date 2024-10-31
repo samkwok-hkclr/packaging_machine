@@ -20,4 +20,8 @@ typedef enum {
 	PKG_LEN_DC = 0, ROLLER_DC,
 } dc_motor_t;
 
+typedef enum {
+	SQUEEZER = 0,
+} zd_motor_t;
+
 #endif /* MOTOR_H_ */

@@ -148,7 +148,7 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6000_targetHeaterTemperature = 0x007D,
     .x6001_currentHeaterTemperature = 0x0000,
     .x6002_ADC_Temperature = 0x0000,
-    .x6003_disableHeater = 0x00,
+    .x6003_enableHeater = 0x00,
     .x6004_kp = 0x001E,
     .x6005_ki = 0x003C,
     .x6006_kd = 0x0008,
@@ -156,51 +156,57 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6011_packageDispenserRotatePulses = 0x0000,
     .x6012_packageDispenserRotateDirection = 0x00,
     .x6013_packageDispenserEnable = 0x00,
-    .x6014_packageDispenserCurrentPulse = 0x0000,
-    .x6018_packageDispenserStatus = 0x00,
+    .x6014_packageDispenserCurrentPulses = 0x0000,
+    .x6018_packageDispenserState = 0x00,
     .x6019_packageDispenserControl = 0x00,
     .x6020_pillGatePulsesPerRevolution = 0x0C80,
     .x6021_pillGateRotatePulses = 0x0000,
     .x6022_pillGateRotateDirection = 0x00,
     .x6023_pillGateEnable = 0x00,
-    .x6024_pillGateCurrentPulse = 0x0000,
+    .x6024_pillGateCurrentPulses = 0x0000,
     .x6027_pillGateMode = 0x00,
-    .x6028_pillGateStatus = 0x00,
+    .x6028_pillGateState = 0x00,
     .x6029_pillGateControl = 0x00,
     .x6030_rollerRotateSteps = 0x00,
     .x6031_rollerRotationSpeed = 0x64,
     .x6032_rollerRotateDirection = 0x00,
-    .x6033_rollerCurrentStep = 0x00,
+    .x6033_rollerCurrentSteps = 0x00,
     .x6034_rollerTargetBraker = 0x32,
     .x6035_rollerCurrentBraker = 0x00,
     .x6037_rollerMode = 0x00,
-    .x6038_rollerStatus = 0x00,
+    .x6038_rollerState = 0x00,
     .x6039_rollerControl = 0x00,
     .x6040_packageLengthRotateSteps = 0x00,
     .x6041_packageLengthRotationSpeed = 0x64,
     .x6042_packageLengthRotateDirection = 0x00,
-    .x6043_packageLengthCurrentStep = 0x00,
+    .x6043_packageLengthCurrentSteps = 0x00,
     .x6044_packageLengthTargetBraker = 0x32,
     .x6045_packageLengthCurrentBraker = 0x00,
     .x6047_packageLengthMode = 0x00,
-    .x6048_packageLengthStatus = 0x00,
+    .x6048_packageLengthState = 0x00,
     .x6049_packageLengthControl = 0x00,
     .x6050_valve1Control = 0x00,
     .x6051_valve2Control = 0x00,
     .x6052_valve3Control = 0x00,
     .x6053_valve4Control = 0x00,
-    .x6054_valve1Status = 0x00,
-    .x6055_valve2Status = 0x00,
-    .x6056_valve3Status = 0x00,
-    .x6057_valve4Status = 0x00,
-    .x6060_reedSwitch1Status = 0x00,
-    .x6061_reedSwitch2Status = 0x00,
-    .x6062_reedSwitch3Status = 0x00,
-    .x6063_reedSwitch4Status = 0x00,
-    .x6064_reedSwitch5Status = 0x00,
-    .x6065_reedSwitch6Status = 0x00,
-    .x6066_reedSwitch7Status = 0x00,
-    .x6067_reedSwitch8Status = 0x00
+    .x6054_valve1State = 0x00,
+    .x6055_valve2State = 0x00,
+    .x6056_valve3State = 0x00,
+    .x6057_valve4State = 0x00,
+    .x6060_reedSwitch1State = 0x00,
+    .x6061_reedSwitch2State = 0x00,
+    .x6062_reedSwitch3State = 0x00,
+    .x6063_reedSwitch4State = 0x00,
+    .x6064_reedSwitch5State = 0x00,
+    .x6065_reedSwitch6State = 0x00,
+    .x6066_reedSwitch7State = 0x00,
+    .x6067_reedSwitch8State = 0x00,
+    .x6070_squeezerSpeed = 0x01F4,
+    .x6071_squeezerWaitTime = 0x05,
+    .x6072_squeezerDirection = 0x00,
+    .x6073_squeezerMode = 0x00,
+    .x6078_squeezerState = 0x00,
+    .x6079_squeezerControl = 0x00
 };
 
 
@@ -239,7 +245,7 @@ typedef struct {
     OD_obj_var_t o_6000_targetHeaterTemperature;
     OD_obj_var_t o_6001_currentHeaterTemperature;
     OD_obj_var_t o_6002_ADC_Temperature;
-    OD_obj_var_t o_6003_disableHeater;
+    OD_obj_var_t o_6003_enableHeater;
     OD_obj_var_t o_6004_kp;
     OD_obj_var_t o_6005_ki;
     OD_obj_var_t o_6006_kd;
@@ -247,51 +253,57 @@ typedef struct {
     OD_obj_var_t o_6011_packageDispenserRotatePulses;
     OD_obj_var_t o_6012_packageDispenserRotateDirection;
     OD_obj_var_t o_6013_packageDispenserEnable;
-    OD_obj_var_t o_6014_packageDispenserCurrentPulse;
-    OD_obj_var_t o_6018_packageDispenserStatus;
+    OD_obj_var_t o_6014_packageDispenserCurrentPulses;
+    OD_obj_var_t o_6018_packageDispenserState;
     OD_obj_var_t o_6019_packageDispenserControl;
     OD_obj_var_t o_6020_pillGatePulsesPerRevolution;
     OD_obj_var_t o_6021_pillGateRotatePulses;
     OD_obj_var_t o_6022_pillGateRotateDirection;
     OD_obj_var_t o_6023_pillGateEnable;
-    OD_obj_var_t o_6024_pillGateCurrentPulse;
+    OD_obj_var_t o_6024_pillGateCurrentPulses;
     OD_obj_var_t o_6027_pillGateMode;
-    OD_obj_var_t o_6028_pillGateStatus;
+    OD_obj_var_t o_6028_pillGateState;
     OD_obj_var_t o_6029_pillGateControl;
     OD_obj_var_t o_6030_rollerRotateSteps;
     OD_obj_var_t o_6031_rollerRotationSpeed;
     OD_obj_var_t o_6032_rollerRotateDirection;
-    OD_obj_var_t o_6033_rollerCurrentStep;
+    OD_obj_var_t o_6033_rollerCurrentSteps;
     OD_obj_var_t o_6034_rollerTargetBraker;
     OD_obj_var_t o_6035_rollerCurrentBraker;
     OD_obj_var_t o_6037_rollerMode;
-    OD_obj_var_t o_6038_rollerStatus;
+    OD_obj_var_t o_6038_rollerState;
     OD_obj_var_t o_6039_rollerControl;
     OD_obj_var_t o_6040_packageLengthRotateSteps;
     OD_obj_var_t o_6041_packageLengthRotationSpeed;
     OD_obj_var_t o_6042_packageLengthRotateDirection;
-    OD_obj_var_t o_6043_packageLengthCurrentStep;
+    OD_obj_var_t o_6043_packageLengthCurrentSteps;
     OD_obj_var_t o_6044_packageLengthTargetBraker;
     OD_obj_var_t o_6045_packageLengthCurrentBraker;
     OD_obj_var_t o_6047_packageLengthMode;
-    OD_obj_var_t o_6048_packageLengthStatus;
+    OD_obj_var_t o_6048_packageLengthState;
     OD_obj_var_t o_6049_packageLengthControl;
     OD_obj_var_t o_6050_valve1Control;
     OD_obj_var_t o_6051_valve2Control;
     OD_obj_var_t o_6052_valve3Control;
     OD_obj_var_t o_6053_valve4Control;
-    OD_obj_var_t o_6054_valve1Status;
-    OD_obj_var_t o_6055_valve2Status;
-    OD_obj_var_t o_6056_valve3Status;
-    OD_obj_var_t o_6057_valve4Status;
-    OD_obj_var_t o_6060_reedSwitch1Status;
-    OD_obj_var_t o_6061_reedSwitch2Status;
-    OD_obj_var_t o_6062_reedSwitch3Status;
-    OD_obj_var_t o_6063_reedSwitch4Status;
-    OD_obj_var_t o_6064_reedSwitch5Status;
-    OD_obj_var_t o_6065_reedSwitch6Status;
-    OD_obj_var_t o_6066_reedSwitch7Status;
-    OD_obj_var_t o_6067_reedSwitch8Status;
+    OD_obj_var_t o_6054_valve1State;
+    OD_obj_var_t o_6055_valve2State;
+    OD_obj_var_t o_6056_valve3State;
+    OD_obj_var_t o_6057_valve4State;
+    OD_obj_var_t o_6060_reedSwitch1State;
+    OD_obj_var_t o_6061_reedSwitch2State;
+    OD_obj_var_t o_6062_reedSwitch3State;
+    OD_obj_var_t o_6063_reedSwitch4State;
+    OD_obj_var_t o_6064_reedSwitch5State;
+    OD_obj_var_t o_6065_reedSwitch6State;
+    OD_obj_var_t o_6066_reedSwitch7State;
+    OD_obj_var_t o_6067_reedSwitch8State;
+    OD_obj_var_t o_6070_squeezerSpeed;
+    OD_obj_var_t o_6071_squeezerWaitTime;
+    OD_obj_var_t o_6072_squeezerDirection;
+    OD_obj_var_t o_6073_squeezerMode;
+    OD_obj_var_t o_6078_squeezerState;
+    OD_obj_var_t o_6079_squeezerControl;
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -884,7 +896,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     },
     .o_6001_currentHeaterTemperature = {
         .dataOrig = &OD_RAM.x6001_currentHeaterTemperature,
-        .attribute = ODA_SDO_RW | ODA_TPDO | ODA_MB,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 2
     },
     .o_6002_ADC_Temperature = {
@@ -892,9 +904,9 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 2
     },
-    .o_6003_disableHeater = {
-        .dataOrig = &OD_RAM.x6003_disableHeater,
-        .attribute = ODA_SDO_RW | ODA_RPDO,
+    .o_6003_enableHeater = {
+        .dataOrig = &OD_RAM.x6003_enableHeater,
+        .attribute = ODA_SDO_RW,
         .dataLength = 1
     },
     .o_6004_kp = {
@@ -932,13 +944,13 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6014_packageDispenserCurrentPulse = {
-        .dataOrig = &OD_RAM.x6014_packageDispenserCurrentPulse,
+    .o_6014_packageDispenserCurrentPulses = {
+        .dataOrig = &OD_RAM.x6014_packageDispenserCurrentPulses,
         .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 2
     },
-    .o_6018_packageDispenserStatus = {
-        .dataOrig = &OD_RAM.x6018_packageDispenserStatus,
+    .o_6018_packageDispenserState = {
+        .dataOrig = &OD_RAM.x6018_packageDispenserState,
         .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
@@ -967,8 +979,8 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6024_pillGateCurrentPulse = {
-        .dataOrig = &OD_RAM.x6024_pillGateCurrentPulse,
+    .o_6024_pillGateCurrentPulses = {
+        .dataOrig = &OD_RAM.x6024_pillGateCurrentPulses,
         .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 2
     },
@@ -977,8 +989,8 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6028_pillGateStatus = {
-        .dataOrig = &OD_RAM.x6028_pillGateStatus,
+    .o_6028_pillGateState = {
+        .dataOrig = &OD_RAM.x6028_pillGateState,
         .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
@@ -1002,8 +1014,8 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6033_rollerCurrentStep = {
-        .dataOrig = &OD_RAM.x6033_rollerCurrentStep,
+    .o_6033_rollerCurrentSteps = {
+        .dataOrig = &OD_RAM.x6033_rollerCurrentSteps,
         .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
@@ -1022,8 +1034,8 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6038_rollerStatus = {
-        .dataOrig = &OD_RAM.x6038_rollerStatus,
+    .o_6038_rollerState = {
+        .dataOrig = &OD_RAM.x6038_rollerState,
         .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
@@ -1047,8 +1059,8 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6043_packageLengthCurrentStep = {
-        .dataOrig = &OD_RAM.x6043_packageLengthCurrentStep,
+    .o_6043_packageLengthCurrentSteps = {
+        .dataOrig = &OD_RAM.x6043_packageLengthCurrentSteps,
         .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
@@ -1067,8 +1079,8 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6048_packageLengthStatus = {
-        .dataOrig = &OD_RAM.x6048_packageLengthStatus,
+    .o_6048_packageLengthState = {
+        .dataOrig = &OD_RAM.x6048_packageLengthState,
         .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
@@ -1097,64 +1109,94 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_RPDO,
         .dataLength = 1
     },
-    .o_6054_valve1Status = {
-        .dataOrig = &OD_RAM.x6054_valve1Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6054_valve1State = {
+        .dataOrig = &OD_RAM.x6054_valve1State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6055_valve2Status = {
-        .dataOrig = &OD_RAM.x6055_valve2Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6055_valve2State = {
+        .dataOrig = &OD_RAM.x6055_valve2State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6056_valve3Status = {
-        .dataOrig = &OD_RAM.x6056_valve3Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6056_valve3State = {
+        .dataOrig = &OD_RAM.x6056_valve3State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6057_valve4Status = {
-        .dataOrig = &OD_RAM.x6057_valve4Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6057_valve4State = {
+        .dataOrig = &OD_RAM.x6057_valve4State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6060_reedSwitch1Status = {
-        .dataOrig = &OD_RAM.x6060_reedSwitch1Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6060_reedSwitch1State = {
+        .dataOrig = &OD_RAM.x6060_reedSwitch1State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6061_reedSwitch2Status = {
-        .dataOrig = &OD_RAM.x6061_reedSwitch2Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6061_reedSwitch2State = {
+        .dataOrig = &OD_RAM.x6061_reedSwitch2State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6062_reedSwitch3Status = {
-        .dataOrig = &OD_RAM.x6062_reedSwitch3Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6062_reedSwitch3State = {
+        .dataOrig = &OD_RAM.x6062_reedSwitch3State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6063_reedSwitch4Status = {
-        .dataOrig = &OD_RAM.x6063_reedSwitch4Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6063_reedSwitch4State = {
+        .dataOrig = &OD_RAM.x6063_reedSwitch4State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6064_reedSwitch5Status = {
-        .dataOrig = &OD_RAM.x6064_reedSwitch5Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6064_reedSwitch5State = {
+        .dataOrig = &OD_RAM.x6064_reedSwitch5State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6065_reedSwitch6Status = {
-        .dataOrig = &OD_RAM.x6065_reedSwitch6Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6065_reedSwitch6State = {
+        .dataOrig = &OD_RAM.x6065_reedSwitch6State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6066_reedSwitch7Status = {
-        .dataOrig = &OD_RAM.x6066_reedSwitch7Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6066_reedSwitch7State = {
+        .dataOrig = &OD_RAM.x6066_reedSwitch7State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
-    .o_6067_reedSwitch8Status = {
-        .dataOrig = &OD_RAM.x6067_reedSwitch8Status,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+    .o_6067_reedSwitch8State = {
+        .dataOrig = &OD_RAM.x6067_reedSwitch8State,
+        .attribute = ODA_SDO_R | ODA_TPDO,
+        .dataLength = 1
+    },
+    .o_6070_squeezerSpeed = {
+        .dataOrig = &OD_RAM.x6070_squeezerSpeed,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 2
+    },
+    .o_6071_squeezerWaitTime = {
+        .dataOrig = &OD_RAM.x6071_squeezerWaitTime,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6072_squeezerDirection = {
+        .dataOrig = &OD_RAM.x6072_squeezerDirection,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6073_squeezerMode = {
+        .dataOrig = &OD_RAM.x6073_squeezerMode,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6078_squeezerState = {
+        .dataOrig = &OD_RAM.x6078_squeezerState,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6079_squeezerControl = {
+        .dataOrig = &OD_RAM.x6079_squeezerControl,
+        .attribute = ODA_SDO_RW,
         .dataLength = 1
     }
 };
@@ -1194,7 +1236,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6000, 0x01, ODT_VAR, &ODObjs.o_6000_targetHeaterTemperature, NULL},
     {0x6001, 0x01, ODT_VAR, &ODObjs.o_6001_currentHeaterTemperature, NULL},
     {0x6002, 0x01, ODT_VAR, &ODObjs.o_6002_ADC_Temperature, NULL},
-    {0x6003, 0x01, ODT_VAR, &ODObjs.o_6003_disableHeater, NULL},
+    {0x6003, 0x01, ODT_VAR, &ODObjs.o_6003_enableHeater, NULL},
     {0x6004, 0x01, ODT_VAR, &ODObjs.o_6004_kp, NULL},
     {0x6005, 0x01, ODT_VAR, &ODObjs.o_6005_ki, NULL},
     {0x6006, 0x01, ODT_VAR, &ODObjs.o_6006_kd, NULL},
@@ -1202,51 +1244,57 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6011, 0x01, ODT_VAR, &ODObjs.o_6011_packageDispenserRotatePulses, NULL},
     {0x6012, 0x01, ODT_VAR, &ODObjs.o_6012_packageDispenserRotateDirection, NULL},
     {0x6013, 0x01, ODT_VAR, &ODObjs.o_6013_packageDispenserEnable, NULL},
-    {0x6014, 0x01, ODT_VAR, &ODObjs.o_6014_packageDispenserCurrentPulse, NULL},
-    {0x6018, 0x01, ODT_VAR, &ODObjs.o_6018_packageDispenserStatus, NULL},
+    {0x6014, 0x01, ODT_VAR, &ODObjs.o_6014_packageDispenserCurrentPulses, NULL},
+    {0x6018, 0x01, ODT_VAR, &ODObjs.o_6018_packageDispenserState, NULL},
     {0x6019, 0x01, ODT_VAR, &ODObjs.o_6019_packageDispenserControl, NULL},
     {0x6020, 0x01, ODT_VAR, &ODObjs.o_6020_pillGatePulsesPerRevolution, NULL},
     {0x6021, 0x01, ODT_VAR, &ODObjs.o_6021_pillGateRotatePulses, NULL},
     {0x6022, 0x01, ODT_VAR, &ODObjs.o_6022_pillGateRotateDirection, NULL},
     {0x6023, 0x01, ODT_VAR, &ODObjs.o_6023_pillGateEnable, NULL},
-    {0x6024, 0x01, ODT_VAR, &ODObjs.o_6024_pillGateCurrentPulse, NULL},
+    {0x6024, 0x01, ODT_VAR, &ODObjs.o_6024_pillGateCurrentPulses, NULL},
     {0x6027, 0x01, ODT_VAR, &ODObjs.o_6027_pillGateMode, NULL},
-    {0x6028, 0x01, ODT_VAR, &ODObjs.o_6028_pillGateStatus, NULL},
+    {0x6028, 0x01, ODT_VAR, &ODObjs.o_6028_pillGateState, NULL},
     {0x6029, 0x01, ODT_VAR, &ODObjs.o_6029_pillGateControl, NULL},
     {0x6030, 0x01, ODT_VAR, &ODObjs.o_6030_rollerRotateSteps, NULL},
     {0x6031, 0x01, ODT_VAR, &ODObjs.o_6031_rollerRotationSpeed, NULL},
     {0x6032, 0x01, ODT_VAR, &ODObjs.o_6032_rollerRotateDirection, NULL},
-    {0x6033, 0x01, ODT_VAR, &ODObjs.o_6033_rollerCurrentStep, NULL},
+    {0x6033, 0x01, ODT_VAR, &ODObjs.o_6033_rollerCurrentSteps, NULL},
     {0x6034, 0x01, ODT_VAR, &ODObjs.o_6034_rollerTargetBraker, NULL},
     {0x6035, 0x01, ODT_VAR, &ODObjs.o_6035_rollerCurrentBraker, NULL},
     {0x6037, 0x01, ODT_VAR, &ODObjs.o_6037_rollerMode, NULL},
-    {0x6038, 0x01, ODT_VAR, &ODObjs.o_6038_rollerStatus, NULL},
+    {0x6038, 0x01, ODT_VAR, &ODObjs.o_6038_rollerState, NULL},
     {0x6039, 0x01, ODT_VAR, &ODObjs.o_6039_rollerControl, NULL},
     {0x6040, 0x01, ODT_VAR, &ODObjs.o_6040_packageLengthRotateSteps, NULL},
     {0x6041, 0x01, ODT_VAR, &ODObjs.o_6041_packageLengthRotationSpeed, NULL},
     {0x6042, 0x01, ODT_VAR, &ODObjs.o_6042_packageLengthRotateDirection, NULL},
-    {0x6043, 0x01, ODT_VAR, &ODObjs.o_6043_packageLengthCurrentStep, NULL},
+    {0x6043, 0x01, ODT_VAR, &ODObjs.o_6043_packageLengthCurrentSteps, NULL},
     {0x6044, 0x01, ODT_VAR, &ODObjs.o_6044_packageLengthTargetBraker, NULL},
     {0x6045, 0x01, ODT_VAR, &ODObjs.o_6045_packageLengthCurrentBraker, NULL},
     {0x6047, 0x01, ODT_VAR, &ODObjs.o_6047_packageLengthMode, NULL},
-    {0x6048, 0x01, ODT_VAR, &ODObjs.o_6048_packageLengthStatus, NULL},
+    {0x6048, 0x01, ODT_VAR, &ODObjs.o_6048_packageLengthState, NULL},
     {0x6049, 0x01, ODT_VAR, &ODObjs.o_6049_packageLengthControl, NULL},
     {0x6050, 0x01, ODT_VAR, &ODObjs.o_6050_valve1Control, NULL},
     {0x6051, 0x01, ODT_VAR, &ODObjs.o_6051_valve2Control, NULL},
     {0x6052, 0x01, ODT_VAR, &ODObjs.o_6052_valve3Control, NULL},
     {0x6053, 0x01, ODT_VAR, &ODObjs.o_6053_valve4Control, NULL},
-    {0x6054, 0x01, ODT_VAR, &ODObjs.o_6054_valve1Status, NULL},
-    {0x6055, 0x01, ODT_VAR, &ODObjs.o_6055_valve2Status, NULL},
-    {0x6056, 0x01, ODT_VAR, &ODObjs.o_6056_valve3Status, NULL},
-    {0x6057, 0x01, ODT_VAR, &ODObjs.o_6057_valve4Status, NULL},
-    {0x6060, 0x01, ODT_VAR, &ODObjs.o_6060_reedSwitch1Status, NULL},
-    {0x6061, 0x01, ODT_VAR, &ODObjs.o_6061_reedSwitch2Status, NULL},
-    {0x6062, 0x01, ODT_VAR, &ODObjs.o_6062_reedSwitch3Status, NULL},
-    {0x6063, 0x01, ODT_VAR, &ODObjs.o_6063_reedSwitch4Status, NULL},
-    {0x6064, 0x01, ODT_VAR, &ODObjs.o_6064_reedSwitch5Status, NULL},
-    {0x6065, 0x01, ODT_VAR, &ODObjs.o_6065_reedSwitch6Status, NULL},
-    {0x6066, 0x01, ODT_VAR, &ODObjs.o_6066_reedSwitch7Status, NULL},
-    {0x6067, 0x01, ODT_VAR, &ODObjs.o_6067_reedSwitch8Status, NULL},
+    {0x6054, 0x01, ODT_VAR, &ODObjs.o_6054_valve1State, NULL},
+    {0x6055, 0x01, ODT_VAR, &ODObjs.o_6055_valve2State, NULL},
+    {0x6056, 0x01, ODT_VAR, &ODObjs.o_6056_valve3State, NULL},
+    {0x6057, 0x01, ODT_VAR, &ODObjs.o_6057_valve4State, NULL},
+    {0x6060, 0x01, ODT_VAR, &ODObjs.o_6060_reedSwitch1State, NULL},
+    {0x6061, 0x01, ODT_VAR, &ODObjs.o_6061_reedSwitch2State, NULL},
+    {0x6062, 0x01, ODT_VAR, &ODObjs.o_6062_reedSwitch3State, NULL},
+    {0x6063, 0x01, ODT_VAR, &ODObjs.o_6063_reedSwitch4State, NULL},
+    {0x6064, 0x01, ODT_VAR, &ODObjs.o_6064_reedSwitch5State, NULL},
+    {0x6065, 0x01, ODT_VAR, &ODObjs.o_6065_reedSwitch6State, NULL},
+    {0x6066, 0x01, ODT_VAR, &ODObjs.o_6066_reedSwitch7State, NULL},
+    {0x6067, 0x01, ODT_VAR, &ODObjs.o_6067_reedSwitch8State, NULL},
+    {0x6070, 0x01, ODT_VAR, &ODObjs.o_6070_squeezerSpeed, NULL},
+    {0x6071, 0x01, ODT_VAR, &ODObjs.o_6071_squeezerWaitTime, NULL},
+    {0x6072, 0x01, ODT_VAR, &ODObjs.o_6072_squeezerDirection, NULL},
+    {0x6073, 0x01, ODT_VAR, &ODObjs.o_6073_squeezerMode, NULL},
+    {0x6078, 0x01, ODT_VAR, &ODObjs.o_6078_squeezerState, NULL},
+    {0x6079, 0x01, ODT_VAR, &ODObjs.o_6079_squeezerControl, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

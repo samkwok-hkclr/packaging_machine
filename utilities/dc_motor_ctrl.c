@@ -11,6 +11,7 @@ uint8_t brake_t = 0;
 
 void dc_motor_controller(const dc_motor_t type, OD_t *od, motor_state_t *state, uint8_t *dir_ctrl, bool_t *start_flag) {
 	*state = get_od_dc_status(type, od, 0);
+
 	switch (*state) {
 	case M_IDLE: {
 		uint8_t ctrl, steps;

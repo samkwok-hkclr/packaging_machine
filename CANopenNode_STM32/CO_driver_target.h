@@ -47,6 +47,10 @@
 
 #undef CO_CONFIG_STORAGE_ENABLE // We don't need Storage option, implement based on your use case and remove this line from here
 
+#define CO_CONFIG_SDO_CLI CO_CONFIG_SDO_CLI_ENABLE | CO_CONFIG_SDO_CLI_SEGMENTED
+
+#define CO_CONFIG_FIFO CO_CONFIG_FIFO_ENABLE
+
 #ifdef CO_DRIVER_CUSTOM
 #include "CO_driver_custom.h"
 #endif

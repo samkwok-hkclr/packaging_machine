@@ -8,8 +8,8 @@ Description=The Object Dictionary of Packaging Machine
 CreationTime=3:00PM
 CreationDate=09-17-2024
 CreatedBy=Sam Kwok
-ModificationTime=5:14PM
-ModificationDate=10-10-2024
+ModificationTime=5:08PM
+ModificationDate=10-30-2024
 ModifiedBy=Sam Kwok
 
 [DeviceInfo]
@@ -125,7 +125,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=80
+SupportedObjects=86
 1=0x1003
 2=0x1005
 3=0x1006
@@ -206,6 +206,12 @@ SupportedObjects=80
 78=0x6065
 79=0x6066
 80=0x6067
+81=0x6070
+82=0x6071
+83=0x6072
+84=0x6073
+85=0x6078
+86=0x6079
 
 [1003]
 ParameterName=Pre-defined error field
@@ -1381,7 +1387,7 @@ ParameterName=Current Heater Temperature
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
-AccessType=rwr
+AccessType=ro
 HighLimit=500
 LowLimit=0
 DefaultValue=0
@@ -1399,15 +1405,15 @@ DefaultValue=0
 PDOMapping=1
 
 [6003]
-ParameterName=Disable Heater
+ParameterName=Enable Heater
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rww
+AccessType=rw
 HighLimit=1
 LowLimit=0
 DefaultValue=0
-PDOMapping=1
+PDOMapping=0
 
 [6004]
 ParameterName=Kp
@@ -1470,7 +1476,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rww
-HighLimit=255
+HighLimit=1
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
@@ -1481,13 +1487,13 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rww
-HighLimit=255
+HighLimit=1
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6014]
-ParameterName=Package Dispenser Current Pulse
+ParameterName=Package Dispenser Current Pulses
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
@@ -1498,7 +1504,7 @@ DefaultValue=0
 PDOMapping=1
 
 [6018]
-ParameterName=Package Dispenser Status
+ParameterName=Package Dispenser State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
@@ -1564,7 +1570,7 @@ DefaultValue=0
 PDOMapping=1
 
 [6024]
-ParameterName=Pill Gate Current Pulse
+ParameterName=Pill Gate Current Pulses
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
@@ -1586,7 +1592,7 @@ DefaultValue=0
 PDOMapping=1
 
 [6028]
-ParameterName=Pill Gate Status
+ParameterName=Pill Gate State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
@@ -1635,13 +1641,13 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rww
-HighLimit=255
+HighLimit=1
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6033]
-ParameterName=Roller Current Step
+ParameterName=Roller Current Steps
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
@@ -1685,7 +1691,7 @@ DefaultValue=0
 PDOMapping=1
 
 [6038]
-ParameterName=Roller Status
+ParameterName=Roller State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
@@ -1740,7 +1746,7 @@ DefaultValue=0
 PDOMapping=1
 
 [6043]
-ParameterName=Package Length Current Step
+ParameterName=Package Length Current Steps
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
@@ -1784,7 +1790,7 @@ DefaultValue=0
 PDOMapping=1
 
 [6048]
-ParameterName=Package Length Status
+ParameterName=Package Length State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
@@ -1850,136 +1856,202 @@ DefaultValue=0
 PDOMapping=1
 
 [6054]
-ParameterName=Valve 1 Status
+ParameterName=Valve 1 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6055]
-ParameterName=Valve 2 Status
+ParameterName=Valve 2 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6056]
-ParameterName=Valve 3 Status
+ParameterName=Valve 3 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6057]
-ParameterName=Valve 4 Status
+ParameterName=Valve 4 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6060]
-ParameterName=Reed Switch 1 Status
+ParameterName=Reed Switch 1 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6061]
-ParameterName=Reed Switch 2 Status
+ParameterName=Reed Switch 2 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6062]
-ParameterName=Reed Switch 3 Status
+ParameterName=Reed Switch 3 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6063]
-ParameterName=Reed Switch 4 Status
+ParameterName=Reed Switch 4 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6064]
-ParameterName=Reed Switch 5 Status
+ParameterName=Reed Switch 5 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6065]
-ParameterName=Reed Switch 6 Status
+ParameterName=Reed Switch 6 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6066]
-ParameterName=Reed Switch 7 Status
+ParameterName=Reed Switch 7 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
 
 [6067]
-ParameterName=Reed Switch 8 Status
+ParameterName=Reed Switch 8 State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
+
+[6070]
+ParameterName=Squeezer Speed
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0006
+AccessType=rw
+HighLimit=3000
+LowLimit=0
+DefaultValue=500
+PDOMapping=0
+
+[6071]
+ParameterName=Squeezer Wait Time
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+HighLimit=10
+LowLimit=0
+DefaultValue=5
+PDOMapping=0
+
+[6072]
+ParameterName=Squeezer Direction
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+HighLimit=1
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
+
+[6073]
+ParameterName=Squeezer Mode
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+HighLimit=1
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
+
+[6078]
+ParameterName=Squeezer State
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+HighLimit=255
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
+
+[6079]
+ParameterName=Squeezer Control
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+HighLimit=255
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
 
 [ManufacturerObjects]
 SupportedObjects=0
