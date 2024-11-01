@@ -424,12 +424,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if (OD_get_u8(OD_find(OD, 0x6003), 0x00, &enable_heater, false) != ODR_OK)
 			show_err_LED();
 
-		HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, enable_heater);
+		HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, !enable_heater);
 
 		if (enable_heater) {
 			PID_Compute(&TPID);
-//			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
-//			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
+			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
+			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
 		}
 
 	} else if (htim == (&htim7)) {
