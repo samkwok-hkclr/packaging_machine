@@ -105,17 +105,11 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = PH_X1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(PH_X1_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pins : PEPin PEPin PEPin PEPin
-                           PEPin PEPin PEPin */
-  GPIO_InitStruct.Pin = PH_X2_Pin|PH_X3_Pin|PH_X4_Pin|PH_X5_Pin
-                          |PH_X6_Pin|PH_X7_Pin|PH_X8_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+                           PEPin PEPin PEPin PEPin */
+  GPIO_InitStruct.Pin = PH_X1_Pin|PH_X2_Pin|PH_X3_Pin|PH_X4_Pin
+                          |PH_X5_Pin|PH_X6_Pin|PH_X7_Pin|PH_X8_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 

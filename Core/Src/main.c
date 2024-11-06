@@ -383,7 +383,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		uint8_t valve_pin_states = 0;
 		uint16_t valve_start_index = 0x6054;
 
-		for (int i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
+		for (size_t i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
 			GPIO_PinState result = !HAL_GPIO_ReadPin(valve_state_pins[i].port, valve_state_pins[i].pin);
 			if (OD_set_u8(OD_find(OD, valve_start_index+i), 0x00, (uint8_t) result, false) != ODR_OK)
 				show_err_LED();
@@ -395,7 +395,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		uint8_t RS_pin_states = 0;
 		uint16_t RS_start_index = 0x6060;
 
-		for (int i = 0; i < sizeof(RS_state_pins) / sizeof(RS_state_pins[0]); i++) {
+		for (size_t i = 0; i < sizeof(RS_state_pins) / sizeof(RS_state_pins[0]); i++) {
 			GPIO_PinState result = !HAL_GPIO_ReadPin(RS_state_pins[i].port, RS_state_pins[i].pin);
 			if (OD_set_u8(OD_find(OD, RS_start_index+i), 0x00, (uint8_t) result, false) != ODR_OK)
 				show_err_LED();
@@ -413,7 +413,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		uint8_t enable_heater;
 
 		adc_sample = temperature_adc;
-		Temp = get_temperature(kalman_filter(adc_sample));
+//		Temp = get_temperature(kalman_filter(adc_sample));
+		Temp = get_temperature(adc_sample);
 
 		if (OD_set_u16(OD_find(OD, 0x6001), 0x00, (uint16_t) Temp, false) != ODR_OK)
 			show_err_LED();
@@ -673,7 +674,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
 	// TODO: stop the specific action
 	if (GPIO_Pin == PH_X1_Pin) {
-		if (get_od_con_state(OD, 0) == M_RUNNING && get_od_con_stop_by_ph(OD, 0) == 1) {
+		if (get_od_con_state(OD, 0) == M_RUNNING && get_od_con_stop_by_ph(OD, 0) > 0) {
 			set_od_con_state(OD, 0, M_STOP);
 		}
 	} else if (GPIO_Pin == PH_X2_Pin) {
