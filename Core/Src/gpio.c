@@ -53,7 +53,7 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, Heat_Enable_Pin|Pill_Gate_Enable_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, LED_Default_Pin|CAN_Mode_Pin|Roller_In_2_Pin, GPIO_PIN_RESET);
@@ -68,7 +68,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, Pill_Pkg_Rev_Pin|Pill_Pkg_Brk_Pin|Pill_Pkg_Fwd_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, Pill_Pkg_Rev_Pin|Pill_Pkg_Brk_Pin|Pill_Pkg_Fwd_Pin|Pkg_Dis_Enable_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, Pill_Pkg_Jog_Pin|Pill_Pkg_Clr_Pin, GPIO_PIN_RESET);
@@ -78,11 +78,10 @@ void MX_GPIO_Init(void)
                           |LED_2_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_1_Pin|LED_4_Pin|LED_3_Pin|Pkg_Dis_Enable_Pin
-                          |Pkg_Dis_Dir_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, LED_1_Pin|LED_4_Pin|LED_3_Pin|Pkg_Dis_Dir_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, Pill_Gate_Enable_Pin|Pill_Gate_Dir_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : PEPin PEPin PEPin */
   GPIO_InitStruct.Pin = Heat_Enable_Pin|Pill_Gate_Enable_Pin|Pill_Gate_Dir_Pin;

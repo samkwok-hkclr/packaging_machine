@@ -53,8 +53,8 @@
 /* USER CODE BEGIN PD */
 
 typedef struct {
-    uint16_t pin;
-    GPIO_TypeDef *port;
+	uint16_t pin;
+	GPIO_TypeDef *port;
 } PinConfig;
 
 /* USER CODE END PD */
@@ -123,10 +123,10 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 
 void delay_ms(uint32_t ms) {
-    volatile uint32_t count = 0;
-    for (count = 0; count < ms * 1000; count++) {
-        __asm("NOP"); // No operation, just waste time
-    }
+	volatile uint32_t count = 0;
+	for (count = 0; count < ms * 1000; count++) {
+		__asm("NOP");
+	}
 }
 
 CO_SDO_abortCode_t
@@ -146,22 +146,22 @@ read_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subIndex
         return CO_SDO_AB_GENERAL;
     }
 
-    // upload data
-    do {
-        uint32_t timeDifference_us = 10000;
-        CO_SDO_abortCode_t abortCode = CO_SDO_AB_NONE;
+	// upload data
+	do {
+		uint32_t timeDifference_us = 10000;
+		CO_SDO_abortCode_t abortCode = CO_SDO_AB_NONE;
 
-        SDO_ret = CO_SDOclientUpload(SDO_C, timeDifference_us, false, &abortCode, NULL, NULL, NULL);
-        if (SDO_ret < 0) {
-            return abortCode;
-        }
+		SDO_ret = CO_SDOclientUpload(SDO_C, timeDifference_us, false, &abortCode, NULL, NULL, NULL);
+		if (SDO_ret < 0) {
+			return abortCode;
+		}
 
 //        sleep_us(timeDifference_us);
-        delay_ms(timeDifference_us/1000);
-    } while (SDO_ret > 0);
+		delay_ms(timeDifference_us / 1000);
+	} while (SDO_ret > 0);
 
-    // copy data to the user buffer (for long data function must be called several times inside the loop)
-    *readSize = CO_SDOclientUploadBufRead(SDO_C, buf, bufSize);
+	// copy data to the user buffer (for long data function must be called several times inside the loop)
+	*readSize = CO_SDOclientUploadBufRead(SDO_C, buf, bufSize);
 
     return CO_SDO_AB_NONE;
 }
@@ -190,19 +190,19 @@ write_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subInde
         // If SDO Fifo buffer is too small, data can be refilled in the loop.
     }
 
-    // download data
-    do {
-        uint32_t timeDifference_us = 10000;
-        CO_SDO_abortCode_t abortCode = CO_SDO_AB_NONE;
+	// download data
+	do {
+		uint32_t timeDifference_us = 10000;
+		CO_SDO_abortCode_t abortCode = CO_SDO_AB_NONE;
 
-        SDO_ret = CO_SDOclientDownload(SDO_C, timeDifference_us, false, bufferPartial, &abortCode, NULL, NULL);
-        if (SDO_ret < 0) {
-            return abortCode;
-        }
+		SDO_ret = CO_SDOclientDownload(SDO_C, timeDifference_us, false, bufferPartial, &abortCode, NULL, NULL);
+		if (SDO_ret < 0) {
+			return abortCode;
+		}
 
 //        sleep_us(timeDifference_us);
-        delay_ms(timeDifference_us/1000);
-    } while (SDO_ret > 0);
+		delay_ms(timeDifference_us / 1000);
+	} while (SDO_ret > 0);
 
     return CO_SDO_AB_NONE;
 }
@@ -375,17 +375,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim == canopenNodeSTM32->timerHandle) {
 		canopen_app_interrupt();
 	} else if (htim == (&htim2)) {
-		control_valve(0x6050, 0x6054, SV_X1_GPIO_Port, SV_X1_Pin);
-		control_valve(0x6051, 0x6055, SV_X2_GPIO_Port, SV_X2_Pin);
-		control_valve(0x6052, 0x6056, SV_X3_GPIO_Port, SV_X3_Pin);
-		control_valve(0x6053, 0x6057, SV_X4_GPIO_Port, SV_X4_Pin);
+		control_valve(0x6050, SV_X1_GPIO_Port, SV_X1_Pin);
+		control_valve(0x6051, SV_X2_GPIO_Port, SV_X2_Pin);
+		control_valve(0x6052, SV_X3_GPIO_Port, SV_X3_Pin);
+		control_valve(0x6053, SV_X4_GPIO_Port, SV_X4_Pin);
 
 		uint8_t valve_pin_states = 0;
 		uint16_t valve_start_index = 0x6054;
 
 		for (size_t i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
 			GPIO_PinState result = !HAL_GPIO_ReadPin(valve_state_pins[i].port, valve_state_pins[i].pin);
-			if (OD_set_u8(OD_find(OD, valve_start_index+i), 0x00, (uint8_t) result, false) != ODR_OK)
+			if (OD_set_u8(OD_find(OD, valve_start_index + i), 0x00, (uint8_t) result, false) != ODR_OK)
 				show_err_LED();
 			valve_pin_states |= (result << i);
 		}
@@ -397,7 +397,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		for (size_t i = 0; i < sizeof(RS_state_pins) / sizeof(RS_state_pins[0]); i++) {
 			GPIO_PinState result = !HAL_GPIO_ReadPin(RS_state_pins[i].port, RS_state_pins[i].pin);
-			if (OD_set_u8(OD_find(OD, RS_start_index+i), 0x00, (uint8_t) result, false) != ODR_OK)
+			if (OD_set_u8(OD_find(OD, RS_start_index + i), 0x00, (uint8_t) result, false) != ODR_OK)
 				show_err_LED();
 			RS_pin_states |= (result << i);
 		}
@@ -429,8 +429,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		if (enable_heater) {
 			PID_Compute(&TPID);
-			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t) PIDOut);
-			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t) PIDOut);
+			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t ) PIDOut);
+			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t ) PIDOut);
 		}
 
 	} else if (htim == (&htim7)) {
@@ -452,12 +452,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
 
 				_dir = get_od_con_dir(OD, 0);
-				if (_dir == 0)
-				{
+				if (_dir == 0) {
 					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_fwd, 2);
-				}
-				else
-				{
+				} else {
 					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_rev, 2);
 				}
 			}
@@ -465,8 +462,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		case M_RUNNING:
 			_ctrl = get_od_con_ctrl(OD, 0);
 
-			if (_ctrl == 0)
-			{
+			if (_ctrl == 0) {
 				set_od_con_state(OD, 0, M_STOP);
 			}
 			break;
@@ -483,8 +479,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		case M_ERROR:
 			_ctrl = get_od_con_ctrl(OD, 0);
 
-			if (_ctrl == 0)
-			{
+			if (_ctrl == 0) {
 				set_od_con_state(OD, 0, M_STOP);
 			}
 			show_err_LED();
@@ -511,12 +506,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
 
 				_dir = get_od_sq_dir(OD, 0);
-				if (_dir == 0)
-				{
+				if (_dir == 0) {
 					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_fwd, 2);
-				}
-				else
-				{
+				} else {
 					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_rev, 2);
 				}
 			}
@@ -524,8 +516,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		case M_RUNNING:
 			_ctrl = get_od_sq_ctrl(OD, 0);
 
-			if (_ctrl == 0)
-			{
+			if (_ctrl == 0) {
 				set_od_sq_state(OD, 0, M_STOP);
 			}
 			break;
@@ -542,8 +533,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		case M_ERROR:
 			_ctrl = get_od_sq_ctrl(OD, 0);
 
-			if (_ctrl == 0)
-			{
+			if (_ctrl == 0) {
 				set_od_sq_state(OD, 0, M_STOP);
 			}
 			show_err_LED();
@@ -563,14 +553,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		switch (_state) {
 		case M_IDLE:
 			if (_start_flag) {
+				HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_SET);
 				HAL_GPIO_WritePin(Pkg_Dis_Dir_GPIO_Port, Pkg_Dis_Dir_Pin, _dir);
 				__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 50);
 			}
 			break;
 		case M_STOP:
+			HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_RESET);
 			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
 			break;
 		case M_ERROR:
+			HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_RESET);
 			show_err_LED();
 			break;
 		default:
@@ -586,14 +579,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		switch (_state) {
 		case M_IDLE:
 			if (_start_flag) {
+				HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_SET);
 				HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, _dir);
 				__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
 			}
 			break;
 		case M_STOP:
+			HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_RESET);
 			__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 0);
 			break;
 		case M_ERROR:
+			HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_RESET);
 			show_err_LED();
 			break;
 		default:
@@ -712,27 +708,22 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	}
 }
 
-void control_valve(uint16_t ctrl_index, uint16_t state_index, GPIO_TypeDef *port, uint16_t pin) {
+void control_valve(uint16_t ctrl_index, GPIO_TypeDef *port, uint16_t pin) {
 	uint8_t valve_control = 0;
 
 	if (OD_get_u8(OD_find(OD, ctrl_index), 0x00, &valve_control, false) != ODR_OK) {
 		show_err_LED();
 	}
 	HAL_GPIO_WritePin(port, pin, !valve_control);
-
-//	uint8_t state = !HAL_GPIO_ReadPin(port, pin);
-//	if (OD_set_u8(OD_find(OD, state_index), 0x00, state, false) != ODR_OK) {
-//		show_err_LED();
-//	}
 }
 
-float get_temperature(uint16_t adc_value) {
+inline float get_temperature(uint16_t adc_value) {
 	float temp = ((3.3f * (float) adc_value / 4096.0f) - 1.25f) / 0.005f;
 
 	return temp > 0.0f ? temp : 0.0f;
 }
 
-void show_err_LED() {
+inline void show_err_LED() {
 	HAL_GPIO_WritePin(LED_4_GPIO_Port, LED_4_Pin, GPIO_PIN_RESET);
 }
 

@@ -56,8 +56,10 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
-//bool get_configs_form_OD();
-void control_valve(uint16_t ctrl_index, uint16_t status_index, GPIO_TypeDef *port, uint16_t pin);
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+
+void control_valve(uint16_t ctrl_index, GPIO_TypeDef *port, uint16_t pin);
 float get_temperature(uint16_t adc_value);
 void show_err_LED();
 
