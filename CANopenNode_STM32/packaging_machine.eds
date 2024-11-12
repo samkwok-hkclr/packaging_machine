@@ -8,8 +8,8 @@ Description=The Object Dictionary of Packaging Machine
 CreationTime=3:00PM
 CreationDate=09-17-2024
 CreatedBy=Sam Kwok
-ModificationTime=3:52PM
-ModificationDate=11-06-2024
+ModificationTime=5:16PM
+ModificationDate=11-12-2024
 ModifiedBy=Sam Kwok
 
 [DeviceInfo]
@@ -125,7 +125,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=94
+SupportedObjects=100
 1=0x1003
 2=0x1005
 3=0x1006
@@ -157,69 +157,75 @@ SupportedObjects=94
 29=0x6004
 30=0x6005
 31=0x6006
-32=0x6010
-33=0x6011
-34=0x6012
-35=0x6013
-36=0x6014
-37=0x6018
-38=0x6019
-39=0x6020
-40=0x6021
-41=0x6022
-42=0x6023
-43=0x6024
-44=0x6027
-45=0x6028
-46=0x6029
-47=0x6030
-48=0x6031
-49=0x6032
-50=0x6033
-51=0x6034
-52=0x6035
-53=0x6037
-54=0x6038
-55=0x6039
-56=0x6040
-57=0x6041
-58=0x6042
-59=0x6043
-60=0x6044
-61=0x6045
-62=0x6047
-63=0x6048
-64=0x6049
-65=0x6050
-66=0x6051
-67=0x6052
-68=0x6053
-69=0x6054
-70=0x6055
-71=0x6056
-72=0x6057
-73=0x6058
-74=0x6060
-75=0x6061
-76=0x6062
-77=0x6063
-78=0x6064
-79=0x6065
-80=0x6066
-81=0x6067
-82=0x6068
-83=0x6070
-84=0x6071
-85=0x6072
-86=0x6073
-87=0x6078
-88=0x6079
-89=0x6080
-90=0x6081
-91=0x6082
-92=0x6083
-93=0x6088
-94=0x6089
+32=0x6007
+33=0x6008
+34=0x6010
+35=0x6011
+36=0x6012
+37=0x6013
+38=0x6014
+39=0x6018
+40=0x6019
+41=0x6020
+42=0x6021
+43=0x6022
+44=0x6023
+45=0x6024
+46=0x6025
+47=0x6026
+48=0x6027
+49=0x6028
+50=0x6029
+51=0x6030
+52=0x6031
+53=0x6032
+54=0x6033
+55=0x6034
+56=0x6035
+57=0x6037
+58=0x6038
+59=0x6039
+60=0x6040
+61=0x6041
+62=0x6042
+63=0x6043
+64=0x6044
+65=0x6045
+66=0x6046
+67=0x6047
+68=0x6048
+69=0x6049
+70=0x6050
+71=0x6051
+72=0x6052
+73=0x6053
+74=0x6054
+75=0x6055
+76=0x6056
+77=0x6057
+78=0x6058
+79=0x6060
+80=0x6061
+81=0x6062
+82=0x6063
+83=0x6064
+84=0x6065
+85=0x6066
+86=0x6067
+87=0x6068
+88=0x6070
+89=0x6071
+90=0x6072
+91=0x6073
+92=0x6076
+93=0x6078
+94=0x6079
+95=0x6080
+96=0x6081
+97=0x6082
+98=0x6083
+99=0x6088
+100=0x6089
 
 [1003]
 ParameterName=Pre-defined error field
@@ -1304,7 +1310,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=3
+DefaultValue=4
 PDOMapping=0
 
 [1A00sub1]
@@ -1340,7 +1346,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00000000
+DefaultValue=0x60080010
 PDOMapping=0
 
 [1A00sub5]
@@ -1455,6 +1461,28 @@ HighLimit=1000
 LowLimit=0
 DefaultValue=8
 PDOMapping=0
+
+[6007]
+ParameterName=Enable ADC Kalman Filter
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+HighLimit=1
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
+
+[6008]
+ParameterName=Temperature Control
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0006
+AccessType=ro
+HighLimit=5000
+LowLimit=0
+DefaultValue=0
+PDOMapping=1
 
 [6010]
 ParameterName=Package Dispenser Pulses Per Revolution
@@ -1587,6 +1615,28 @@ HighLimit=12800
 LowLimit=0
 DefaultValue=0
 PDOMapping=1
+
+[6025]
+ParameterName=Pill Gate Target Location
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+HighLimit=4
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
+
+[6026]
+ParameterName=Pill Gate Location
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=ro
+HighLimit=4
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
 
 [6027]
 ParameterName=Pill Gate Mode
@@ -1782,6 +1832,17 @@ ObjectType=0x7
 DataType=0x0005
 AccessType=ro
 HighLimit=100
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
+
+[6046]
+ParameterName=Package Length Location
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=ro
+HighLimit=1
 LowLimit=0
 DefaultValue=0
 PDOMapping=0
@@ -2007,11 +2068,11 @@ DefaultValue=0
 PDOMapping=1
 
 [6068]
-ParameterName=Reed Switch state
+ParameterName=Reed Switch State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
@@ -2023,9 +2084,9 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
-HighLimit=1000
+HighLimit=3000
 LowLimit=0
-DefaultValue=200
+DefaultValue=1000
 PDOMapping=0
 
 [6071]
@@ -2034,9 +2095,9 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-HighLimit=10
+HighLimit=20
 LowLimit=0
-DefaultValue=5
+DefaultValue=2
 PDOMapping=0
 
 [6072]
@@ -2061,12 +2122,23 @@ LowLimit=0
 DefaultValue=0
 PDOMapping=0
 
+[6076]
+ParameterName=Squeezer Location
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=ro
+HighLimit=1
+LowLimit=0
+DefaultValue=0
+PDOMapping=0
+
 [6078]
 ParameterName=Squeezer State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rw
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0
@@ -2089,9 +2161,9 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
-HighLimit=1000
+HighLimit=600
 LowLimit=0
-DefaultValue=300
+DefaultValue=200
 PDOMapping=0
 
 [6081]
@@ -2132,7 +2204,7 @@ ParameterName=Conveyor State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rw
+AccessType=ro
 HighLimit=255
 LowLimit=0
 DefaultValue=0

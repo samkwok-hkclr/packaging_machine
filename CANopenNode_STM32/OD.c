@@ -122,11 +122,11 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .SYNCStartValue = 0x00
     },
     .x1A00_TPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x03,
+        .numberOfMappedApplicationObjectsInPDO = 0x04,
         .applicationObject1 = 0x60010010,
         .applicationObject2 = 0x60680008,
         .applicationObject3 = 0x60580008,
-        .applicationObject4 = 0x00000000,
+        .applicationObject4 = 0x60080010,
         .applicationObject5 = 0x00000000,
         .applicationObject6 = 0x00000000,
         .applicationObject7 = 0x00000000,
@@ -152,6 +152,8 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6004_kp = 0x001E,
     .x6005_ki = 0x003C,
     .x6006_kd = 0x0008,
+    .x6007_enableADC_KalmanFilter = 0x00,
+    .x6008_temperatureControl = 0x0000,
     .x6010_packageDispenserPulsesPerRevolution = 0x0C80,
     .x6011_packageDispenserRotatePulses = 0x0000,
     .x6012_packageDispenserRotateDirection = 0x00,
@@ -164,6 +166,8 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6022_pillGateRotateDirection = 0x00,
     .x6023_pillGateEnable = 0x00,
     .x6024_pillGateCurrentPulses = 0x0000,
+    .x6025_pillGateTargetLocation = 0x00,
+    .x6026_pillGateLocation = 0x00,
     .x6027_pillGateMode = 0x00,
     .x6028_pillGateState = 0x00,
     .x6029_pillGateControl = 0x00,
@@ -182,6 +186,7 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6043_packageLengthCurrentSteps = 0x00,
     .x6044_packageLengthTargetBraker = 0x32,
     .x6045_packageLengthCurrentBraker = 0x00,
+    .x6046_packageLengthLocation = 0x00,
     .x6047_packageLengthMode = 0x00,
     .x6048_packageLengthState = 0x00,
     .x6049_packageLengthControl = 0x00,
@@ -203,13 +208,14 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6066_reedSwitch7State = 0x00,
     .x6067_reedSwitch8State = 0x00,
     .x6068_reedSwitchState = 0x00,
-    .x6070_squeezerSpeed = 0x00C8,
-    .x6071_squeezerWaitTime = 0x05,
+    .x6070_squeezerSpeed = 0x03E8,
+    .x6071_squeezerWaitTime = 0x02,
     .x6072_squeezerDirection = 0x00,
     .x6073_squeezerMode = 0x00,
+    .x6076_squeezerLocation = 0x00,
     .x6078_squeezerState = 0x00,
     .x6079_squeezerControl = 0x00,
-    .x6080_conveyorSpeed = 0x012C,
+    .x6080_conveyorSpeed = 0x00C8,
     .x6081_conveyorStopByPhotoelectric = 0x00,
     .x6082_conveyorDirection = 0x00,
     .x6083_conveyorMode = 0x00,
@@ -257,6 +263,8 @@ typedef struct {
     OD_obj_var_t o_6004_kp;
     OD_obj_var_t o_6005_ki;
     OD_obj_var_t o_6006_kd;
+    OD_obj_var_t o_6007_enableADC_KalmanFilter;
+    OD_obj_var_t o_6008_temperatureControl;
     OD_obj_var_t o_6010_packageDispenserPulsesPerRevolution;
     OD_obj_var_t o_6011_packageDispenserRotatePulses;
     OD_obj_var_t o_6012_packageDispenserRotateDirection;
@@ -269,6 +277,8 @@ typedef struct {
     OD_obj_var_t o_6022_pillGateRotateDirection;
     OD_obj_var_t o_6023_pillGateEnable;
     OD_obj_var_t o_6024_pillGateCurrentPulses;
+    OD_obj_var_t o_6025_pillGateTargetLocation;
+    OD_obj_var_t o_6026_pillGateLocation;
     OD_obj_var_t o_6027_pillGateMode;
     OD_obj_var_t o_6028_pillGateState;
     OD_obj_var_t o_6029_pillGateControl;
@@ -287,6 +297,7 @@ typedef struct {
     OD_obj_var_t o_6043_packageLengthCurrentSteps;
     OD_obj_var_t o_6044_packageLengthTargetBraker;
     OD_obj_var_t o_6045_packageLengthCurrentBraker;
+    OD_obj_var_t o_6046_packageLengthLocation;
     OD_obj_var_t o_6047_packageLengthMode;
     OD_obj_var_t o_6048_packageLengthState;
     OD_obj_var_t o_6049_packageLengthControl;
@@ -312,6 +323,7 @@ typedef struct {
     OD_obj_var_t o_6071_squeezerWaitTime;
     OD_obj_var_t o_6072_squeezerDirection;
     OD_obj_var_t o_6073_squeezerMode;
+    OD_obj_var_t o_6076_squeezerLocation;
     OD_obj_var_t o_6078_squeezerState;
     OD_obj_var_t o_6079_squeezerControl;
     OD_obj_var_t o_6080_conveyorSpeed;
@@ -940,6 +952,16 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_MB,
         .dataLength = 2
     },
+    .o_6007_enableADC_KalmanFilter = {
+        .dataOrig = &OD_RAM.x6007_enableADC_KalmanFilter,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6008_temperatureControl = {
+        .dataOrig = &OD_RAM.x6008_temperatureControl,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 2
+    },
     .o_6010_packageDispenserPulsesPerRevolution = {
         .dataOrig = &OD_RAM.x6010_packageDispenserPulsesPerRevolution,
         .attribute = ODA_SDO_RW | ODA_MB,
@@ -999,6 +1021,16 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataOrig = &OD_RAM.x6024_pillGateCurrentPulses,
         .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 2
+    },
+    .o_6025_pillGateTargetLocation = {
+        .dataOrig = &OD_RAM.x6025_pillGateTargetLocation,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_6026_pillGateLocation = {
+        .dataOrig = &OD_RAM.x6026_pillGateLocation,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
     },
     .o_6027_pillGateMode = {
         .dataOrig = &OD_RAM.x6027_pillGateMode,
@@ -1087,6 +1119,11 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     },
     .o_6045_packageLengthCurrentBraker = {
         .dataOrig = &OD_RAM.x6045_packageLengthCurrentBraker,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
+    .o_6046_packageLengthLocation = {
+        .dataOrig = &OD_RAM.x6046_packageLengthLocation,
         .attribute = ODA_SDO_R,
         .dataLength = 1
     },
@@ -1192,7 +1229,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     },
     .o_6068_reedSwitchState = {
         .dataOrig = &OD_RAM.x6068_reedSwitchState,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
     .o_6070_squeezerSpeed = {
@@ -1215,9 +1252,14 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW,
         .dataLength = 1
     },
+    .o_6076_squeezerLocation = {
+        .dataOrig = &OD_RAM.x6076_squeezerLocation,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
     .o_6078_squeezerState = {
         .dataOrig = &OD_RAM.x6078_squeezerState,
-        .attribute = ODA_SDO_RW,
+        .attribute = ODA_SDO_R,
         .dataLength = 1
     },
     .o_6079_squeezerControl = {
@@ -1247,7 +1289,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     },
     .o_6088_conveyorState = {
         .dataOrig = &OD_RAM.x6088_conveyorState,
-        .attribute = ODA_SDO_RW,
+        .attribute = ODA_SDO_R,
         .dataLength = 1
     },
     .o_6089_conveyorControl = {
@@ -1296,6 +1338,8 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6004, 0x01, ODT_VAR, &ODObjs.o_6004_kp, NULL},
     {0x6005, 0x01, ODT_VAR, &ODObjs.o_6005_ki, NULL},
     {0x6006, 0x01, ODT_VAR, &ODObjs.o_6006_kd, NULL},
+    {0x6007, 0x01, ODT_VAR, &ODObjs.o_6007_enableADC_KalmanFilter, NULL},
+    {0x6008, 0x01, ODT_VAR, &ODObjs.o_6008_temperatureControl, NULL},
     {0x6010, 0x01, ODT_VAR, &ODObjs.o_6010_packageDispenserPulsesPerRevolution, NULL},
     {0x6011, 0x01, ODT_VAR, &ODObjs.o_6011_packageDispenserRotatePulses, NULL},
     {0x6012, 0x01, ODT_VAR, &ODObjs.o_6012_packageDispenserRotateDirection, NULL},
@@ -1308,6 +1352,8 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6022, 0x01, ODT_VAR, &ODObjs.o_6022_pillGateRotateDirection, NULL},
     {0x6023, 0x01, ODT_VAR, &ODObjs.o_6023_pillGateEnable, NULL},
     {0x6024, 0x01, ODT_VAR, &ODObjs.o_6024_pillGateCurrentPulses, NULL},
+    {0x6025, 0x01, ODT_VAR, &ODObjs.o_6025_pillGateTargetLocation, NULL},
+    {0x6026, 0x01, ODT_VAR, &ODObjs.o_6026_pillGateLocation, NULL},
     {0x6027, 0x01, ODT_VAR, &ODObjs.o_6027_pillGateMode, NULL},
     {0x6028, 0x01, ODT_VAR, &ODObjs.o_6028_pillGateState, NULL},
     {0x6029, 0x01, ODT_VAR, &ODObjs.o_6029_pillGateControl, NULL},
@@ -1326,6 +1372,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6043, 0x01, ODT_VAR, &ODObjs.o_6043_packageLengthCurrentSteps, NULL},
     {0x6044, 0x01, ODT_VAR, &ODObjs.o_6044_packageLengthTargetBraker, NULL},
     {0x6045, 0x01, ODT_VAR, &ODObjs.o_6045_packageLengthCurrentBraker, NULL},
+    {0x6046, 0x01, ODT_VAR, &ODObjs.o_6046_packageLengthLocation, NULL},
     {0x6047, 0x01, ODT_VAR, &ODObjs.o_6047_packageLengthMode, NULL},
     {0x6048, 0x01, ODT_VAR, &ODObjs.o_6048_packageLengthState, NULL},
     {0x6049, 0x01, ODT_VAR, &ODObjs.o_6049_packageLengthControl, NULL},
@@ -1351,6 +1398,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6071, 0x01, ODT_VAR, &ODObjs.o_6071_squeezerWaitTime, NULL},
     {0x6072, 0x01, ODT_VAR, &ODObjs.o_6072_squeezerDirection, NULL},
     {0x6073, 0x01, ODT_VAR, &ODObjs.o_6073_squeezerMode, NULL},
+    {0x6076, 0x01, ODT_VAR, &ODObjs.o_6076_squeezerLocation, NULL},
     {0x6078, 0x01, ODT_VAR, &ODObjs.o_6078_squeezerState, NULL},
     {0x6079, 0x01, ODT_VAR, &ODObjs.o_6079_squeezerControl, NULL},
     {0x6080, 0x01, ODT_VAR, &ODObjs.o_6080_conveyorSpeed, NULL},

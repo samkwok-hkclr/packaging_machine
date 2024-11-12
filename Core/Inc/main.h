@@ -59,11 +59,39 @@ void Error_Handler(void);
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
+void htim1_cb(void);
+void htim2_cb(void);
+void htim3_cb(void);
+void htim4_cb(void);
+void htim5_cb(void);
+void htim6_cb(void);
+void htim7_cb(void);
+void htim8_cb(void);
+void htim9_cb(void);
+void htim10_cb(void);
+void htim11_cb(void);
+void htim12_cb(void);
+void htim13_cb(void);
+void htim14_cb(void);
+
+void exti1_cb(void);
+void exti2_cb(void);
+void exti3_cb(void);
+void exti4_cb(void);
+void exti5_cb(void);
+void exti6_cb(void);
+void exti7_cb(void);
+void exti8_cb(void);
+
+void initial_pill_gate_home(void);
+
 void control_valve(uint16_t ctrl_index, GPIO_TypeDef *port, uint16_t pin);
 float get_temperature(uint16_t adc_value);
-void show_err_LED();
+void show_err_LED(void);
 
-void set_pid_config();
+void set_pid_config(void);
+
+void delay_ms(uint32_t ms);
 
 /* USER CODE END EFP */
 

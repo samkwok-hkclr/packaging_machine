@@ -27,6 +27,10 @@ inline uint8_t get_od_pkg_len_curr_braker(OD_t *od, uint8_t sub_index) {
 	return _get_od_u8(od, sub_index, 0x6045);
 }
 
+inline uint8_t get_od_pkg_len_loc(OD_t *od, uint8_t sub_index) {
+	return _get_od_u8(od, sub_index, 0x6046);
+}
+
 inline uint8_t get_od_pkg_len_mode(OD_t *od, uint8_t sub_index) {
 	return _get_od_u8(od, sub_index, 0x6047);
 }
@@ -59,6 +63,10 @@ inline void set_od_pkg_len_target_braker(OD_t *od, uint8_t sub_index, uint8_t va
 
 inline void set_od_pkg_len_curr_braker(OD_t *od, uint8_t sub_index, uint8_t val) {
 	_set_od_u8(od, sub_index, 0x6045, val);
+}
+
+inline void set_od_pkg_len_loc(OD_t *od, uint8_t sub_index, uint8_t val) {
+	_set_od_u8(od, sub_index, 0x6046, val);
 }
 
 inline void set_od_pkg_len_mode(OD_t *od, uint8_t sub_index, uint8_t val) {

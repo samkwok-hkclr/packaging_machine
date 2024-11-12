@@ -17,6 +17,7 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 #include "adc.h"
 #include "can.h"
@@ -37,8 +38,9 @@
 #include "kalman_filter.h"
 
 #include "motor_state.h"
-#include "stepper_motor_ctrl.h"
 #include "dc_motor_ctrl.h"
+#include "pill_gate_motor.h"
+#include "pkg_dis_motor.h"
 #include "squeezer_motor.h"
 #include "conveyor_motor.h"
 
@@ -67,29 +69,32 @@ typedef struct {
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+uint32_t running = 0;
+
 CANopenNodeSTM32 canOpenNodeSTM32;
 
 const uint8_t main_node_id = 32;
-const uint8_t sq_node_id = 60;
+const uint8_t squ_node_id = 60;
 const uint8_t con_node_id = 61;
 
 uint16_t temperature_adc = 0;
 
 PID_TypeDef TPID;
-float Temp = 0.0;
-float PIDOut = 0.0;
-float TempSetpoint = 0.0; // config by OD
+float temp = 0.0;
+float PID_out = 0.0;
+float temp_set_pt = 0.0; // config by OD
 const int32_t SAMPLE_TIME = 100;
-const float LOW_LIMIT = 200.0;
-const float HIGH_LIMIT = 2000.0;
+const float LOW_LIMIT = 200.0f;
+const float HIGH_LIMIT = 2000.0f;
 
 const uint16_t squeezer_fwd = 1;
 const uint16_t squeezer_rev = 2;
-const uint16_t squeezer_stop = 5;
+const uint16_t squeezer_stop = 6;
 
 const uint16_t con_fwd = 1;
 const uint16_t con_rev = 2;
-const uint16_t con_stop = 5;
+const uint16_t con_stop = 6;
 
 PinConfig RS_state_pins[] = {
     {RS_X1_Pin, RS_X1_GPIO_Port},
@@ -109,8 +114,6 @@ PinConfig valve_state_pins[] = {
     {SV_X4_Pin, SV_X4_GPIO_Port},
 };
 
-uint32_t running = 0;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -122,12 +125,6 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void delay_ms(uint32_t ms) {
-	volatile uint32_t count = 0;
-	for (count = 0; count < ms * 1000; count++) {
-		__asm("NOP");
-	}
-}
 
 CO_SDO_abortCode_t
 read_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subIndex, uint8_t* buf, size_t bufSize,
@@ -207,6 +204,7 @@ write_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subInde
     return CO_SDO_AB_NONE;
 }
 
+
 /* USER CODE END 0 */
 
 /**
@@ -272,9 +270,7 @@ int main(void)
 
 	HAL_TIM_Base_Start_IT(&htim2);	// valve control
 	HAL_TIM_Base_Start_IT(&htim5);	// temperature control
-
 	HAL_TIM_Base_Start_IT(&htim7);  // conveyor motor
-
 	HAL_TIM_Base_Start_IT(&htim8);  // squeezer motor
 
 	HAL_TIM_Base_Start_IT(&htim9);  // heater
@@ -300,6 +296,8 @@ int main(void)
 	__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
 
 	HAL_TIM_Base_Start_IT(&htim4);	// start to refresh the watchdog
+
+//	initial_pill_gate_home();
 
   /* USER CODE END 2 */
 
@@ -373,338 +371,571 @@ void SystemClock_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	// TODO: control the specific action
 	if (htim == canopenNodeSTM32->timerHandle) {
-		canopen_app_interrupt();
+		htim1_cb();
 	} else if (htim == (&htim2)) {
-		control_valve(0x6050, SV_X1_GPIO_Port, SV_X1_Pin);
-		control_valve(0x6051, SV_X2_GPIO_Port, SV_X2_Pin);
-		control_valve(0x6052, SV_X3_GPIO_Port, SV_X3_Pin);
-		control_valve(0x6053, SV_X4_GPIO_Port, SV_X4_Pin);
-
-		uint8_t valve_pin_states = 0;
-		uint16_t valve_start_index = 0x6054;
-
-		for (size_t i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
-			GPIO_PinState result = !HAL_GPIO_ReadPin(valve_state_pins[i].port, valve_state_pins[i].pin);
-			if (OD_set_u8(OD_find(OD, valve_start_index + i), 0x00, (uint8_t) result, false) != ODR_OK)
-				show_err_LED();
-			valve_pin_states |= (result << i);
-		}
-		if (OD_set_u8(OD_find(OD, 0x6058), 0x00, (uint8_t) valve_pin_states, false) != ODR_OK)
-			show_err_LED();
-
-		uint8_t RS_pin_states = 0;
-		uint16_t RS_start_index = 0x6060;
-
-		for (size_t i = 0; i < sizeof(RS_state_pins) / sizeof(RS_state_pins[0]); i++) {
-			GPIO_PinState result = !HAL_GPIO_ReadPin(RS_state_pins[i].port, RS_state_pins[i].pin);
-			if (OD_set_u8(OD_find(OD, RS_start_index + i), 0x00, (uint8_t) result, false) != ODR_OK)
-				show_err_LED();
-			RS_pin_states |= (result << i);
-		}
-
-		if (OD_set_u8(OD_find(OD, 0x6068), 0x00, (uint8_t) RS_pin_states, false) != ODR_OK)
-			show_err_LED();
+		htim2_cb();
 	} else if (htim == (&htim4)) {
-		HAL_GPIO_TogglePin(LED_Default_GPIO_Port, LED_Default_Pin);
-		HAL_IWDG_Refresh(&hiwdg);
-		running++;
+		htim4_cb();
 	} else if (htim == (&htim5)) {
-		uint16_t adc_sample;
-		uint8_t enable_heater;
-
-		adc_sample = temperature_adc;
-//		Temp = get_temperature(kalman_filter(adc_sample));
-		Temp = get_temperature(adc_sample);
-
-		if (OD_set_u16(OD_find(OD, 0x6001), 0x00, (uint16_t) Temp, false) != ODR_OK)
-			show_err_LED();
-		if (OD_set_u16(OD_find(OD, 0x6002), 0x00, adc_sample, false) != ODR_OK)
-			show_err_LED();
-
-		enable_heater = 0;
-		if (OD_get_u8(OD_find(OD, 0x6003), 0x00, &enable_heater, false) != ODR_OK)
-			show_err_LED();
-
-		HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, !enable_heater);
-
-		if (enable_heater) {
-			PID_Compute(&TPID);
-			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t ) PIDOut);
-			__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t ) PIDOut);
-		}
-
+		htim5_cb();
 	} else if (htim == (&htim7)) {
-		motor_state_t _state = M_ERROR;
-		uint8_t _dir, _ctrl;
-		uint16_t _speed;
-		bool_t _start_flag = 0;
-
-		_state = get_od_con_state(OD, 0);
-
-		switch (_state) {
-		case M_IDLE:
-			_ctrl = get_od_con_ctrl(OD, 0);
-			_speed = get_od_con_speed(OD, 0);
-			_start_flag = _ctrl > 0 && _speed > 0;
-
-			if (_start_flag) {
-				set_od_con_state(OD, 0, M_RUNNING);
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
-
-				_dir = get_od_con_dir(OD, 0);
-				if (_dir == 0) {
-					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_fwd, 2);
-				} else {
-					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_rev, 2);
-				}
-			}
-			break;
-		case M_RUNNING:
-			_ctrl = get_od_con_ctrl(OD, 0);
-
-			if (_ctrl == 0) {
-				set_od_con_state(OD, 0, M_STOP);
-			}
-			break;
-		case M_STOP:
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_stop, 2);
-			set_od_con_state(OD, 0, M_RESET);
-			break;
-		case M_RESET:
-			set_od_con_mode(OD, 0, 0);
-			set_od_con_dir(OD, 0, 0);
-			set_od_con_ctrl(OD, 0, 0);
-			set_od_con_state(OD, 0, M_IDLE);
-			break;
-		case M_ERROR:
-			_ctrl = get_od_con_ctrl(OD, 0);
-
-			if (_ctrl == 0) {
-				set_od_con_state(OD, 0, M_STOP);
-			}
-			show_err_LED();
-			break;
-		default:
-			break;
-		}
+		htim7_cb();
 	} else if (htim == (&htim8)) {
-		motor_state_t _state = M_ERROR;
-		uint8_t _dir, _ctrl;
-		uint16_t _speed;
-		bool_t _start_flag = 0;
-
-		_state = get_od_sq_state(OD, 0);
-
-		switch (_state) {
-		case M_IDLE:
-			_ctrl = get_od_sq_ctrl(OD, 0);
-			_speed = get_od_sq_speed(OD, 0);
-			_start_flag = _ctrl > 0 && _speed > 0;
-
-			if (_start_flag) {
-				set_od_sq_state(OD, 0, M_RUNNING);
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
-
-				_dir = get_od_sq_dir(OD, 0);
-				if (_dir == 0) {
-					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_fwd, 2);
-				} else {
-					write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_rev, 2);
-				}
-			}
-			break;
-		case M_RUNNING:
-			_ctrl = get_od_sq_ctrl(OD, 0);
-
-			if (_ctrl == 0) {
-				set_od_sq_state(OD, 0, M_STOP);
-			}
-			break;
-		case M_STOP:
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, sq_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_stop, 2);
-			set_od_sq_state(OD, 0, M_RESET);
-			break;
-		case M_RESET:
-			set_od_sq_mode(OD, 0, 0);
-			set_od_sq_dir(OD, 0, 0);
-			set_od_sq_ctrl(OD, 0, 0);
-			set_od_sq_state(OD, 0, M_IDLE);
-			break;
-		case M_ERROR:
-			_ctrl = get_od_sq_ctrl(OD, 0);
-
-			if (_ctrl == 0) {
-				set_od_sq_state(OD, 0, M_STOP);
-			}
-			show_err_LED();
-			break;
-		default:
-			break;
-		}
+		htim8_cb();
 	} else if (htim == (&htim9)) {
-		// Heater
+		htim9_cb();
 	} else if (htim == (&htim10)) {
-		motor_state_t _state = M_ERROR;
-		uint8_t _dir = 0;
-		bool_t _start_flag = 0;
-
-		stepper_motor_controller(PKG_DIS_STEPPER, OD, &_state, &_dir, &_start_flag);
-
-		switch (_state) {
-		case M_IDLE:
-			if (_start_flag) {
-				HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(Pkg_Dis_Dir_GPIO_Port, Pkg_Dis_Dir_Pin, _dir);
-				__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 50);
-			}
-			break;
-		case M_STOP:
-			HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_RESET);
-			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
-			break;
-		case M_ERROR:
-			HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_RESET);
-			show_err_LED();
-			break;
-		default:
-			break;
-		}
+		htim10_cb();
 	} else if (htim == (&htim11)) {
-		motor_state_t _state = M_ERROR;
-		uint8_t _dir = 0;
-		bool_t _start_flag = 0;
-
-		stepper_motor_controller(PILL_GATE_STEPPER, OD, &_state, &_dir, &_start_flag);
-
-		switch (_state) {
-		case M_IDLE:
-			if (_start_flag) {
-				HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, _dir);
-				__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
-			}
-			break;
-		case M_STOP:
-			HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_RESET);
-			__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 0);
-			break;
-		case M_ERROR:
-			HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_RESET);
-			show_err_LED();
-			break;
-		default:
-			break;
-		}
+		htim11_cb();
 	} else if (htim == (&htim12)) {
-		// TODO: reserved suppress motor
+		htim12_cb();
 	} else if (htim == (&htim13)) {
-		motor_state_t _state = M_ERROR;
-		uint8_t _dir = 0;
-		bool_t _start_flag = 0;
-
-		dc_motor_controller(PKG_LEN_DC, OD, &_state, &_dir, &_start_flag);
-
-		switch (_state) {
-		case M_IDLE:
-			if (_start_flag) {
-				if (_dir == 0) {
-					HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, SET);
-					HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
-				} else {
-					HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
-					HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, SET);
-				}
-				__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 100);
-			}
-			break;
-		case M_BRAKE:
-			HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
-			HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
-			break;
-		case M_STOP:
-			__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
-			break;
-		case M_ERROR:
-			show_err_LED();
-			break;
-		default:
-			break;
-		}
+		htim13_cb();
 	} else if (htim == (&htim14)) {
-		motor_state_t _state = M_ERROR;
-		uint8_t _dir = 0;
-		bool_t _start_flag = 0;
-
-		dc_motor_controller(ROLLER_DC, OD, &_state, &_dir, &_start_flag);
-
-		switch (_state) {
-		case M_IDLE:
-			if (_start_flag) {
-				if (_dir == 0) {
-					HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, SET);
-					HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
-				} else {
-					HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
-					HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, SET);
-				}
-				__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 100);
-			}
-			break;
-		case M_BRAKE:
-			HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
-			HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
-			break;
-		case M_STOP:
-			__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
-			break;
-		case M_ERROR:
-			show_err_LED();
-			break;
-		default:
-			break;
-		}
+		htim14_cb();
 	}
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
 	// TODO: stop the specific action
-	if (GPIO_Pin == PH_X1_Pin) {
-		if (get_od_con_state(OD, 0) == M_RUNNING && get_od_con_stop_by_ph(OD, 0) > 0) {
+	switch (GPIO_Pin) {
+	case PH_X1_Pin:
+		exti1_cb();
+		break;
+	case PH_X2_Pin:
+		exti2_cb();
+		break;
+	case PH_X3_Pin:
+		exti3_cb();
+		break;
+	case PH_X4_Pin:
+		exti4_cb();
+		break;
+	case PH_X5_Pin:
+		exti5_cb();
+		break;
+	case PH_X6_Pin:
+		exti6_cb();
+		break;
+	case PH_X7_Pin:
+		exti7_cb();
+		break;
+	case PH_X8_Pin:
+		exti8_cb();
+		break;
+	}
+}
+
+void htim1_cb(void) {
+	canopen_app_interrupt();
+}
+
+void htim2_cb(void) {
+	control_valve(0x6050, SV_X1_GPIO_Port, SV_X1_Pin);
+	control_valve(0x6051, SV_X2_GPIO_Port, SV_X2_Pin);
+	control_valve(0x6052, SV_X3_GPIO_Port, SV_X3_Pin);
+	control_valve(0x6053, SV_X4_GPIO_Port, SV_X4_Pin);
+
+	uint8_t valve_pin_states = 0;
+	const uint16_t valve_start_index = 0x6054;
+
+	for (size_t i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
+		GPIO_PinState result = !HAL_GPIO_ReadPin(valve_state_pins[i].port, valve_state_pins[i].pin);
+
+		if (OD_set_u8(OD_find(OD, valve_start_index + i), 0x00, (uint8_t) result, false) != ODR_OK)
+			show_err_LED();
+
+		valve_pin_states |= (result << i);
+	}
+
+	if (OD_set_u8(OD_find(OD, 0x6058), 0x00, (uint8_t) valve_pin_states, false) != ODR_OK)
+		show_err_LED();
+
+	uint8_t RS_pin_states = 0;
+	const uint16_t RS_start_index = 0x6060;
+
+	for (size_t i = 0; i < sizeof(RS_state_pins) / sizeof(RS_state_pins[0]); i++) {
+		GPIO_PinState result = !HAL_GPIO_ReadPin(RS_state_pins[i].port, RS_state_pins[i].pin);
+
+		if (OD_set_u8(OD_find(OD, RS_start_index + i), 0x00, (uint8_t) result, false) != ODR_OK)
+			show_err_LED();
+
+		RS_pin_states |= (result << i);
+	}
+
+	if (OD_set_u8(OD_find(OD, 0x6068), 0x00, (uint8_t) RS_pin_states, false) != ODR_OK)
+		show_err_LED();
+}
+
+void htim3_cb(void) {
+
+}
+
+void htim4_cb(void) {
+	HAL_GPIO_TogglePin(LED_Default_GPIO_Port, LED_Default_Pin);
+	HAL_IWDG_Refresh(&hiwdg);
+	running++;
+}
+
+void htim5_cb(void) {
+	uint16_t adc_sample;
+	uint8_t enable_heater, enable_kalman;
+
+	adc_sample = temperature_adc;
+
+	if (OD_get_u8(OD_find(OD, 0x6007), 0x00, &enable_kalman, false) != ODR_OK)
+		show_err_LED();
+
+	if (enable_kalman == 1)
+		temp = get_temperature(kalman_filter(adc_sample));
+	else
+		temp = get_temperature(adc_sample);
+
+	if (OD_set_u16(OD_find(OD, 0x6001), 0x00, (uint16_t) temp, false) != ODR_OK)
+		show_err_LED();
+
+	if (OD_set_u16(OD_find(OD, 0x6002), 0x00, adc_sample, false) != ODR_OK)
+		show_err_LED();
+
+	enable_heater = 0;
+	if (OD_get_u8(OD_find(OD, 0x6003), 0x00, &enable_heater, false) != ODR_OK)
+		show_err_LED();
+
+	HAL_GPIO_WritePin(Heat_Enable_GPIO_Port, Heat_Enable_Pin, !enable_heater);
+
+	if (enable_heater) {
+		PID_Compute(&TPID);
+		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_1, (uint16_t ) PID_out);
+		__HAL_TIM_SET_COMPARE(&htim9, TIM_CHANNEL_2, (uint16_t ) PID_out);
+		if (OD_set_u16(OD_find(OD, 0x6008), 0x00, (uint16_t) PID_out, false) != ODR_OK)
+			show_err_LED();
+	}
+}
+
+void htim6_cb(void) {
+
+}
+
+void htim7_cb(void) {
+	motor_state_t _state = M_ERROR;
+	uint8_t _dir, _ctrl;
+	uint16_t _speed;
+	bool_t _start_flag = 0;
+
+	_state = get_od_con_state(OD, 0);
+
+	switch (_state) {
+	case M_IDLE:
+		_ctrl = get_od_con_ctrl(OD, 0);
+		_speed = get_od_con_speed(OD, 0);
+		_start_flag = _ctrl > 0 && _speed > 0;
+
+		if (_start_flag) {
+			set_od_con_state(OD, 0, M_RUNNING);
+			const uint16_t __RESET = 0x07;
+			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &__RESET, 2);
+			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
+
+			_dir = get_od_con_dir(OD, 0);
+			if (_dir == 0) {
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_fwd, 2);
+			} else {
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_rev, 2);
+			}
+		}
+		break;
+	case M_RUNNING:
+		_ctrl = get_od_con_ctrl(OD, 0);
+
+		if (_ctrl == 0) {
 			set_od_con_state(OD, 0, M_STOP);
 		}
-	} else if (GPIO_Pin == PH_X2_Pin) {
-		if (get_od_sq_state(OD, 0) == M_RUNNING && get_od_sq_mode(OD, 0) == SQUEEZE) {
+		break;
+	case M_STOP:
+		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_stop, 2);
+		set_od_con_state(OD, 0, M_RESET);
+		break;
+	case M_RESET:
+		set_od_con_mode(OD, 0, 0);
+		set_od_con_dir(OD, 0, 0);
+		set_od_con_ctrl(OD, 0, 0);
+		set_od_con_state(OD, 0, M_IDLE);
+		break;
+	case M_ERROR:
+		_ctrl = get_od_con_ctrl(OD, 0);
+
+		if (_ctrl == 0) {
+			set_od_con_state(OD, 0, M_STOP);
+		}
+		show_err_LED();
+		break;
+	default:
+		break;
+	}
+}
+
+void htim8_cb(void) {
+	motor_state_t _state = M_ERROR;
+	uint8_t _dir, _ctrl, _loc;
+	uint16_t _speed;
+	bool_t _start_flag = 0;
+
+	_state = get_od_sq_state(OD, 0);
+
+	switch (_state) {
+	case M_IDLE:
+		_ctrl = get_od_sq_ctrl(OD, 0);
+		_speed = get_od_sq_speed(OD, 0);
+		_start_flag = _ctrl > 0 && _speed > 0;
+
+		if (_start_flag) {
+			const uint16_t __RESET = 0x07;
+			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &__RESET, 2);
+			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
+
+			_dir = get_od_sq_dir(OD, 0);
+			_loc = get_od_sq_loc(OD, 0);
+
+			if (_dir == 0 && _loc == SQUEEZE_HOME_PT) {
+				set_od_sq_state(OD, 0, M_RUNNING);
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_fwd, 2);
+			} else if (_dir == 1 && _loc == SQUEEZE_PT) {
+				set_od_sq_state(OD, 0, M_RUNNING);
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_rev, 2);
+			}
+		}
+		break;
+	case M_RUNNING:
+		_ctrl = get_od_sq_ctrl(OD, 0);
+
+		if (_ctrl == 0) {
 			set_od_sq_state(OD, 0, M_STOP);
 		}
-	} else if (GPIO_Pin == PH_X3_Pin) {
-		if (get_od_sq_state(OD, 0) == M_RUNNING && get_od_sq_mode(OD, 0) == HOME) {
+		break;
+	case M_BRAKE: {
+		uint8_t _wait_time = get_od_sq_wait_time(OD, 0);
+		_wait_time--;
+
+		if (_wait_time == 0)
+			set_od_sq_state(OD, 0, M_STOP);
+		else
+			set_od_sq_wait_time(OD, 0, _wait_time);
+		break;
+	}
+	case M_STOP:
+		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_stop, 2);
+		set_od_sq_state(OD, 0, M_RESET);
+		break;
+	case M_RESET:
+		set_od_sq_wait_time(OD, 0, 10);
+		set_od_sq_mode(OD, 0, 0);
+		set_od_sq_dir(OD, 0, 0);
+		set_od_sq_ctrl(OD, 0, 0);
+		set_od_sq_state(OD, 0, M_IDLE);
+		break;
+	case M_ERROR:
+		_ctrl = get_od_sq_ctrl(OD, 0);
+
+		if (_ctrl == 0) {
 			set_od_sq_state(OD, 0, M_STOP);
 		}
-	} else if (GPIO_Pin == PH_X4_Pin) {
-		if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == TRAY) {
-			uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
-			set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
+		show_err_LED();
+		break;
+	default:
+		show_err_LED();
+		break;
+	}
+}
+
+void htim9_cb(void) {
+
+}
+
+void htim10_cb(void) {
+	motor_state_t _state = M_ERROR;
+	uint8_t _dir = 0;
+	bool_t _start_flag = 0;
+
+	_state = get_od_pkg_dis_state(OD, 0);
+	switch (_state) {
+	case M_IDLE: {
+		uint8_t ctrl, rotate_pulses;
+
+		ctrl = get_od_pkg_dis_ctrl(OD, 0);
+		rotate_pulses = get_od_pkg_dis_rotate_pulses(OD, 0);
+
+		_start_flag = ctrl > 0 && rotate_pulses > 0;
+		if (_start_flag) {
+			_dir = get_od_pkg_dis_rotate_dir(OD, 0);
+
+			HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(Pkg_Dis_Dir_GPIO_Port, Pkg_Dis_Dir_Pin, _dir == 0 ? GPIO_PIN_RESET : GPIO_PIN_SET);
+			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 50);
+
+			set_od_pkg_dis_state(OD, 0, M_RUNNING);
 		}
-	} else if (GPIO_Pin == PH_X5_Pin) {
-		if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == ROLLER_HOMING) {
-			uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
-			set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
+		break;
+	}
+	case M_RUNNING: {
+		uint16_t curr_pulses, rotate_pulses;
+
+		curr_pulses = get_od_pkg_dis_curr_pulses(OD, 0);
+		set_od_pkg_dis_curr_pulses(OD, 0, ++curr_pulses);
+
+		rotate_pulses = get_od_pkg_dis_rotate_pulses(OD, 0);
+
+		if (curr_pulses >= rotate_pulses)
+			set_od_pkg_dis_state(OD, 0, M_STOP);
+
+		break;
+	}
+	case M_BRAKE: {
+		// stepper motor do not have brake
+		set_od_pkg_dis_state(OD, 0, M_STOP);
+		break;
+	}
+	case M_STOP: {
+		HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_RESET);
+		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
+
+		set_od_pkg_dis_state(OD, 0, M_RESET);
+		break;
+	}
+	case M_RESET: {
+		set_od_pkg_dis_rotate_pulses(OD, 0, 0);
+		set_od_pkg_dis_curr_pulses(OD, 0, 0);
+		set_od_pkg_dis_rotate_dir(OD, 0, 0);
+		set_od_pkg_dis_ctrl(OD, 0, 0);
+		set_od_pkg_dis_state(OD, 0, M_IDLE);
+		break;
+	}
+	case M_ERROR:
+		HAL_GPIO_WritePin(Pkg_Dis_Enable_GPIO_Port, Pkg_Dis_Enable_Pin, GPIO_PIN_RESET);
+		show_err_LED();
+		break;
+	default:
+		break;
+	}
+}
+
+void htim11_cb(void) {
+	motor_state_t _state = M_ERROR;
+	uint8_t _dir = 0;
+	bool_t _start_flag = 0;
+//	bool_t _loc_flag = 0;
+
+	_state = get_od_pill_gate_state(OD, 0);
+
+	switch (_state) {
+	case M_IDLE:
+		uint8_t ctrl, rotate_pulses;
+
+		ctrl = get_od_pill_gate_ctrl(OD, 0);
+		rotate_pulses = get_od_pill_gate_rotate_pulses(OD, 0);
+
+		_start_flag = ctrl > 0 && rotate_pulses > 0;
+		//	uint8_t _loc = get_od_pill_gate_loc(OD, 0);
+		if (_start_flag) {
+			_dir = get_od_pill_gate_rotate_dir(OD, 0);
+			set_od_pill_gate_state(OD, 0, M_RUNNING);
+
+			HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, get_open_dir(_dir));
+			__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
 		}
-	} else if (GPIO_Pin == PH_X6_Pin) {
-		if (get_od_pill_gate_state(OD, 0) == M_RUNNING && get_od_pill_gate_mode(OD, 0) == PILL_GATE_HOMING) {
+		break;
+	case M_RUNNING: {
+		uint16_t curr_pulses, rotate_pulses;
+
+		curr_pulses = get_od_pill_gate_curr_pulses(OD, 0);
+		set_od_pill_gate_curr_pulses(OD, 0, ++curr_pulses);
+
+		rotate_pulses = get_od_pill_gate_rotate_pulses(OD, 0);
+
+		if (curr_pulses >= rotate_pulses)
 			set_od_pill_gate_state(OD, 0, M_STOP);
+
+		break;
+	}
+	case M_BRAKE: {
+		// stepper motor do not have brake
+		set_od_pill_gate_state(OD, 0, M_STOP);
+		break;
+	}
+	case M_STOP: {
+		HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_RESET);
+		__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 0);
+		set_od_pill_gate_state(OD, 0, M_RESET);
+		break;
+	}
+	case M_RESET: {
+		set_od_pill_gate_rotate_pulses(OD, 0, 0);
+		set_od_pill_gate_curr_pulses(OD, 0, 0);
+		set_od_pill_gate_rotate_dir(OD, 0, 0);
+		set_od_pill_gate_ctrl(OD, 0, 0);
+		set_od_pill_gate_state(OD, 0, M_IDLE);
+		break;
+	}
+	case M_ERROR: {
+		HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_RESET);
+		show_err_LED();
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void htim12_cb(void) {
+
+}
+
+void htim13_cb(void) {
+	motor_state_t _state = M_ERROR;
+	uint8_t _dir = 0;
+	bool_t _start_flag = 0;
+
+	dc_motor_controller(PKG_LEN_DC, OD, &_state, &_dir, &_start_flag);
+
+	switch (_state) {
+	case M_IDLE:
+		if (_start_flag) {
+			if (_dir == 0) {
+				HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, SET);
+				HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
+			} else {
+				HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
+				HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, SET);
+			}
+			__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 100);
 		}
-	} else if (GPIO_Pin == PH_X7_Pin) {
-		if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_A) {
-			uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
-			set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
+		break;
+	case M_BRAKE:
+		HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
+		HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
+		break;
+	case M_STOP:
+		__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
+		break;
+	case M_ERROR:
+		show_err_LED();
+		break;
+	default:
+		break;
+	}
+}
+
+void htim14_cb(void) {
+	motor_state_t _state = M_ERROR;
+	uint8_t _dir = 0;
+	bool_t _start_flag = 0;
+
+	dc_motor_controller(ROLLER_DC, OD, &_state, &_dir, &_start_flag);
+
+	switch (_state) {
+	case M_IDLE:
+		if (_start_flag) {
+			if (_dir == 0) {
+				HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, SET);
+				HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
+			} else {
+				HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
+				HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, SET);
+			}
+			__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 100);
 		}
-	} else if (GPIO_Pin == PH_X8_Pin) {
-		if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_B) {
-			uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
-			set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
+		break;
+	case M_BRAKE:
+		HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
+		HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
+		break;
+	case M_STOP:
+		__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
+		break;
+	case M_ERROR:
+		show_err_LED();
+		break;
+	default:
+		break;
+	}
+}
+
+void exti1_cb(void) {
+	if (get_od_con_state(OD, 0) == M_RUNNING && get_od_con_stop_by_ph(OD, 0) > 0) {
+		set_od_con_state(OD, 0, M_STOP);
+	}
+}
+
+void exti2_cb(void) {
+	if (get_od_sq_state(OD, 0) == M_RUNNING) {
+		set_od_sq_loc(OD, 0, SQUEEZE_PT);
+		set_od_sq_state(OD, 0, M_BRAKE);
+	}
+}
+
+void exti3_cb(void) {
+	if (get_od_sq_state(OD, 0) == M_RUNNING) {
+		set_od_sq_loc(OD, 0, SQUEEZE_HOME_PT);
+		set_od_sq_state(OD, 0, M_STOP);
+	}
+}
+
+void exti4_cb(void) {
+	if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == TRAY) {
+		uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
+		set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
+	}
+}
+
+void exti5_cb(void) {
+	if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == ROLLER_HOMING) {
+		uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
+		set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
+	}
+}
+
+void exti6_cb(void) {
+	if (get_od_pill_gate_state(OD, 0) == M_RUNNING) {
+		set_od_pill_gate_loc(OD, 0, PILL_GATE_PT_0);
+		set_od_pill_gate_state(OD, 0, M_STOP);
+	}
+}
+
+void exti7_cb(void) {
+	if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_A) {
+		uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
+		set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
+	}
+}
+
+void exti8_cb(void) {
+	if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_B) {
+		uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
+		set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
+	}
+}
+
+void initial_pill_gate_home(void) {
+	GPIO_PinState curr_ph_state =  HAL_GPIO_ReadPin(PH_X6_GPIO_Port, PH_X6_Pin);
+	if (curr_ph_state == GPIO_PIN_RESET) {
+		set_od_pill_gate_loc(OD, 0, PILL_GATE_PT_0);
+	} else {
+		uint8_t _loc;
+
+		set_od_pill_gate_state(OD, 0, M_RUNNING);
+		set_od_pill_gate_loc(OD, 0, PILL_GATE_UNKOWN);
+
+		HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, get_open_dir(0));
+		__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
+		while (1) {
+			_loc = get_od_pill_gate_loc(OD, 0);
+			if (_loc == PILL_GATE_PT_0)
+				break;
+			delay_ms(100);
 		}
+		__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 0);
 	}
 }
 
@@ -714,20 +945,21 @@ void control_valve(uint16_t ctrl_index, GPIO_TypeDef *port, uint16_t pin) {
 	if (OD_get_u8(OD_find(OD, ctrl_index), 0x00, &valve_control, false) != ODR_OK) {
 		show_err_LED();
 	}
+
 	HAL_GPIO_WritePin(port, pin, !valve_control);
 }
 
 inline float get_temperature(uint16_t adc_value) {
-	float temp = ((3.3f * (float) adc_value / 4096.0f) - 1.25f) / 0.005f;
+	float val = ((3.3f * (float) adc_value / 4096.0f) - 1.25f) / 0.005f;
 
-	return temp > 0.0f ? temp : 0.0f;
+	return val > 0.0f ? val : 0.0f;
 }
 
-inline void show_err_LED() {
+inline void show_err_LED(void) {
 	HAL_GPIO_WritePin(LED_4_GPIO_Port, LED_4_Pin, GPIO_PIN_RESET);
 }
 
-void set_pid_config() {
+void set_pid_config(void) {
 	uint16_t target_temp, K_p, K_i, K_d;
 
 	if (OD_get_u16(OD_find(OD, 0x6000), 0x00, &target_temp, false) != ODR_OK)
@@ -739,12 +971,19 @@ void set_pid_config() {
 	if (OD_get_u16(OD_find(OD, 0x6006), 0x00, &K_d, false) != ODR_OK)
 		show_err_LED();
 
-	TempSetpoint = (float) target_temp;
+	temp_set_pt = (float) target_temp;
 
-	PID(&TPID, &Temp, &PIDOut, &TempSetpoint, (float) K_p, (float) K_i, (float) K_d, _PID_P_ON_E, _PID_CD_DIRECT);
+	PID(&TPID, &temp, &PID_out, &temp_set_pt, (float) K_p, (float) K_i, (float) K_d, _PID_P_ON_E, _PID_CD_DIRECT);
 	PID_SetMode(&TPID, _PID_MODE_AUTOMATIC);
 	PID_SetSampleTime(&TPID, SAMPLE_TIME);
 	PID_SetOutputLimits(&TPID, LOW_LIMIT, HIGH_LIMIT);
+}
+
+void delay_ms(uint32_t ms) {
+	volatile uint32_t count = 0;
+	for (count = 0; count < ms * 1000; count++) {
+		__asm("NOP");
+	}
 }
 
 /* USER CODE END 4 */
