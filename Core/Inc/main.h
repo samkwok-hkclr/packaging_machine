@@ -83,7 +83,9 @@ void exti6_cb(void);
 void exti7_cb(void);
 void exti8_cb(void);
 
-void initial_pill_gate_home(void);
+void init_pill_gate_loc(void);
+void init_pkg_len_loc(void);
+void init_sq_loc();
 
 void control_valve(uint16_t ctrl_index, GPIO_TypeDef *port, uint16_t pin);
 float get_temperature(uint16_t adc_value);

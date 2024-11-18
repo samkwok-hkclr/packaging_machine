@@ -11,7 +11,7 @@
 #include "od_utilities.h"
 
 typedef enum {
-	LENGTH_A = 0, LENGTH_B, LENGTH_C,
+	PKG_LEN_PT_0 = 0, PKG_LEN_PT_1, PKG_LEN_PT_UNKNOWN
 } pkg_len_mode_t;
 
 uint8_t get_od_pkg_len_rotate_steps(OD_t *od, uint8_t sub_index);

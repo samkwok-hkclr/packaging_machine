@@ -17,7 +17,6 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-
 #include "main.h"
 #include "adc.h"
 #include "can.h"
@@ -83,18 +82,35 @@ uint16_t temperature_adc = 0;
 PID_TypeDef TPID;
 float temp = 0.0;
 float PID_out = 0.0;
-float temp_set_pt = 0.0; // config by OD
+float temp_set_pt = 0.0;
 const int32_t SAMPLE_TIME = 100;
 const float LOW_LIMIT = 200.0f;
 const float HIGH_LIMIT = 2000.0f;
 
-const uint16_t squeezer_fwd = 1;
-const uint16_t squeezer_rev = 2;
-const uint16_t squeezer_stop = 6;
+const uint16_t SQU_FWD = 0x0001;
+const uint16_t SQU_REV = 0x0002;
+const uint16_t SQU_STOP = 0x0006;
+const uint16_t SQU_RESET = 0x0007;
 
-const uint16_t con_fwd = 1;
-const uint16_t con_rev = 2;
-const uint16_t con_stop = 6;
+const uint16_t CON_FWD = 0x0001;
+const uint16_t CON_REV = 0x0002;
+const uint16_t CON_STOP = 0x0006;
+const uint16_t CON_RESET = 0x0007;
+
+const uint16_t valve_start_index = 0x6054;
+const uint16_t RS_start_index = 0x6060;
+const uint16_t PH_start_index = 0x6090;
+
+PinConfig PH_state_pins[] = {
+    {PH_X1_Pin, PH_X1_GPIO_Port},
+    {PH_X2_Pin, PH_X2_GPIO_Port},
+    {PH_X3_Pin, PH_X3_GPIO_Port},
+    {PH_X4_Pin, PH_X4_GPIO_Port},
+	{PH_X5_Pin, PH_X5_GPIO_Port},
+	{PH_X6_Pin, PH_X6_GPIO_Port},
+	{PH_X7_Pin, PH_X7_GPIO_Port},
+	{PH_X8_Pin, PH_X8_GPIO_Port},
+};
 
 PinConfig RS_state_pins[] = {
     {RS_X1_Pin, RS_X1_GPIO_Port},
@@ -297,7 +313,9 @@ int main(void)
 
 	HAL_TIM_Base_Start_IT(&htim4);	// start to refresh the watchdog
 
-//	initial_pill_gate_home();
+	init_pill_gate_loc();
+	init_sq_loc();
+	init_pkg_len_loc();
 
   /* USER CODE END 2 */
 
@@ -439,7 +457,6 @@ void htim2_cb(void) {
 	control_valve(0x6053, SV_X4_GPIO_Port, SV_X4_Pin);
 
 	uint8_t valve_pin_states = 0;
-	const uint16_t valve_start_index = 0x6054;
 
 	for (size_t i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
 		GPIO_PinState result = !HAL_GPIO_ReadPin(valve_state_pins[i].port, valve_state_pins[i].pin);
@@ -454,7 +471,6 @@ void htim2_cb(void) {
 		show_err_LED();
 
 	uint8_t RS_pin_states = 0;
-	const uint16_t RS_start_index = 0x6060;
 
 	for (size_t i = 0; i < sizeof(RS_state_pins) / sizeof(RS_state_pins[0]); i++) {
 		GPIO_PinState result = !HAL_GPIO_ReadPin(RS_state_pins[i].port, RS_state_pins[i].pin);
@@ -466,6 +482,16 @@ void htim2_cb(void) {
 	}
 
 	if (OD_set_u8(OD_find(OD, 0x6068), 0x00, (uint8_t) RS_pin_states, false) != ODR_OK)
+		show_err_LED();
+
+	uint16_t PH_pin_states = 0;
+	for (size_t i = 0; i < sizeof(PH_state_pins) / sizeof(PH_state_pins[0]); i++) {
+		GPIO_PinState result = !HAL_GPIO_ReadPin(PH_state_pins[i].port, PH_state_pins[i].pin);
+
+		PH_pin_states |= (result << i);
+	}
+
+	if (OD_set_u16(OD_find(OD, 0x6090), 0x00, (uint16_t) RS_pin_states, false) != ODR_OK)
 		show_err_LED();
 }
 
@@ -488,7 +514,7 @@ void htim5_cb(void) {
 	if (OD_get_u8(OD_find(OD, 0x6007), 0x00, &enable_kalman, false) != ODR_OK)
 		show_err_LED();
 
-	if (enable_kalman == 1)
+	if (enable_kalman)
 		temp = get_temperature(kalman_filter(adc_sample));
 	else
 		temp = get_temperature(adc_sample);
@@ -533,16 +559,15 @@ void htim7_cb(void) {
 		_start_flag = _ctrl > 0 && _speed > 0;
 
 		if (_start_flag) {
-			set_od_con_state(OD, 0, M_RUNNING);
-			const uint16_t __RESET = 0x07;
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &__RESET, 2);
+			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_RESET, 2);
 			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
 
+			set_od_con_state(OD, 0, M_RUNNING);
 			_dir = get_od_con_dir(OD, 0);
 			if (_dir == 0) {
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_fwd, 2);
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_FWD, 2);
 			} else {
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_rev, 2);
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_REV, 2);
 			}
 		}
 		break;
@@ -554,7 +579,7 @@ void htim7_cb(void) {
 		}
 		break;
 	case M_STOP:
-		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &con_stop, 2);
+		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_STOP, 2);
 		set_od_con_state(OD, 0, M_RESET);
 		break;
 	case M_RESET:
@@ -591,8 +616,7 @@ void htim8_cb(void) {
 		_start_flag = _ctrl > 0 && _speed > 0;
 
 		if (_start_flag) {
-			const uint16_t __RESET = 0x07;
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &__RESET, 2);
+			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_RESET, 2);
 			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
 
 			_dir = get_od_sq_dir(OD, 0);
@@ -600,10 +624,12 @@ void htim8_cb(void) {
 
 			if (_dir == 0 && _loc == SQUEEZE_HOME_PT) {
 				set_od_sq_state(OD, 0, M_RUNNING);
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_fwd, 2);
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_FWD, 2);
 			} else if (_dir == 1 && _loc == SQUEEZE_PT) {
 				set_od_sq_state(OD, 0, M_RUNNING);
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_rev, 2);
+				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_REV, 2);
+			} else {
+				set_od_sq_state(OD, 0, M_RESET);
 			}
 		}
 		break;
@@ -625,7 +651,7 @@ void htim8_cb(void) {
 		break;
 	}
 	case M_STOP:
-		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &squeezer_stop, 2);
+		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_STOP, 2);
 		set_od_sq_state(OD, 0, M_RESET);
 		break;
 	case M_RESET:
@@ -724,7 +750,6 @@ void htim11_cb(void) {
 	motor_state_t _state = M_ERROR;
 	uint8_t _dir = 0;
 	bool_t _start_flag = 0;
-//	bool_t _loc_flag = 0;
 
 	_state = get_od_pill_gate_state(OD, 0);
 
@@ -736,14 +761,35 @@ void htim11_cb(void) {
 		rotate_pulses = get_od_pill_gate_rotate_pulses(OD, 0);
 
 		_start_flag = ctrl > 0 && rotate_pulses > 0;
-		//	uint8_t _loc = get_od_pill_gate_loc(OD, 0);
 		if (_start_flag) {
+			uint8_t _loc = get_od_pill_gate_loc(OD, 0);
 			_dir = get_od_pill_gate_rotate_dir(OD, 0);
-			set_od_pill_gate_state(OD, 0, M_RUNNING);
 
-			HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, get_open_dir(_dir));
-			__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
+			if (_dir == 1) {
+				if (_loc >= PILL_GATE_PT_0 && _loc <= PILL_GATE_PT_3) {
+					set_od_pill_gate_state(OD, 0, M_RUNNING);
+					set_od_pill_gate_loc(OD, 0, ++_loc);
+
+					HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_SET);
+					HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, get_open_dir(1));
+
+					__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 20);
+				} else {
+					set_od_pill_gate_state(OD, 0, M_RESET);
+				}
+			} else if (_dir == 0) {
+				if (_loc >= PILL_GATE_PT_1 && _loc <= PILL_GATE_PT_4) {
+					set_od_pill_gate_state(OD, 0, M_RUNNING);
+					set_od_pill_gate_loc(OD, 0, --_loc);
+
+					HAL_GPIO_WritePin(Pill_Gate_Enable_GPIO_Port, Pill_Gate_Enable_Pin, GPIO_PIN_SET);
+					HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, get_open_dir(0));
+
+					__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 20);
+				} else {
+					set_od_pill_gate_state(OD, 0, M_RESET);
+				}
+			}
 		}
 		break;
 	case M_RUNNING: {
@@ -802,19 +848,30 @@ void htim13_cb(void) {
 	switch (_state) {
 	case M_IDLE:
 		if (_start_flag) {
-			if (_dir == 0) {
-				HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, SET);
-				HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
-			} else {
-				HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
-				HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, SET);
+			uint8_t _loc = get_od_pkg_len_loc(OD, 0);
+			if (_dir == 1) {
+				if (_loc == PKG_LEN_PT_0) {
+					HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, SET);
+					HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
+					__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 15);
+				} else {
+					set_od_pkg_len_state(OD, 0, M_BRAKE);
+				}
+			} else if (_dir == 0) {
+				if (_loc == PKG_LEN_PT_1) {
+					HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
+					HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, SET);
+					__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 20);
+				} else {
+					set_od_pkg_len_state(OD, 0, M_BRAKE);
+				}
 			}
-			__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 100);
 		}
 		break;
 	case M_BRAKE:
 		HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
 		HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
+//		__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
 		break;
 	case M_STOP:
 		__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
@@ -840,7 +897,7 @@ void htim14_cb(void) {
 			if (_dir == 0) {
 				HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, SET);
 				HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
-			} else {
+			} else if (_dir == 1) {
 				HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
 				HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, SET);
 			}
@@ -850,6 +907,7 @@ void htim14_cb(void) {
 	case M_BRAKE:
 		HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
 		HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
+//		__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
 		break;
 	case M_STOP:
 		__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
@@ -904,39 +962,38 @@ void exti6_cb(void) {
 }
 
 void exti7_cb(void) {
-	if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_A) {
+	if (get_od_pkg_len_state(OD, 0) == M_RUNNING) {
 		uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
 		set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
+		set_od_pkg_len_loc(OD, 0, PKG_LEN_PT_0);
 	}
 }
 
 void exti8_cb(void) {
-	if (get_od_pkg_len_state(OD, 0) == M_RUNNING && get_od_pkg_len_mode(OD, 0) == LENGTH_B) {
+	if (get_od_pkg_len_state(OD, 0) == M_RUNNING) {
 		uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
 		set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
+		set_od_pkg_len_loc(OD, 0, PKG_LEN_PT_1);
 	}
 }
 
-void initial_pill_gate_home(void) {
-	GPIO_PinState curr_ph_state =  HAL_GPIO_ReadPin(PH_X6_GPIO_Port, PH_X6_Pin);
-	if (curr_ph_state == GPIO_PIN_RESET) {
+void init_pill_gate_loc(void) {
+	if (HAL_GPIO_ReadPin(PH_X6_GPIO_Port, PH_X6_Pin) == GPIO_PIN_RESET)
 		set_od_pill_gate_loc(OD, 0, PILL_GATE_PT_0);
-	} else {
-		uint8_t _loc;
+}
 
-		set_od_pill_gate_state(OD, 0, M_RUNNING);
-		set_od_pill_gate_loc(OD, 0, PILL_GATE_UNKOWN);
+void init_pkg_len_loc(void) {
+	if (HAL_GPIO_ReadPin(PH_X7_GPIO_Port, PH_X7_Pin) == GPIO_PIN_RESET)
+		set_od_pkg_len_loc(OD, 0, PKG_LEN_PT_0);
+	else if (HAL_GPIO_ReadPin(PH_X8_GPIO_Port, PH_X8_Pin) == GPIO_PIN_RESET)
+		set_od_pkg_len_loc(OD, 0, PKG_LEN_PT_1);
+}
 
-		HAL_GPIO_WritePin(Pill_Gate_Dir_GPIO_Port, Pill_Gate_Dir_Pin, get_open_dir(0));
-		__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 50);
-		while (1) {
-			_loc = get_od_pill_gate_loc(OD, 0);
-			if (_loc == PILL_GATE_PT_0)
-				break;
-			delay_ms(100);
-		}
-		__HAL_TIM_SET_COMPARE(&htim11, TIM_CHANNEL_1, 0);
-	}
+void init_sq_loc(void) {
+	if (HAL_GPIO_ReadPin(PH_X2_GPIO_Port, PH_X2_Pin) == GPIO_PIN_RESET)
+		set_od_sq_loc(OD, 0, SQUEEZE_PT);
+	else if (HAL_GPIO_ReadPin(PH_X3_GPIO_Port, PH_X3_Pin) == GPIO_PIN_RESET)
+		set_od_sq_loc(OD, 0, SQUEEZE_HOME_PT);
 }
 
 void control_valve(uint16_t ctrl_index, GPIO_TypeDef *port, uint16_t pin) {

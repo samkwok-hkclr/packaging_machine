@@ -214,7 +214,7 @@ void MX_TIM7_Init(void)
   htim7.Instance = TIM7;
   htim7.Init.Prescaler = 16800-1;
   htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim7.Init.Period = 20-1;
+  htim7.Init.Period = 100-1;
   htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
   {
@@ -337,7 +337,7 @@ void MX_TIM10_Init(void)
 
   /* USER CODE END TIM10_Init 1 */
   htim10.Instance = TIM10;
-  htim10.Init.Prescaler = 168-1;
+  htim10.Init.Prescaler = 1050-1;
   htim10.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim10.Init.Period = 100-1;
   htim10.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -378,7 +378,7 @@ void MX_TIM11_Init(void)
 
   /* USER CODE END TIM11_Init 1 */
   htim11.Instance = TIM11;
-  htim11.Init.Prescaler = 168-1;
+  htim11.Init.Prescaler = 336-1;
   htim11.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim11.Init.Period = 100-1;
   htim11.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
