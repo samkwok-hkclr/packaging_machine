@@ -496,7 +496,7 @@ void htim2_cb(void) {
 		PH_pin_states |= (result << i);
 	}
 
-	if (OD_set_u16(OD_find(OD, 0x6090), 0x00, (uint16_t) RS_pin_states, false) != ODR_OK)
+	if (OD_set_u16(OD_find(OD, 0x6090), 0x00, (uint16_t) PH_pin_states, false) != ODR_OK)
 		show_err_LED();
 }
 
