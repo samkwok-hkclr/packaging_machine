@@ -274,9 +274,9 @@ int main(void)
 
   HAL_TIM_Base_Start_IT(&htim4);	// start to refresh the watchdog
 
-  for (uint8_t i = 0; i < 6; i++) {
+  for (uint8_t i = 0; i < 10; i++) {
 	  HAL_GPIO_TogglePin(LED_4_GPIO_Port, LED_4_Pin);
-	  HAL_Delay(1000);
+	  HAL_Delay(500);
   }
 
 //	CANopenNodeSTM32 canOpenNodeSTM32;
@@ -317,7 +317,6 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim14);
 	HAL_TIM_PWM_Start(&htim14, TIM_CHANNEL_1);  // roller motor
 	__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
-
 
 	init_pill_gate_loc();
 	init_sq_loc();
