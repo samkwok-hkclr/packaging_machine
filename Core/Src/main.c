@@ -101,6 +101,8 @@ const uint16_t valve_start_index = 0x6054;
 const uint16_t RS_start_index = 0x6060;
 const uint16_t PH_start_index = 0x6090;
 
+const uint8_t MAX_SDO_RETIES = 5;
+
 PinConfig PH_state_pins[] = {
     {PH_X1_Pin, PH_X1_GPIO_Port},
     {PH_X2_Pin, PH_X2_GPIO_Port},
@@ -554,6 +556,7 @@ void htim7_cb(void) {
 	uint8_t _dir, _ctrl;
 	uint16_t _speed;
 	bool_t _start_flag = 0;
+	CO_SDO_abortCode_t ret_code;
 
 	_state = get_od_con_state(OD, 0);
 
@@ -564,15 +567,24 @@ void htim7_cb(void) {
 		_start_flag = _ctrl > 0 && _speed > 0;
 
 		if (_start_flag) {
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_RESET, 2);
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
+			ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_RESET, 2);
+			if (ret_code != CO_SDO_AB_NONE)
+				show_err_LED();
+			delay_ms(20);
+			ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
+			if (ret_code != CO_SDO_AB_NONE)
+				show_err_LED();
 
 			set_od_con_state(OD, 0, M_RUNNING);
 			_dir = get_od_con_dir(OD, 0);
 			if (_dir == 0) {
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_FWD, 2);
+				ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_FWD, 2);
+				if (ret_code != CO_SDO_AB_NONE)
+					show_err_LED();
 			} else {
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_REV, 2);
+				ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_REV, 2);
+				if (ret_code != CO_SDO_AB_NONE)
+					show_err_LED();
 			}
 		}
 		break;
@@ -584,7 +596,9 @@ void htim7_cb(void) {
 		}
 		break;
 	case M_STOP:
-		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_STOP, 2);
+		ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_STOP, 2);
+		if (ret_code != CO_SDO_AB_NONE)
+			show_err_LED();
 		set_od_con_state(OD, 0, M_RESET);
 		break;
 	case M_RESET:
@@ -611,7 +625,7 @@ void htim8_cb(void) {
 	uint8_t _dir, _ctrl, _loc;
 	uint16_t _speed;
 	bool_t _start_flag = 0;
-
+	CO_SDO_abortCode_t ret_code;
 	_state = get_od_sq_state(OD, 0);
 
 	switch (_state) {
@@ -621,18 +635,28 @@ void htim8_cb(void) {
 		_start_flag = _ctrl > 0 && _speed > 0;
 
 		if (_start_flag) {
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_RESET, 2);
-			write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
+			ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_RESET, 2);
+			if (ret_code != CO_SDO_AB_NONE)
+				show_err_LED();
+			delay_ms(10);
+			ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
+			if (ret_code != CO_SDO_AB_NONE)
+				show_err_LED();
+			delay_ms(10);
 
 			_dir = get_od_sq_dir(OD, 0);
 			_loc = get_od_sq_loc(OD, 0);
 
 			if (_dir == 0 && _loc == SQUEEZE_HOME_PT) {
 				set_od_sq_state(OD, 0, M_RUNNING);
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_FWD, 2);
+				ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_FWD, 2);
+				if (ret_code != CO_SDO_AB_NONE)
+					show_err_LED();
 			} else if (_dir == 1 && _loc == SQUEEZE_PT) {
 				set_od_sq_state(OD, 0, M_RUNNING);
-				write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_REV, 2);
+				ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_REV, 2);
+				if (ret_code != CO_SDO_AB_NONE)
+					show_err_LED();
 			} else {
 				set_od_sq_state(OD, 0, M_RESET);
 			}
@@ -656,7 +680,9 @@ void htim8_cb(void) {
 		break;
 	}
 	case M_STOP:
-		write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_STOP, 2);
+		ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, squ_node_id, 0x2000, 0x1, (uint8_t*) &SQU_STOP, 2);
+		if (ret_code != CO_SDO_AB_NONE)
+			show_err_LED();
 		set_od_sq_state(OD, 0, M_RESET);
 		break;
 	case M_RESET:
@@ -925,48 +951,50 @@ void htim14_cb(void) {
 	}
 }
 
-void exti1_cb(void) {
+inline void exti1_cb(void) {
 	if (get_od_con_state(OD, 0) == M_RUNNING && get_od_con_stop_by_ph(OD, 0) > 0) {
 		set_od_con_state(OD, 0, M_STOP);
 	}
 }
 
-void exti2_cb(void) {
+inline void exti2_cb(void) {
 	if (get_od_sq_state(OD, 0) == M_RUNNING) {
 		set_od_sq_loc(OD, 0, SQUEEZE_PT);
 		set_od_sq_state(OD, 0, M_BRAKE);
+//		set_od_sq_ctrl(OD, 0, 0);
 	}
 }
 
-void exti3_cb(void) {
+inline void exti3_cb(void) {
 	if (get_od_sq_state(OD, 0) == M_RUNNING) {
 		set_od_sq_loc(OD, 0, SQUEEZE_HOME_PT);
 		set_od_sq_state(OD, 0, M_STOP);
+//		set_od_sq_ctrl(OD, 0, 0);
 	}
 }
 
-void exti4_cb(void) {
+inline void exti4_cb(void) {
 	if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == TRAY) {
 		uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
 		set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
 	}
 }
 
-void exti5_cb(void) {
+inline void exti5_cb(void) {
 	if (get_od_roller_state(OD, 0) == M_RUNNING && get_od_roller_mode(OD, 0) == ROLLER_HOMING) {
 		uint8_t curr_step = get_od_dc_curr_step(ROLLER_DC, OD, 0);
 		set_od_dc_curr_step(ROLLER_DC, OD, 0, ++curr_step);
 	}
 }
 
-void exti6_cb(void) {
+inline void exti6_cb(void) {
 	if (get_od_pill_gate_state(OD, 0) == M_RUNNING) {
 		set_od_pill_gate_loc(OD, 0, PILL_GATE_PT_0);
 		set_od_pill_gate_state(OD, 0, M_STOP);
 	}
 }
 
-void exti7_cb(void) {
+inline void exti7_cb(void) {
 	if (get_od_pkg_len_state(OD, 0) == M_RUNNING) {
 		uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
 		set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
@@ -974,7 +1002,7 @@ void exti7_cb(void) {
 	}
 }
 
-void exti8_cb(void) {
+inline void exti8_cb(void) {
 	if (get_od_pkg_len_state(OD, 0) == M_RUNNING) {
 		uint8_t curr_step = get_od_dc_curr_step(PKG_LEN_DC, OD, 0);
 		set_od_dc_curr_step(PKG_LEN_DC, OD, 0, ++curr_step);
