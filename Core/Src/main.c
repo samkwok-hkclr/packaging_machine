@@ -73,9 +73,13 @@ uint32_t running = 0;
 
 CANopenNodeSTM32 canOpenNodeSTM32;
 
-const uint8_t main_node_id = 32;
-const uint8_t squ_node_id = 60;
-const uint8_t con_node_id = 61;
+//const uint8_t main_node_id = 32;
+//const uint8_t squ_node_id = 60;
+//const uint8_t con_node_id = 61;
+
+const uint8_t main_node_id = 33;
+const uint8_t squ_node_id = 62;
+const uint8_t con_node_id = 63;
 
 uint16_t temperature_adc = 0;
 
@@ -808,7 +812,7 @@ void htim11_cb(void) {
 				} else {
 					set_od_pill_gate_state(OD, 0, M_RESET);
 				}
-			} else if (_dir == 0) {
+			} else {
 				if (_loc >= PILL_GATE_PT_1 && _loc <= PILL_GATE_PT_4) {
 					set_od_pill_gate_state(OD, 0, M_RUNNING);
 					set_od_pill_gate_loc(OD, 0, --_loc);
