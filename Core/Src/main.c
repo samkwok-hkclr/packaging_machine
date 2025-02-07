@@ -70,7 +70,6 @@ typedef struct {
 /* USER CODE BEGIN PV */
 
 uint32_t running = 0;
-
 CANopenNodeSTM32 canOpenNodeSTM32;
 
 //const uint8_t main_node_id = 32;
@@ -107,7 +106,7 @@ const uint16_t PH_start_index = 0x6090;
 
 const uint8_t MAX_SDO_RETIES = 5;
 
-PinConfig PH_state_pins[] = {
+const PinConfig PH_state_pins[] = {
     {PH_X1_Pin, PH_X1_GPIO_Port},
     {PH_X2_Pin, PH_X2_GPIO_Port},
     {PH_X3_Pin, PH_X3_GPIO_Port},
@@ -118,7 +117,7 @@ PinConfig PH_state_pins[] = {
 	{PH_X8_Pin, PH_X8_GPIO_Port},
 };
 
-PinConfig RS_state_pins[] = {
+const PinConfig RS_state_pins[] = {
     {RS_X1_Pin, RS_X1_GPIO_Port},
     {RS_X2_Pin, RS_X2_GPIO_Port},
     {RS_X3_Pin, RS_X3_GPIO_Port},
@@ -129,7 +128,7 @@ PinConfig RS_state_pins[] = {
     {RS_X8_Pin, RS_X8_GPIO_Port}
 };
 
-PinConfig valve_state_pins[] = {
+const PinConfig valve_state_pins[] = {
     {SV_X1_Pin, SV_X1_GPIO_Port},
     {SV_X2_Pin, SV_X2_GPIO_Port},
     {SV_X3_Pin, SV_X3_GPIO_Port},
@@ -146,7 +145,6 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 
 CO_SDO_abortCode_t
 read_SDO(CO_SDOclient_t* SDO_C, uint8_t nodeId, uint16_t index, uint8_t subIndex, uint8_t* buf, size_t bufSize,
@@ -467,7 +465,7 @@ void htim2_cb(void) {
 	control_valve(0x6052, SV_X3_GPIO_Port, SV_X3_Pin);
 	control_valve(0x6053, SV_X4_GPIO_Port, SV_X4_Pin);
 
-	uint8_t valve_pin_states = 0;
+	uint8_t Valve_pin_states = 0;
 
 	for (size_t i = 0; i < sizeof(valve_state_pins) / sizeof(valve_state_pins[0]); i++) {
 		GPIO_PinState result = !HAL_GPIO_ReadPin(valve_state_pins[i].port, valve_state_pins[i].pin);
@@ -475,10 +473,10 @@ void htim2_cb(void) {
 		if (OD_set_u8(OD_find(OD, valve_start_index + i), 0x00, (uint8_t) result, false) != ODR_OK)
 			show_err_LED();
 
-		valve_pin_states |= (result << i);
+		Valve_pin_states |= (result << i);
 	}
 
-	if (OD_set_u8(OD_find(OD, 0x6058), 0x00, (uint8_t) valve_pin_states, false) != ODR_OK)
+	if (OD_set_u8(OD_find(OD, 0x6058), 0x00, (uint8_t) Valve_pin_states, false) != ODR_OK)
 		show_err_LED();
 
 	uint8_t RS_pin_states = 0;
@@ -574,11 +572,11 @@ void htim7_cb(void) {
 			ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x1, (uint8_t*) &CON_RESET, 2);
 			if (ret_code != CO_SDO_AB_NONE)
 				show_err_LED();
-			delay_ms(20);
+			delay_ms(10);
 			ret_code = write_SDO(canOpenNodeSTM32.canOpenStack->SDOclient, con_node_id, 0x2000, 0x2, (uint8_t*) &_speed, 2);
 			if (ret_code != CO_SDO_AB_NONE)
 				show_err_LED();
-
+			delay_ms(10);
 			set_od_con_state(OD, 0, M_RUNNING);
 			_dir = get_od_con_dir(OD, 0);
 			if (_dir == 0) {
@@ -647,7 +645,6 @@ void htim8_cb(void) {
 			if (ret_code != CO_SDO_AB_NONE)
 				show_err_LED();
 			delay_ms(10);
-
 			_dir = get_od_sq_dir(OD, 0);
 			_loc = get_od_sq_loc(OD, 0);
 
@@ -892,7 +889,7 @@ void htim13_cb(void) {
 				} else {
 					set_od_pkg_len_state(OD, 0, M_BRAKE);
 				}
-			} else if (_dir == 0) {
+			} else {
 				if (_loc == PKG_LEN_PT_1) {
 					HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
 					HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, SET);
@@ -906,7 +903,6 @@ void htim13_cb(void) {
 	case M_BRAKE:
 		HAL_GPIO_WritePin(Pkg_Len_In_1_GPIO_Port, Pkg_Len_In_1_Pin, RESET);
 		HAL_GPIO_WritePin(Pkg_Len_In_2_GPIO_Port, Pkg_Len_In_2_Pin, RESET);
-//		__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
 		break;
 	case M_STOP:
 		__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
@@ -932,7 +928,7 @@ void htim14_cb(void) {
 			if (_dir == 0) {
 				HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, SET);
 				HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
-			} else if (_dir == 1) {
+			} else {
 				HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
 				HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, SET);
 			}
@@ -942,7 +938,6 @@ void htim14_cb(void) {
 	case M_BRAKE:
 		HAL_GPIO_WritePin(Roller_In_1_GPIO_Port, Roller_In_1_Pin, RESET);
 		HAL_GPIO_WritePin(Roller_In_2_GPIO_Port, Roller_In_2_Pin, RESET);
-//		__HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
 		break;
 	case M_STOP:
 		__HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);

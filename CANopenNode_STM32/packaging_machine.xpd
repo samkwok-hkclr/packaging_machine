@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2024-11-18" fileModificationTime="16:29:22.9911182+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModifiedBy="Sam Kwok" fileModificationDate="2025-02-06" fileModificationTime="10:29:02.7501955+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>HKCLR</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -2263,14 +2263,14 @@
               </q1:range>
             </q1:allowedValues>
           </q1:parameter>
-          <q1:parameter uniqueID="UID_OBJ_6058" access="readWriteInput">
+          <q1:parameter uniqueID="UID_OBJ_6058">
             <label lang="en">Valve State</label>
             <USINT />
             <q1:defaultValue value="0" />
             <q1:allowedValues>
               <q1:range>
                 <minValue value="0" />
-                <maxValue value="16" />
+                <maxValue value="255" />
               </q1:range>
             </q1:allowedValues>
           </q1:parameter>
@@ -2544,7 +2544,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2024-11-18" fileModificationTime="16:29:22.9911182+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="packaging_machine.xpd" fileCreator="Sam Kwok" fileCreationDate="2024-09-17" fileCreationTime="15:00:00.0000000+08:00" fileModificationDate="2025-02-06" fileModificationTime="10:29:02.7501955+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />

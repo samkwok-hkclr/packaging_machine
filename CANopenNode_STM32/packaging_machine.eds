@@ -8,8 +8,8 @@ Description=The Object Dictionary of Packaging Machine
 CreationTime=3:00PM
 CreationDate=09-17-2024
 CreatedBy=Sam Kwok
-ModificationTime=4:29PM
-ModificationDate=11-18-2024
+ModificationTime=10:29AM
+ModificationDate=02-06-2025
 ModifiedBy=Sam Kwok
 
 [DeviceInfo]
@@ -2272,8 +2272,8 @@ ParameterName=Valve State
 ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
-AccessType=rwr
-HighLimit=16
+AccessType=ro
+HighLimit=255
 LowLimit=0
 DefaultValue=0
 PDOMapping=1

@@ -1416,7 +1416,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     },
     .o_6058_valveState = {
         .dataOrig = &OD_RAM.x6058_valveState,
-        .attribute = ODA_SDO_RW | ODA_TPDO,
+        .attribute = ODA_SDO_R | ODA_TPDO,
         .dataLength = 1
     },
     .o_6060_reedSwitch1State = {
